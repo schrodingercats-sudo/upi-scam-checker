@@ -1,77 +1,39 @@
 {
-  "total_samples": 20,
-  "legitimate_count": 10,
-  "scam_count": 10,
+  "total_samples": 172,
+  "legitimate_count": 69,
+  "scam_count": 103,
   "feature_count": 12,
-  "training_samples": 16,
-  "testing_samples": 4,
-  "accuracy": 1.0,
+  "training_samples": 274,
+  "testing_samples": 35,
+  "cv_model": "RandomForest",
+  "cv_accuracy": 1.0,
+  "test_accuracy": 0.9428571428571428,
   "metadata": {
-    "channels": [
-      "SMS",
-      "SMS",
-      "SMS",
-      "SMS",
-      "SMS",
-      "SMS",
-      "WhatsApp",
-      "SMS",
-      "SMS",
-      "SMS",
-      "SMS",
-      "WhatsApp",
-      "SMS",
-      "WhatsApp",
-      "SMS",
-      "SMS",
-      "WhatsApp",
-      "SMS",
-      "WhatsApp",
-      "SMS"
-    ],
-    "categories": [
-      "transaction_credit",
-      "transaction_debit",
-      "atm_withdrawal",
-      "otp",
-      "balance_alert",
-      "imps_notice",
-      "service_enrolment",
-      "card_settings",
-      "upi_success",
-      "security_advisory",
-      "kyc_expiry",
-      "refund_bait",
-      "suspicious_login",
-      "overpayment",
-      "fake_screenshot",
-      "lottery",
-      "call_merge_otp",
-      "loan_fee",
-      "power_bill",
-      "fake_credit_sms"
-    ],
     "sources": [
-      "https://www.deutschebank.co.in/en/connect-with-us/sms-alert.html",
-      "https://www.icicibank.com/mobile-banking/sms-banking",
-      "Transactional SMS format references (DLT templates)",
-      "https://www.infobip.com/docs/essentials/asia-registration/dlt-templates",
-      "https://www.sbi.co.in/documents/16012/22770835/150722-Revision+in+Service+Charges+updated+as+on+30062022.pdf",
-      "https://www.icicibank.com/mobile-banking/alerts",
-      "https://sbi.co.in/web/personal-banking/digital/whatsapp-banking",
-      "https://www.sbi.co.in/documents/16012/78812/16102020_Enhanced+Seucirty+of+Card+Transactions.pdf",
-      "General bank UPI alert structure (DLT templates)",
-      "https://www.icicibank.com/mobile-banking/sms-banking-faqs",
-      "Pattern per NPCI Fraud Awareness (never click unknown links)",
-      "https://paytm.com/blog/payments/upi/how-to-identify-fake-upi-payment-request/",
-      "Phishing pattern per CERT-In advisories",
-      "https://m.economictimes.com/wealth/save/new-upi-scam-fraudsters-send-you-rs-200-00-and-asks-to-return-rs-20000-00-how-to-protect-yourself-from-upi-overpayment-scam/articleshow/110815938.cms",
-      "https://razorpay.com/learn/fake-payment-screenshot-scam/",
-      "https://www.rbi.org.in/commonman/english/scripts/PressReleases.aspx?Id=2440",
-      "https://timesofindia.indiatimes.com/technology/tech-news/call-merging-scam-what-is-the-new-fraud-that-npci-has-warned-about/articleshow/118444907.cms",
-      "General phishing pattern; RBI awareness week coverage",
-      "Common utility bill scam pattern (media reports)",
-      "https://timesofindia.indiatimes.com/city/vadodara/senior-citizen-outwits-conmen-using-fake-credit-sms-trick/articleshow/122054377.cms"
-    ]
+      {
+        "file": "upi_sms_whatsapp_dataset_seed.csv",
+        "count": 20
+      },
+      {
+        "file": "upi_sms_dataset_100.csv",
+        "count": 100
+      },
+      {
+        "file": "upi_fake_scams_500.csv",
+        "count": 500
+      },
+      {
+        "file": "upi_fake_scams_10000.csv",
+        "count": 10000
+      },
+      {
+        "file": "collected_sms_data.json",
+        "count": 39
+      }
+    ],
+    "final_counts": {
+      "legitimate": 69,
+      "scam": 103
+    }
   }
 }

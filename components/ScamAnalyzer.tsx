@@ -2,12 +2,13 @@
 
 import { useState } from 'react'
 import { MessageSquare, Link, Phone, Upload, Loader2 } from 'lucide-react'
+import PhoneTracker from '@/components/PhoneTracker'
 import { motion } from 'framer-motion'
 
 interface ScamAnalyzerProps {
-  activeTab: 'sms' | 'url' | 'call'
-  onTabChange: (tab: 'sms' | 'url' | 'call') => void
-  onAnalyze: (input: string, type: 'sms' | 'url' | 'call') => void
+  activeTab: 'sms' | 'url' | 'call' | 'track'
+  onTabChange: (tab: 'sms' | 'url' | 'call' | 'track') => void
+  onAnalyze: (input: string, type: 'sms' | 'url' | 'call' | 'track') => void
   isAnalyzing: boolean
 }
 
@@ -22,10 +23,25 @@ export default function ScamAnalyzer({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (input.trim() || audioFile) {
-      onAnalyze(input.trim() || 'Audio file uploaded', activeTab)
+    if (activeTab === 'call') {
+      if (!audioFile) return
+      const form = new FormData()
+      form.append('file', audioFile)
+      fetch('/api/analyze-call', { method: 'POST', body: form })
+        .then(r => r.json())
+        .then(res => {
+          // Display via text area for now
+          setInput(JSON.stringify(res))
+        })
+        .catch(() => {})
+      return
+    }
+    if (input.trim()) {
+      onAnalyze(input.trim(), activeTab)
     }
   }
+
+  
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -38,8 +54,9 @@ export default function ScamAnalyzer({
   const tabs = [
     { id: 'sms', label: 'SMS/WhatsApp', icon: MessageSquare, description: 'Paste message text' },
     { id: 'url', label: 'URL/Link', icon: Link, description: 'Check suspicious links' },
-    { id: 'call', label: 'Call Audio', icon: Phone, description: 'Upload audio file' }
-  ]
+    { id: 'call', label: 'Call Audio', icon: Phone, description: 'Upload audio file' },
+    { id: 'track', label: 'Track Number', icon: Phone, description: 'Track phone number & complaints' }
+  ] as const
 
   return (
     <div className="card">
@@ -61,7 +78,7 @@ export default function ScamAnalyzer({
           return (
             <button
               key={tab.id}
-              onClick={() => onTabChange(tab.id as 'sms' | 'url' | 'call')}
+              onClick={() => onTabChange(tab.id as 'sms' | 'url' | 'call' | 'track')}
               className={`flex-1 flex items-center justify-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                 isActive
                   ? 'bg-white text-primary-600 shadow-sm'
@@ -99,7 +116,9 @@ export default function ScamAnalyzer({
                     <span>{tab.description}</span>
                   </div>
 
-                  {tab.id === 'call' ? (
+                  {tab.id === 'track' ? (
+                    <PhoneTracker />
+                  ) : tab.id === 'call' ? (
                     <div className="space-y-4">
                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors">
                         <input
@@ -146,20 +165,22 @@ export default function ScamAnalyzer({
                     />
                   )}
 
-                  <button
-                    onClick={handleSubmit}
-                    disabled={isAnalyzing || (!input.trim() && !audioFile)}
-                    className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isAnalyzing ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                        Analyzing...
-                      </>
-                    ) : (
-                      `Analyze ${tab.label}`
-                    )}
-                  </button>
+                  {tab.id !== 'track' && (
+                    <button
+                      onClick={handleSubmit}
+                      disabled={isAnalyzing || (!input.trim() && !audioFile)}
+                      className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isAnalyzing ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                          Analyzing...
+                        </>
+                      ) : (
+                        `Analyze ${tab.label}`
+                      )}
+                    </button>
+                  )}
                 </div>
               )}
             </motion.div>

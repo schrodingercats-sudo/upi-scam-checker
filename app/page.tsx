@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Shield, MessageSquare, Link, Phone, AlertTriangle, CheckCircle, XCircle } from 'lucide-react'
+import { Shield, MessageSquare, Link, Phone, AlertTriangle, CheckCircle, XCircle, Github, Linkedin, Instagram, Twitter } from 'lucide-react'
 import toast from 'react-hot-toast'
 import ScamAnalyzer from '@/components/ScamAnalyzer'
 import ResultCard from '@/components/ResultCard'
@@ -17,11 +17,11 @@ export type AnalysisResult = {
 }
 
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState<'sms' | 'url' | 'call'>('sms')
+  const [activeTab, setActiveTab] = useState<'sms' | 'url' | 'call' | 'track'>('sms')
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
 
-  const handleAnalysis = async (input: string, type: 'sms' | 'url' | 'call') => {
+  const handleAnalysis = async (input: string, type: 'sms' | 'url' | 'call' | 'track') => {
     setIsAnalyzing(true)
     
     try {
@@ -40,7 +40,7 @@ export default function HomePage() {
     }
   }
 
-  const analyzeContent = async (input: string, type: 'sms' | 'url' | 'call'): Promise<AnalysisResult> => {
+  const analyzeContent = async (input: string, type: 'sms' | 'url' | 'call' | 'track'): Promise<AnalysisResult> => {
     try {
       // Use ML-powered API for analysis
       const response = await fetch('/api/analyze-sms', {
@@ -78,7 +78,7 @@ export default function HomePage() {
   }
 
   // Fallback rule-based analysis (original system)
-  const fallbackAnalysis = (input: string, type: 'sms' | 'url' | 'call'): AnalysisResult => {
+  const fallbackAnalysis = (input: string, type: 'sms' | 'url' | 'call' | 'track'): AnalysisResult => {
     // LEGITIMATE ENTITIES WHITELIST - These are trusted sources
     const legitimateEntities = {
       banks: [
@@ -376,6 +376,20 @@ export default function HomePage() {
       <footer className="bg-gray-900 text-white mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
+            <div className="flex items-center justify-center gap-5 mb-4">
+              <a href="https://github.com/schrodingercats-sudo" target="_blank" rel="noreferrer" aria-label="GitHub" className="text-gray-400 hover:text-white transition-colors">
+                <Github className="h-5 w-5" />
+              </a>
+              <a href="https://www.linkedin.com/in/pratham-solanki-a846a331b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="text-gray-400 hover:text-white transition-colors">
+                <Linkedin className="h-5 w-5" />
+              </a>
+              <a href="https://www.instagram.com/pratham_sola8061?igsh=MWRnbWY1eTdleDk5YQ==" target="_blank" rel="noreferrer" aria-label="Instagram" className="text-gray-400 hover:text-white transition-colors">
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a href="https://x.com/Pratham21207080?t=-EsQA5QIt93UfXARW54B3A&s=09" target="_blank" rel="noreferrer" aria-label="X (Twitter)" className="text-gray-400 hover:text-white transition-colors">
+                <Twitter className="h-5 w-5" />
+              </a>
+            </div>
             <p className="text-gray-400">
               © 2024 UPI Scam Checker. Built with ❤️ for digital safety in India.
             </p>

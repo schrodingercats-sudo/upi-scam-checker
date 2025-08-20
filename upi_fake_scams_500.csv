@@ -1,0 +1,501 @@
+id,label,channel,category,text,pattern_source
+S0001,scam,SMS,call_merge_otp,"To cancel unauthorized charge, accept incoming verification call and provide OTP.",CERT-In advisory
+S0002,scam,WhatsApp,overpayment,"Hi, I accidentally sent ₹399 to you. Please accept the payment and return ₹38976 by approving the request.",Fintech safety blog
+S0003,scam,SMS,fake_bank_notice,PNB Notice: Confirm your details here: http://icici-verify.co.in.,Paytm UPI Fraud Guide
+S0004,scam,WhatsApp,fake_merchant_payment,Merchant: Paid ₹192919 to your UPI. Approve reversal request.,CERT-In advisory
+S0005,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 1135861. Screenshot attached. Release goods.,CERT-In advisory
+S0006,scam,WhatsApp,refund_bait,Amazon Refund: ₹13194 sent by mistake. Click http://phonepe-cashback-claim.co to confirm reversal or face legal action.,NPCI Fraud Awareness
+S0007,scam,SMS,fake_charity,Urgent Flood Relief: Donate ₹128115 to help victims. Transfer to shopkeeper@okicici via UPI.,Razorpay Fake Payment Guide
+S0008,scam,SMS,fake_charity,Urgent Flood Relief: Donate ₹82411 to help victims. Transfer to foodcart@axis via UPI.,CERT-In advisory
+S0009,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,RBI Cautions
+S0010,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,News reports on UPI scams
+S0011,scam,WhatsApp,overpayment,You have received ₹178. Please send back ₹9375 immediately by approving the UPI request from foodcart@axis.,Fintech safety blog
+S0012,scam,SMS,fake_bill_disconnection,Fiber Net: Payment overdue ₹172798. Pay now: http://pay-verify-upi.com or service suspended.,RBI Cautions
+S0013,scam,SMS,fake_loan_fee,Pre-approved loan ₹65879. Disbursal in 5 mins after processing fee ₹1809. Pay at http://upi-secure-help.in,Fintech safety blog
+S0014,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,RBI Cautions
+S0015,scam,SMS,fake_charity,Urgent Flood Relief: Donate ₹66823 to help victims. Transfer to seller01@upi via UPI.,Fintech safety blog
+S0016,scam,SMS,fake_charity,Urgent Flood Relief: Donate ₹111917 to help victims. Transfer to shopkeeper@okicici via UPI.,Fintech safety blog
+S0017,scam,WhatsApp,fake_merchant_payment,Customer says payment done. Approve collect request to release order.,RBI Cautions
+S0018,scam,SMS,fake_bank_notice,Kotak: Important security update. Verify account details at http://sbi-secure-verify.in to avoid restrictions.,CERT-In advisory
+S0019,scam,SMS,fake_app_update,Update required: Your UPI app version is outdated. Update now at http://hdfc-kyc-update.com to continue transactions.,CERT-In advisory
+S0020,scam,SMS,fake_bill_disconnection,Electricity Dept: Bill ₹121828 pending. Service will be disconnected tonight. Pay at http://lottery-claim-win.in,Paytm UPI Fraud Guide
+S0021,scam,SMS,suspicious_login,Unusual activity on your account. Verify identity at http://pay-verify-upi.com to avoid freeze.,RBI Cautions
+S0022,scam,SMS,fake_loan_fee,Pre-approved loan ₹115959. Disbursal in 5 mins after processing fee ₹1059. Pay at http://lottery-claim-win.in,NPCI Fraud Awareness
+S0023,scam,WhatsApp,overpayment,"Hi, I accidentally sent ₹491 to you. Please accept the payment and return ₹48660 by approving the request.",NPCI Fraud Awareness
+S0024,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 2987287. Screenshot attached. Release goods.,NPCI Fraud Awareness
+S0025,scam,SMS,lottery,Congratulations! Govt prize of ₹100331 for you. Complete form at http://govt-subsidy-claim.co.in within 48 hrs.,Razorpay Fake Payment Guide
+S0026,scam,SMS,kyc_expiry,Axis Bank ALERT: KYC not updated. Update now to avoid account suspension: http://paytm-verify-upi.in,Paytm UPI Fraud Guide
+S0027,scam,WhatsApp,overpayment,"Hi, I accidentally sent ₹208 to you. Please accept the payment and return ₹25464 by approving the request.",CERT-In advisory
+S0028,scam,WhatsApp,overpayment,You have received ₹63. Please send back ₹39135 immediately by approving the UPI request from seller01@upi.,NPCI Fraud Awareness
+S0029,scam,SMS,call_merge_otp,"To cancel unauthorized charge, accept incoming verification call and provide OTP.",Fintech safety blog
+S0030,scam,SMS,fake_charity,Urgent Flood Relief: Donate ₹99440 to help victims. Transfer to seller01@upi via UPI.,Razorpay Fake Payment Guide
+S0031,scam,SMS,fake_reward,Loyalty Bonus ₹59712 added. Visit http://sbi-secure-verify.in to redeem.,Fintech safety blog
+S0032,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,RBI Cautions
+S0033,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹149237 to avoid arrest.,News reports on UPI scams
+S0034,scam,SMS,fake_govt_subsidy,PMAY Subsidy: ₹131869 approved. Click http://hdfc-kyc-update.com to accept.,Fintech safety blog
+S0035,scam,SMS,fake_bill_disconnection,Electricity Dept: Bill ₹20695 pending. Service will be disconnected tonight. Pay at http://pay-verify-upi.com,Fintech safety blog
+S0036,scam,WhatsApp,refund_bait,Refund Dept: ₹149237 credited to your account by mistake. Approve reversal now via this request: http://pay-verify-upi.com,CERT-In advisory
+S0037,scam,SMS,fake_bank_notice,SBI Notice: Confirm your details here: http://icici-verify.co.in.,News reports on UPI scams
+S0038,scam,WhatsApp,refund_bait,Refund Dept: ₹114917 credited to your account by mistake. Approve reversal now via this request: http://pay-verify-upi.com,Paytm UPI Fraud Guide
+S0039,scam,SMS,fake_support,Support Desk: We require confirmation. Click http://axisbank-alerts.net to confirm your identity.,News reports on UPI scams
+S0040,scam,SMS,lottery,Congratulations! Govt prize of ₹65233 for you. Complete form at http://upi-helpdesk.support within 48 hrs.,NPCI Fraud Awareness
+S0041,scam,SMS,fake_loan_fee,Pre-approved loan ₹114917. Disbursal in 5 mins after processing fee ₹1830. Pay at http://icici-verify.co.in,Paytm UPI Fraud Guide
+S0042,scam,WhatsApp,overpayment,You have received ₹484. Please send back ₹46889 immediately by approving the UPI request from shopkeeper@okicici.,Paytm UPI Fraud Guide
+S0043,scam,SMS,fake_app_update,Update required: Your UPI app version is outdated. Update now at http://axisbank-alerts.net to continue transactions.,News reports on UPI scams
+S0044,scam,SMS,call_merge_otp,"To cancel unauthorized charge, accept incoming verification call and provide OTP.",Fintech safety blog
+S0045,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹1935 to avoid arrest.,Fintech safety blog
+S0046,scam,SMS,fake_app_update,Critical update for HDFC app. Click http://govt-subsidy-claim.co.in to download secure patch.,CERT-In advisory
+S0047,scam,WhatsApp,refund_bait,Refund Dept: ₹151100 credited to your account by mistake. Approve reversal now via this request: http://icici-verify.co.in,News reports on UPI scams
+S0048,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 2754894. Screenshot attached. Release goods.,News reports on UPI scams
+S0049,scam,WhatsApp,overpayment,"Hi, I accidentally sent ₹347 to you. Please accept the payment and return ₹41925 by approving the request.",CERT-In advisory
+S0050,scam,WhatsApp,fake_merchant_payment,Merchant: Paid ₹139283 to your UPI. Approve reversal request.,News reports on UPI scams
+S0051,scam,SMS,fake_bill_disconnection,Electricity Dept: Bill ₹145741 pending. Service will be disconnected tonight. Pay at http://phonepe-cashback-claim.co,CERT-In advisory
+S0052,scam,SMS,fake_support,Support Desk: We require confirmation. Click http://hdfc-kyc-update.com to confirm your identity.,RBI Cautions
+S0053,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,Paytm UPI Fraud Guide
+S0054,scam,SMS,fake_app_update,Update required: Your UPI app version is outdated. Update now at http://axisbank-alerts.net to continue transactions.,NPCI Fraud Awareness
+S0055,scam,WhatsApp,fake_payment_screenshot,See attached receipt: Transaction ID 9106886. Funds sent.,News reports on UPI scams
+S0056,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,Razorpay Fake Payment Guide
+S0057,scam,SMS,fake_app_update,Critical update for Axis Bank app. Click http://axisbank-alerts.net to download secure patch.,CERT-In advisory
+S0058,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹34772 to avoid arrest.,Razorpay Fake Payment Guide
+S0059,scam,SMS,call_merge_otp,"Security Alert: We will merge a verification call. When prompted, share OTP to confirm cancellation.",Razorpay Fake Payment Guide
+S0060,scam,SMS,fake_app_update,Critical update for Federal Bank app. Click http://upi-secure-help.in to download secure patch.,Paytm UPI Fraud Guide
+S0061,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,RBI Cautions
+S0062,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,News reports on UPI scams
+S0063,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,News reports on UPI scams
+S0064,scam,SMS,fake_reward,Loyalty Bonus ₹55148 added. Visit http://upi-secure-help.in to redeem.,News reports on UPI scams
+S0065,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 7435505. Screenshot attached. Release goods.,NPCI Fraud Awareness
+S0066,scam,WhatsApp,fake_merchant_payment,Customer says payment done. Approve collect request to release order.,News reports on UPI scams
+S0067,scam,SMS,lottery,RBI Lottery: You have won ₹26259. Pay registration fee ₹1513 to claim: http://lottery-claim-win.in,News reports on UPI scams
+S0068,scam,SMS,fake_bank_notice,SBI Notice: Confirm your details here: http://upi-helpdesk.support.,Razorpay Fake Payment Guide
+S0069,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,Razorpay Fake Payment Guide
+S0070,scam,SMS,fake_cashback,You have received ₹110643 cashback from PhonePe. Claim now: http://govt-subsidy-claim.co.in (valid 2 hrs),RBI Cautions
+S0071,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹146170 to avoid arrest.,News reports on UPI scams
+S0072,scam,SMS,fake_reward,Loyalty Bonus ₹78942 added. Visit http://pay-verify-upi.com to redeem.,Fintech safety blog
+S0073,scam,WhatsApp,overpayment,You have received ₹255. Please send back ₹15023 immediately by approving the UPI request from foodcart@axis.,News reports on UPI scams
+S0074,scam,SMS,fake_qr,Please scan this QR to receive your refund: http://paytm-verify-upi.in. Do not share PIN.,Fintech safety blog
+S0075,scam,SMS,suspicious_login,ICICI Alert: Suspicious login detected on your UPI. Cancel transaction here: http://refund-claim.in. Ref: 5147994,News reports on UPI scams
+S0076,scam,SMS,fake_govt_subsidy,PMAY Subsidy: ₹169442 approved. Click http://lottery-claim-win.in to accept.,NPCI Fraud Awareness
+S0077,scam,WhatsApp,overpayment,"Hi, I accidentally sent ₹489 to you. Please accept the payment and return ₹3444 by approving the request.",CERT-In advisory
+S0078,scam,SMS,fake_govt_subsidy,Govt Subsidy credited ₹65375. Claim at http://lottery-claim-win.in before deadline.,Paytm UPI Fraud Guide
+S0079,scam,WhatsApp,fake_merchant_payment,Merchant: Paid ₹120715 to your UPI. Approve reversal request.,News reports on UPI scams
+S0080,scam,SMS,fake_charity,Charity Drive: Send ₹149745 to support. Quick transfer: http://hdfc-kyc-update.com,RBI Cautions
+S0081,scam,SMS,kyc_expiry,Kotak ALERT: KYC not updated. Update now to avoid account suspension: http://paytm-verify-upi.in,Razorpay Fake Payment Guide
+S0082,scam,SMS,fake_app_update,Critical update for ICICI app. Click http://refund-claim.in to download secure patch.,RBI Cautions
+S0083,scam,SMS,kyc_expiry,BOB ALERT: KYC not updated. Update now to avoid account suspension: http://axisbank-alerts.net,News reports on UPI scams
+S0084,scam,SMS,kyc_expiry,PNB ALERT: KYC not updated. Update now to avoid account suspension: http://upi-helpdesk.support,Razorpay Fake Payment Guide
+S0085,scam,SMS,fake_app_update,Critical update for ICICI app. Click http://phonepe-cashback-claim.co to download secure patch.,RBI Cautions
+S0086,scam,SMS,fake_charity,Charity Drive: Send ₹180306 to support. Quick transfer: http://upi-helpdesk.support,RBI Cautions
+S0087,scam,SMS,fake_bank_notice,Federal Bank: Important security update. Verify account details at http://lottery-claim-win.in to avoid restrictions.,NPCI Fraud Awareness
+S0088,scam,SMS,fake_reward,Exclusive Reward: ₹151100 for you. Claim via http://govt-subsidy-claim.co.in within 1 hour.,RBI Cautions
+S0089,scam,WhatsApp,fake_merchant_payment,Customer says payment done. Approve collect request to release order.,Razorpay Fake Payment Guide
+S0090,scam,WhatsApp,fake_merchant_payment,Merchant: Paid ₹143688 to your UPI. Approve reversal request.,CERT-In advisory
+S0091,scam,SMS,kyc_expiry,"Dear Customer, your Yes Bank UPI access will be blocked within 24 hours due to pending KYC. Verify here: http://hdfc-kyc-update.com",NPCI Fraud Awareness
+S0092,scam,SMS,impersonation_police,"This is SI Sharma, cyber cell. Assets will be frozen unless you refund ₹81127. Contact +91-9919795579.",Razorpay Fake Payment Guide
+S0093,scam,SMS,fake_charity,Charity Drive: Send ₹132374 to support. Quick transfer: http://hdfc-kyc-update.com,RBI Cautions
+S0094,scam,SMS,fake_reward,Loyalty Bonus ₹36797 added. Visit http://icici-verify.co.in to redeem.,Razorpay Fake Payment Guide
+S0095,scam,SMS,fake_reward,Loyalty Bonus ₹141761 added. Visit http://refund-claim.in to redeem.,Fintech safety blog
+S0096,scam,SMS,lottery,RBI Lottery: You have won ₹65375. Pay registration fee ₹591 to claim: http://paytm-verify-upi.in,NPCI Fraud Awareness
+S0097,scam,SMS,fake_bank_notice,IDBI: Important security update. Verify account details at http://paytm-verify-upi.in to avoid restrictions.,Razorpay Fake Payment Guide
+S0098,scam,SMS,suspicious_login,SBI Alert: Suspicious login detected on your UPI. Cancel transaction here: http://icici-verify.co.in. Ref: 2532210,News reports on UPI scams
+S0099,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,News reports on UPI scams
+S0100,scam,WhatsApp,fake_merchant_payment,Merchant: Paid ₹127449 to your UPI. Approve reversal request.,News reports on UPI scams
+S0101,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,RBI Cautions
+S0102,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 5970190. Screenshot attached. Release goods.,RBI Cautions
+S0103,scam,SMS,fake_qr,Please scan this QR to receive your refund: http://phonepe-cashback-claim.co. Do not share PIN.,CERT-In advisory
+S0104,scam,SMS,fake_cashback,You have received ₹46463 cashback from PhonePe. Claim now: http://refund-claim.in (valid 2 hrs),CERT-In advisory
+S0105,scam,WhatsApp,fake_merchant_payment,Merchant: Paid ₹57118 to your UPI. Approve reversal request.,Fintech safety blog
+S0106,scam,SMS,lottery,Congratulations! Govt prize of ₹82278 for you. Complete form at http://upi-helpdesk.support within 48 hrs.,Paytm UPI Fraud Guide
+S0107,scam,WhatsApp,fake_payment_screenshot,See attached receipt: Transaction ID 4020853. Funds sent.,Razorpay Fake Payment Guide
+S0108,scam,SMS,fake_charity,Urgent Flood Relief: Donate ₹172376 to help victims. Transfer to foodcart@axis via UPI.,RBI Cautions
+S0109,scam,SMS,fake_loan_fee,Pre-approved loan ₹55120. Disbursal in 5 mins after processing fee ₹703. Pay at http://govt-subsidy-claim.co.in,Paytm UPI Fraud Guide
+S0110,scam,SMS,suspicious_login,Unusual activity on your account. Verify identity at http://axisbank-alerts.net to avoid freeze.,CERT-In advisory
+S0111,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹196168 to avoid arrest.,RBI Cautions
+S0112,scam,SMS,fake_reward,Exclusive Reward: ₹121853 for you. Claim via http://sbi-secure-verify.in within 1 hour.,RBI Cautions
+S0113,scam,SMS,suspicious_login,HDFC Alert: Suspicious login detected on your UPI. Cancel transaction here: http://sbi-secure-verify.in. Ref: 6423634,Fintech safety blog
+S0114,scam,SMS,fake_bank_notice,IDBI Notice: Confirm your details here: http://sbi-secure-verify.in.,Fintech safety blog
+S0115,scam,SMS,fake_qr,Scan QR to accept payment: http://govt-subsidy-claim.co.in. For merchants only.,RBI Cautions
+S0116,scam,SMS,suspicious_login,Yes Bank Alert: Suspicious login detected on your UPI. Cancel transaction here: http://govt-subsidy-claim.co.in. Ref: 4700025,Paytm UPI Fraud Guide
+S0117,scam,SMS,fake_support,Support Desk: We require confirmation. Click http://axisbank-alerts.net to confirm your identity.,CERT-In advisory
+S0118,scam,WhatsApp,refund_bait,Refund Dept: ₹39123 credited to your account by mistake. Approve reversal now via this request: http://refund-claim.in,RBI Cautions
+S0119,scam,WhatsApp,overpayment,You have received ₹449. Please send back ₹7249 immediately by approving the UPI request from foodcart@axis.,NPCI Fraud Awareness
+S0120,scam,SMS,suspicious_login,Yes Bank Alert: Suspicious login detected on your UPI. Cancel transaction here: http://lottery-claim-win.in. Ref: 8736811,News reports on UPI scams
+S0121,scam,WhatsApp,fake_merchant_payment,Merchant: Paid ₹188603 to your UPI. Approve reversal request.,NPCI Fraud Awareness
+S0122,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 7784725. Screenshot attached. Release goods.,Razorpay Fake Payment Guide
+S0123,scam,SMS,fake_loan_fee,Pre-approved loan ₹139695. Disbursal in 5 mins after processing fee ₹574. Pay at http://upi-helpdesk.support,News reports on UPI scams
+S0124,scam,SMS,fake_bank_notice,PNB Notice: Confirm your details here: http://sbi-secure-verify.in.,News reports on UPI scams
+S0125,scam,SMS,fake_support,Support Desk: We require confirmation. Click http://phonepe-cashback-claim.co to confirm your identity.,CERT-In advisory
+S0126,scam,SMS,suspicious_login,ICICI Alert: Suspicious login detected on your UPI. Cancel transaction here: http://upi-secure-help.in. Ref: 8987516,Paytm UPI Fraud Guide
+S0127,scam,SMS,lottery,RBI Lottery: You have won ₹155899. Pay registration fee ₹308 to claim: http://upi-secure-help.in,RBI Cautions
+S0128,scam,SMS,fake_bill_disconnection,Fiber Net: Payment overdue ₹197146. Pay now: http://govt-subsidy-claim.co.in or service suspended.,NPCI Fraud Awareness
+S0129,scam,SMS,fake_bank_notice,BOB Notice: Confirm your details here: http://sbi-secure-verify.in.,RBI Cautions
+S0130,scam,WhatsApp,fake_merchant_payment,Merchant: Paid ₹15420 to your UPI. Approve reversal request.,RBI Cautions
+S0131,scam,SMS,fake_bill_disconnection,Fiber Net: Payment overdue ₹145385. Pay now: http://upi-secure-help.in or service suspended.,Fintech safety blog
+S0132,scam,SMS,impersonation_police,"This is SI Sharma, cyber cell. Assets will be frozen unless you refund ₹57118. Contact +91-9398704996.",CERT-In advisory
+S0133,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,Fintech safety blog
+S0134,scam,SMS,fake_cashback,Cashback ₹143671 credited. Click http://icici-verify.co.in to transfer to bank.,News reports on UPI scams
+S0135,scam,SMS,suspicious_login,Unusual activity on your account. Verify identity at http://upi-secure-help.in to avoid freeze.,RBI Cautions
+S0136,scam,SMS,fake_reward,Exclusive Reward: ₹96919 for you. Claim via http://upi-helpdesk.support within 1 hour.,CERT-In advisory
+S0137,scam,SMS,fake_bill_disconnection,Fiber Net: Payment overdue ₹25716. Pay now: http://phonepe-cashback-claim.co or service suspended.,Razorpay Fake Payment Guide
+S0138,scam,WhatsApp,overpayment,You have received ₹283. Please send back ₹34201 immediately by approving the UPI request from merchantx@ybl.,NPCI Fraud Awareness
+S0139,scam,SMS,call_merge_otp,"Security Alert: We will merge a verification call. When prompted, share OTP to confirm cancellation.",News reports on UPI scams
+S0140,scam,SMS,fake_support,Support Desk: We require confirmation. Click http://hdfc-kyc-update.com to confirm your identity.,News reports on UPI scams
+S0141,scam,WhatsApp,fake_merchant_payment,Merchant: Paid ₹78530 to your UPI. Approve reversal request.,Paytm UPI Fraud Guide
+S0142,scam,SMS,kyc_expiry,ICICI ALERT: KYC not updated. Update now to avoid account suspension: http://upi-secure-help.in,Paytm UPI Fraud Guide
+S0143,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,NPCI Fraud Awareness
+S0144,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 4342306. Screenshot attached. Release goods.,Fintech safety blog
+S0145,scam,SMS,suspicious_login,Federal Bank Alert: Suspicious login detected on your UPI. Cancel transaction here: http://icici-verify.co.in. Ref: 8630712,RBI Cautions
+S0146,scam,SMS,fake_govt_subsidy,PMAY Subsidy: ₹87130 approved. Click http://sbi-secure-verify.in to accept.,Razorpay Fake Payment Guide
+S0147,scam,SMS,kyc_expiry,"Dear Customer, your Axis Bank UPI access will be blocked within 24 hours due to pending KYC. Verify here: http://upi-secure-help.in",CERT-In advisory
+S0148,scam,SMS,fake_reward,Exclusive Reward: ₹2100 for you. Claim via http://pay-verify-upi.com within 1 hour.,Fintech safety blog
+S0149,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,RBI Cautions
+S0150,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 2903561. Screenshot attached. Release goods.,RBI Cautions
+S0151,scam,SMS,fake_app_update,Critical update for BOB app. Click http://paytm-verify-upi.in to download secure patch.,News reports on UPI scams
+S0152,scam,SMS,fake_govt_subsidy,Govt Subsidy credited ₹111088. Claim at http://upi-secure-help.in before deadline.,Paytm UPI Fraud Guide
+S0153,scam,SMS,kyc_expiry,HDFC ALERT: KYC not updated. Update now to avoid account suspension: http://axisbank-alerts.net,Fintech safety blog
+S0154,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹180894 to avoid arrest.,NPCI Fraud Awareness
+S0155,scam,SMS,fake_qr,Please scan this QR to receive your refund: http://upi-secure-help.in. Do not share PIN.,News reports on UPI scams
+S0156,scam,SMS,lottery,RBI Lottery: You have won ₹147088. Pay registration fee ₹1655 to claim: http://govt-subsidy-claim.co.in,RBI Cautions
+S0157,scam,SMS,fake_bill_disconnection,Electricity Dept: Bill ₹79353 pending. Service will be disconnected tonight. Pay at http://upi-secure-help.in,CERT-In advisory
+S0158,scam,SMS,lottery,RBI Lottery: You have won ₹152248. Pay registration fee ₹1348 to claim: http://upi-helpdesk.support,News reports on UPI scams
+S0159,scam,SMS,fake_loan_fee,Pre-approved loan ₹105897. Disbursal in 5 mins after processing fee ₹1321. Pay at http://sbi-secure-verify.in,Paytm UPI Fraud Guide
+S0160,scam,WhatsApp,fake_payment_screenshot,See attached receipt: Transaction ID 6797629. Funds sent.,NPCI Fraud Awareness
+S0161,scam,SMS,fake_qr,Please scan this QR to receive your refund: http://axisbank-alerts.net. Do not share PIN.,RBI Cautions
+S0162,scam,WhatsApp,fake_merchant_payment,Customer says payment done. Approve collect request to release order.,Paytm UPI Fraud Guide
+S0163,scam,SMS,call_merge_otp,"To cancel unauthorized charge, accept incoming verification call and provide OTP.",Fintech safety blog
+S0164,scam,SMS,call_merge_otp,"Security Alert: We will merge a verification call. When prompted, share OTP to confirm cancellation.",CERT-In advisory
+S0165,scam,WhatsApp,fake_payment_screenshot,See attached receipt: Transaction ID 9349470. Funds sent.,Fintech safety blog
+S0166,scam,WhatsApp,refund_bait,Refund Dept: ₹139079 credited to your account by mistake. Approve reversal now via this request: http://phonepe-cashback-claim.co,Razorpay Fake Payment Guide
+S0167,scam,SMS,fake_cashback,You have received ₹176128 cashback from PhonePe. Claim now: http://icici-verify.co.in (valid 2 hrs),Fintech safety blog
+S0168,scam,SMS,fake_govt_subsidy,Govt Subsidy credited ₹114359. Claim at http://phonepe-cashback-claim.co before deadline.,NPCI Fraud Awareness
+S0169,scam,SMS,kyc_expiry,"Dear Customer, your IDBI UPI access will be blocked within 24 hours due to pending KYC. Verify here: http://hdfc-kyc-update.com",NPCI Fraud Awareness
+S0170,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,CERT-In advisory
+S0171,scam,SMS,lottery,RBI Lottery: You have won ₹17718. Pay registration fee ₹1412 to claim: http://pay-verify-upi.com,News reports on UPI scams
+S0172,scam,WhatsApp,fake_merchant_payment,Merchant: Paid ₹74757 to your UPI. Approve reversal request.,Razorpay Fake Payment Guide
+S0173,scam,SMS,fake_bank_notice,Axis Bank Notice: Confirm your details here: http://hdfc-kyc-update.com.,Razorpay Fake Payment Guide
+S0174,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,News reports on UPI scams
+S0175,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 6709938. Screenshot attached. Release goods.,Fintech safety blog
+S0176,scam,WhatsApp,refund_bait,Refund Dept: ₹25716 credited to your account by mistake. Approve reversal now via this request: http://refund-claim.in,NPCI Fraud Awareness
+S0177,scam,SMS,call_merge_otp,"To cancel unauthorized charge, accept incoming verification call and provide OTP.",Razorpay Fake Payment Guide
+S0178,scam,WhatsApp,overpayment,"Hi, I accidentally sent ₹120 to you. Please accept the payment and return ₹3610 by approving the request.",CERT-In advisory
+S0179,scam,SMS,fake_support,Support Desk: We require confirmation. Click http://refund-claim.in to confirm your identity.,News reports on UPI scams
+S0180,scam,SMS,fake_loan_fee,Loan approved: ₹24245. Pay ₹1753 to unlock funds via http://upi-secure-help.in,Paytm UPI Fraud Guide
+S0181,scam,SMS,fake_support,"Customer Support: To expedite refund, visit http://upi-helpdesk.support and enter UPI ID.",Razorpay Fake Payment Guide
+S0182,scam,SMS,lottery,Congratulations! Govt prize of ₹192919 for you. Complete form at http://paytm-verify-upi.in within 48 hrs.,NPCI Fraud Awareness
+S0183,scam,SMS,fake_loan_fee,Pre-approved loan ₹87489. Disbursal in 5 mins after processing fee ₹629. Pay at http://lottery-claim-win.in,RBI Cautions
+S0184,scam,SMS,fake_qr,Please scan this QR to receive your refund: http://pay-verify-upi.com. Do not share PIN.,NPCI Fraud Awareness
+S0185,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹166311 to avoid arrest.,Paytm UPI Fraud Guide
+S0186,scam,SMS,lottery,RBI Lottery: You have won ₹159687. Pay registration fee ₹599 to claim: http://upi-helpdesk.support,Paytm UPI Fraud Guide
+S0187,scam,SMS,fake_support,"Customer Support: To expedite refund, visit http://sbi-secure-verify.in and enter UPI ID.",Paytm UPI Fraud Guide
+S0188,scam,SMS,suspicious_login,Unusual activity on your account. Verify identity at http://upi-secure-help.in to avoid freeze.,RBI Cautions
+S0189,scam,SMS,fake_app_update,Update required: Your UPI app version is outdated. Update now at http://hdfc-kyc-update.com to continue transactions.,Razorpay Fake Payment Guide
+S0190,scam,SMS,kyc_expiry,Axis Bank ALERT: KYC not updated. Update now to avoid account suspension: http://upi-secure-help.in,Paytm UPI Fraud Guide
+S0191,scam,WhatsApp,fake_merchant_payment,Customer says payment done. Approve collect request to release order.,Razorpay Fake Payment Guide
+S0192,scam,SMS,kyc_expiry,"Dear Customer, your Federal Bank UPI access will be blocked within 24 hours due to pending KYC. Verify here: http://pay-verify-upi.com",Fintech safety blog
+S0193,scam,SMS,fake_support,Support Desk: We require confirmation. Click http://axisbank-alerts.net to confirm your identity.,Paytm UPI Fraud Guide
+S0194,scam,WhatsApp,overpayment,"Hi, I accidentally sent ₹468 to you. Please accept the payment and return ₹25411 by approving the request.",NPCI Fraud Awareness
+S0195,scam,SMS,fake_app_update,Update required: Your UPI app version is outdated. Update now at http://hdfc-kyc-update.com to continue transactions.,Paytm UPI Fraud Guide
+S0196,scam,SMS,fake_qr,Scan QR to accept payment: http://upi-helpdesk.support. For merchants only.,RBI Cautions
+S0197,scam,SMS,fake_loan_fee,Pre-approved loan ₹79353. Disbursal in 5 mins after processing fee ₹931. Pay at http://hdfc-kyc-update.com,Paytm UPI Fraud Guide
+S0198,scam,SMS,fake_cashback,Cashback ₹174075 credited. Click http://lottery-claim-win.in to transfer to bank.,Fintech safety blog
+S0199,scam,SMS,fake_bank_notice,Axis Bank: Important security update. Verify account details at http://pay-verify-upi.com to avoid restrictions.,NPCI Fraud Awareness
+S0200,scam,WhatsApp,fake_payment_screenshot,See attached receipt: Transaction ID 3955087. Funds sent.,NPCI Fraud Awareness
+S0201,scam,SMS,fake_charity,Urgent Flood Relief: Donate ₹124642 to help victims. Transfer to shopkeeper@okicici via UPI.,Razorpay Fake Payment Guide
+S0202,scam,SMS,call_merge_otp,"Security Alert: We will merge a verification call. When prompted, share OTP to confirm cancellation.",Fintech safety blog
+S0203,scam,SMS,fake_charity,Urgent Flood Relief: Donate ₹20695 to help victims. Transfer to shopkeeper@okicici via UPI.,News reports on UPI scams
+S0204,scam,SMS,fake_bill_disconnection,Fiber Net: Payment overdue ₹30286. Pay now: http://sbi-secure-verify.in or service suspended.,RBI Cautions
+S0205,scam,SMS,fake_qr,Scan QR to accept payment: http://icici-verify.co.in. For merchants only.,Razorpay Fake Payment Guide
+S0206,scam,SMS,fake_reward,Loyalty Bonus ₹175614 added. Visit http://hdfc-kyc-update.com to redeem.,Fintech safety blog
+S0207,scam,SMS,fake_reward,Exclusive Reward: ₹145074 for you. Claim via http://upi-helpdesk.support within 1 hour.,Paytm UPI Fraud Guide
+S0208,scam,SMS,fake_support,Support Desk: We require confirmation. Click http://sbi-secure-verify.in to confirm your identity.,CERT-In advisory
+S0209,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹135729 to avoid arrest.,CERT-In advisory
+S0210,scam,WhatsApp,refund_bait,Refund Dept: ₹146170 credited to your account by mistake. Approve reversal now via this request: http://refund-claim.in,Paytm UPI Fraud Guide
+S0211,scam,SMS,call_merge_otp,"Security Alert: We will merge a verification call. When prompted, share OTP to confirm cancellation.",Paytm UPI Fraud Guide
+S0212,scam,SMS,fake_govt_subsidy,PMAY Subsidy: ₹65535 approved. Click http://hdfc-kyc-update.com to accept.,NPCI Fraud Awareness
+S0213,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,News reports on UPI scams
+S0214,scam,SMS,fake_loan_fee,Pre-approved loan ₹148220. Disbursal in 5 mins after processing fee ₹909. Pay at http://pay-verify-upi.com,Paytm UPI Fraud Guide
+S0215,scam,WhatsApp,fake_payment_screenshot,See attached receipt: Transaction ID 8945036. Funds sent.,Fintech safety blog
+S0216,scam,SMS,fake_reward,Loyalty Bonus ₹55148 added. Visit http://phonepe-cashback-claim.co to redeem.,RBI Cautions
+S0217,scam,SMS,kyc_expiry,Yes Bank ALERT: KYC not updated. Update now to avoid account suspension: http://sbi-secure-verify.in,Razorpay Fake Payment Guide
+S0218,scam,SMS,fake_loan_fee,Loan approved: ₹15035. Pay ₹1912 to unlock funds via http://axisbank-alerts.net,Fintech safety blog
+S0219,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,NPCI Fraud Awareness
+S0220,scam,SMS,kyc_expiry,"Dear Customer, your BOB UPI access will be blocked within 24 hours due to pending KYC. Verify here: http://lottery-claim-win.in",News reports on UPI scams
+S0221,scam,SMS,fake_support,"Customer Support: To expedite refund, visit http://paytm-verify-upi.in and enter UPI ID.",CERT-In advisory
+S0222,scam,WhatsApp,refund_bait,Amazon Refund: ₹156144 sent by mistake. Click http://pay-verify-upi.com to confirm reversal or face legal action.,Razorpay Fake Payment Guide
+S0223,scam,SMS,fake_govt_subsidy,Govt Subsidy credited ₹162752. Claim at http://hdfc-kyc-update.com before deadline.,Fintech safety blog
+S0224,scam,SMS,fake_govt_subsidy,PMAY Subsidy: ₹41320 approved. Click http://sbi-secure-verify.in to accept.,Fintech safety blog
+S0225,scam,SMS,fake_reward,Loyalty Bonus ₹97939 added. Visit http://upi-secure-help.in to redeem.,Razorpay Fake Payment Guide
+S0226,scam,SMS,fake_loan_fee,Pre-approved loan ₹186945. Disbursal in 5 mins after processing fee ₹1379. Pay at http://sbi-secure-verify.in,RBI Cautions
+S0227,scam,SMS,lottery,RBI Lottery: You have won ₹173555. Pay registration fee ₹1827 to claim: http://icici-verify.co.in,CERT-In advisory
+S0228,scam,SMS,fake_support,Support Desk: We require confirmation. Click http://phonepe-cashback-claim.co to confirm your identity.,Razorpay Fake Payment Guide
+S0229,scam,SMS,call_merge_otp,"Security Alert: We will merge a verification call. When prompted, share OTP to confirm cancellation.",NPCI Fraud Awareness
+S0230,scam,SMS,fake_loan_fee,Pre-approved loan ₹143688. Disbursal in 5 mins after processing fee ₹1648. Pay at http://phonepe-cashback-claim.co,News reports on UPI scams
+S0231,scam,WhatsApp,refund_bait,Amazon Refund: ₹46860 sent by mistake. Click http://refund-claim.in to confirm reversal or face legal action.,Paytm UPI Fraud Guide
+S0232,scam,WhatsApp,overpayment,You have received ₹274. Please send back ₹38452 immediately by approving the UPI request from foodcart@axis.,NPCI Fraud Awareness
+S0233,scam,SMS,fake_charity,Urgent Flood Relief: Donate ₹1935 to help victims. Transfer to merchantx@ybl via UPI.,CERT-In advisory
+S0234,scam,SMS,fake_loan_fee,Loan approved: ₹186945. Pay ₹912 to unlock funds via http://upi-helpdesk.support,CERT-In advisory
+S0235,scam,SMS,fake_qr,Scan QR to accept payment: http://upi-helpdesk.support. For merchants only.,RBI Cautions
+S0236,scam,WhatsApp,fake_merchant_payment,Merchant: Paid ₹135729 to your UPI. Approve reversal request.,Paytm UPI Fraud Guide
+S0237,scam,SMS,fake_bill_disconnection,Fiber Net: Payment overdue ₹80858. Pay now: http://phonepe-cashback-claim.co or service suspended.,Razorpay Fake Payment Guide
+S0238,scam,SMS,fake_loan_fee,Loan approved: ₹69640. Pay ₹1626 to unlock funds via http://refund-claim.in,Paytm UPI Fraud Guide
+S0239,scam,SMS,call_merge_otp,"Security Alert: We will merge a verification call. When prompted, share OTP to confirm cancellation.",CERT-In advisory
+S0240,scam,SMS,suspicious_login,Kotak Alert: Suspicious login detected on your UPI. Cancel transaction here: http://upi-helpdesk.support. Ref: 8885465,Fintech safety blog
+S0241,scam,WhatsApp,overpayment,"Hi, I accidentally sent ₹258 to you. Please accept the payment and return ₹34849 by approving the request.",NPCI Fraud Awareness
+S0242,scam,SMS,fake_app_update,Update required: Your UPI app version is outdated. Update now at http://upi-secure-help.in to continue transactions.,News reports on UPI scams
+S0243,scam,SMS,kyc_expiry,"Dear Customer, your Axis Bank UPI access will be blocked within 24 hours due to pending KYC. Verify here: http://axisbank-alerts.net",RBI Cautions
+S0244,scam,SMS,fake_qr,Scan QR to accept payment: http://govt-subsidy-claim.co.in. For merchants only.,Paytm UPI Fraud Guide
+S0245,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹39123 to avoid arrest.,CERT-In advisory
+S0246,scam,WhatsApp,overpayment,You have received ₹447. Please send back ₹38503 immediately by approving the UPI request from shopkeeper@okicici.,RBI Cautions
+S0247,scam,SMS,suspicious_login,Kotak Alert: Suspicious login detected on your UPI. Cancel transaction here: http://phonepe-cashback-claim.co. Ref: 5825658,RBI Cautions
+S0248,scam,SMS,fake_govt_subsidy,Govt Subsidy credited ₹106500. Claim at http://upi-secure-help.in before deadline.,Razorpay Fake Payment Guide
+S0249,scam,SMS,call_merge_otp,"To cancel unauthorized charge, accept incoming verification call and provide OTP.",News reports on UPI scams
+S0250,scam,SMS,lottery,RBI Lottery: You have won ₹144891. Pay registration fee ₹1346 to claim: http://phonepe-cashback-claim.co,Fintech safety blog
+S0251,scam,SMS,lottery,Congratulations! Govt prize of ₹52366 for you. Complete form at http://pay-verify-upi.com within 48 hrs.,RBI Cautions
+S0252,scam,SMS,fake_app_update,Update required: Your UPI app version is outdated. Update now at http://paytm-verify-upi.in to continue transactions.,Razorpay Fake Payment Guide
+S0253,scam,WhatsApp,fake_payment_screenshot,See attached receipt: Transaction ID 8876745. Funds sent.,RBI Cautions
+S0254,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,CERT-In advisory
+S0255,scam,SMS,fake_govt_subsidy,Govt Subsidy credited ₹18660. Claim at http://hdfc-kyc-update.com before deadline.,RBI Cautions
+S0256,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,Paytm UPI Fraud Guide
+S0257,scam,WhatsApp,fake_merchant_payment,Customer says payment done. Approve collect request to release order.,News reports on UPI scams
+S0258,scam,WhatsApp,overpayment,You have received ₹358. Please send back ₹26013 immediately by approving the UPI request from seller01@upi.,NPCI Fraud Awareness
+S0259,scam,SMS,fake_loan_fee,Pre-approved loan ₹11015. Disbursal in 5 mins after processing fee ₹392. Pay at http://pay-verify-upi.com,Fintech safety blog
+S0260,scam,SMS,fake_govt_subsidy,Govt Subsidy credited ₹24776. Claim at http://pay-verify-upi.com before deadline.,Paytm UPI Fraud Guide
+S0261,scam,SMS,fake_cashback,You have received ₹50339 cashback from PhonePe. Claim now: http://icici-verify.co.in (valid 2 hrs),Fintech safety blog
+S0262,scam,SMS,fake_bill_disconnection,Fiber Net: Payment overdue ₹52193. Pay now: http://lottery-claim-win.in or service suspended.,NPCI Fraud Awareness
+S0263,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,RBI Cautions
+S0264,scam,SMS,lottery,Congratulations! Govt prize of ₹123957 for you. Complete form at http://paytm-verify-upi.in within 48 hrs.,Fintech safety blog
+S0265,scam,SMS,fake_app_update,Critical update for BOB app. Click http://phonepe-cashback-claim.co to download secure patch.,CERT-In advisory
+S0266,scam,SMS,fake_support,"Customer Support: To expedite refund, visit http://axisbank-alerts.net and enter UPI ID.",RBI Cautions
+S0267,scam,SMS,lottery,Congratulations! Govt prize of ₹62015 for you. Complete form at http://refund-claim.in within 48 hrs.,NPCI Fraud Awareness
+S0268,scam,SMS,lottery,RBI Lottery: You have won ₹147635. Pay registration fee ₹352 to claim: http://upi-helpdesk.support,Razorpay Fake Payment Guide
+S0269,scam,SMS,fake_loan_fee,Pre-approved loan ₹73084. Disbursal in 5 mins after processing fee ₹1164. Pay at http://upi-secure-help.in,News reports on UPI scams
+S0270,scam,SMS,fake_loan_fee,Loan approved: ₹175662. Pay ₹332 to unlock funds via http://govt-subsidy-claim.co.in,RBI Cautions
+S0271,scam,SMS,fake_bank_notice,Kotak: Important security update. Verify account details at http://govt-subsidy-claim.co.in to avoid restrictions.,News reports on UPI scams
+S0272,scam,SMS,impersonation_police,"This is SI Sharma, cyber cell. Assets will be frozen unless you refund ₹159687. Contact +91-9675770529.",News reports on UPI scams
+S0273,scam,SMS,impersonation_police,"This is SI Sharma, cyber cell. Assets will be frozen unless you refund ₹185853. Contact +91-9334760738.",RBI Cautions
+S0274,scam,SMS,fake_charity,Charity Drive: Send ₹135729 to support. Quick transfer: http://lottery-claim-win.in,Paytm UPI Fraud Guide
+S0275,scam,SMS,call_merge_otp,"To cancel unauthorized charge, accept incoming verification call and provide OTP.",Fintech safety blog
+S0276,scam,SMS,fake_govt_subsidy,PMAY Subsidy: ₹15420 approved. Click http://lottery-claim-win.in to accept.,Paytm UPI Fraud Guide
+S0277,scam,SMS,fake_govt_subsidy,Govt Subsidy credited ₹99395. Claim at http://refund-claim.in before deadline.,Razorpay Fake Payment Guide
+S0278,scam,SMS,fake_govt_subsidy,Govt Subsidy credited ₹172999. Claim at http://upi-helpdesk.support before deadline.,News reports on UPI scams
+S0279,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹182819 to avoid arrest.,Razorpay Fake Payment Guide
+S0280,scam,SMS,lottery,Congratulations! Govt prize of ₹127357 for you. Complete form at http://sbi-secure-verify.in within 48 hrs.,Fintech safety blog
+S0281,scam,WhatsApp,fake_merchant_payment,Merchant: Paid ₹152248 to your UPI. Approve reversal request.,Fintech safety blog
+S0282,scam,SMS,suspicious_login,Unusual activity on your account. Verify identity at http://phonepe-cashback-claim.co to avoid freeze.,News reports on UPI scams
+S0283,scam,WhatsApp,refund_bait,Refund Dept: ₹174075 credited to your account by mistake. Approve reversal now via this request: http://govt-subsidy-claim.co.in,RBI Cautions
+S0284,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,Razorpay Fake Payment Guide
+S0285,scam,SMS,fake_charity,Charity Drive: Send ₹196127 to support. Quick transfer: http://lottery-claim-win.in,Razorpay Fake Payment Guide
+S0286,scam,SMS,fake_bill_disconnection,Electricity Dept: Bill ₹84525 pending. Service will be disconnected tonight. Pay at http://govt-subsidy-claim.co.in,News reports on UPI scams
+S0287,scam,SMS,fake_reward,Exclusive Reward: ₹84525 for you. Claim via http://pay-verify-upi.com within 1 hour.,News reports on UPI scams
+S0288,scam,SMS,fake_bank_notice,PNB Notice: Confirm your details here: http://upi-helpdesk.support.,Paytm UPI Fraud Guide
+S0289,scam,WhatsApp,fake_payment_screenshot,See attached receipt: Transaction ID 1452421. Funds sent.,Paytm UPI Fraud Guide
+S0290,scam,SMS,fake_bank_notice,Axis Bank: Important security update. Verify account details at http://hdfc-kyc-update.com to avoid restrictions.,CERT-In advisory
+S0291,scam,SMS,fake_bill_disconnection,Electricity Dept: Bill ₹165139 pending. Service will be disconnected tonight. Pay at http://hdfc-kyc-update.com,News reports on UPI scams
+S0292,scam,SMS,fake_loan_fee,Loan approved: ₹127449. Pay ₹1816 to unlock funds via http://govt-subsidy-claim.co.in,News reports on UPI scams
+S0293,scam,SMS,fake_govt_subsidy,Govt Subsidy credited ₹104505. Claim at http://hdfc-kyc-update.com before deadline.,Razorpay Fake Payment Guide
+S0294,scam,SMS,fake_bill_disconnection,Electricity Dept: Bill ₹116943 pending. Service will be disconnected tonight. Pay at http://refund-claim.in,Razorpay Fake Payment Guide
+S0295,scam,SMS,fake_bank_notice,Federal Bank Notice: Confirm your details here: http://pay-verify-upi.com.,RBI Cautions
+S0296,scam,SMS,fake_bank_notice,PNB Notice: Confirm your details here: http://phonepe-cashback-claim.co.,Fintech safety blog
+S0297,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,Fintech safety blog
+S0298,scam,SMS,fake_reward,Loyalty Bonus ₹65036 added. Visit http://sbi-secure-verify.in to redeem.,NPCI Fraud Awareness
+S0299,scam,SMS,fake_cashback,Cashback ₹24498 credited. Click http://upi-secure-help.in to transfer to bank.,CERT-In advisory
+S0300,scam,SMS,fake_reward,Exclusive Reward: ₹107978 for you. Claim via http://lottery-claim-win.in within 1 hour.,RBI Cautions
+S0301,scam,SMS,fake_reward,Loyalty Bonus ₹191547 added. Visit http://govt-subsidy-claim.co.in to redeem.,Razorpay Fake Payment Guide
+S0302,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,Fintech safety blog
+S0303,scam,SMS,call_merge_otp,"Security Alert: We will merge a verification call. When prompted, share OTP to confirm cancellation.",News reports on UPI scams
+S0304,scam,SMS,lottery,Congratulations! Govt prize of ₹9494 for you. Complete form at http://refund-claim.in within 48 hrs.,Paytm UPI Fraud Guide
+S0305,scam,SMS,kyc_expiry,IDBI ALERT: KYC not updated. Update now to avoid account suspension: http://upi-helpdesk.support,Fintech safety blog
+S0306,scam,SMS,fake_bank_notice,IDBI Notice: Confirm your details here: http://paytm-verify-upi.in.,RBI Cautions
+S0307,scam,SMS,fake_app_update,Update required: Your UPI app version is outdated. Update now at http://icici-verify.co.in to continue transactions.,RBI Cautions
+S0308,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,CERT-In advisory
+S0309,scam,SMS,kyc_expiry,"Dear Customer, your PNB UPI access will be blocked within 24 hours due to pending KYC. Verify here: http://lottery-claim-win.in",NPCI Fraud Awareness
+S0310,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,CERT-In advisory
+S0311,scam,SMS,call_merge_otp,"To cancel unauthorized charge, accept incoming verification call and provide OTP.",NPCI Fraud Awareness
+S0312,scam,SMS,fake_govt_subsidy,Govt Subsidy credited ₹28386. Claim at http://axisbank-alerts.net before deadline.,NPCI Fraud Awareness
+S0313,scam,SMS,fake_cashback,Cashback ₹127298 credited. Click http://upi-helpdesk.support to transfer to bank.,NPCI Fraud Awareness
+S0314,scam,WhatsApp,overpayment,"Hi, I accidentally sent ₹304 to you. Please accept the payment and return ₹15918 by approving the request.",Razorpay Fake Payment Guide
+S0315,scam,SMS,fake_charity,Charity Drive: Send ₹62620 to support. Quick transfer: http://pay-verify-upi.com,Fintech safety blog
+S0316,scam,SMS,fake_bank_notice,Yes Bank: Important security update. Verify account details at http://sbi-secure-verify.in to avoid restrictions.,Paytm UPI Fraud Guide
+S0317,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 2151225. Screenshot attached. Release goods.,News reports on UPI scams
+S0318,scam,SMS,suspicious_login,BOB Alert: Suspicious login detected on your UPI. Cancel transaction here: http://govt-subsidy-claim.co.in. Ref: 9333700,NPCI Fraud Awareness
+S0319,scam,SMS,fake_reward,Exclusive Reward: ₹95641 for you. Claim via http://sbi-secure-verify.in within 1 hour.,NPCI Fraud Awareness
+S0320,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 7189034. Screenshot attached. Release goods.,RBI Cautions
+S0321,scam,SMS,fake_bank_notice,Axis Bank Notice: Confirm your details here: http://hdfc-kyc-update.com.,CERT-In advisory
+S0322,scam,SMS,fake_reward,Loyalty Bonus ₹133587 added. Visit http://hdfc-kyc-update.com to redeem.,News reports on UPI scams
+S0323,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹50677 to avoid arrest.,RBI Cautions
+S0324,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,News reports on UPI scams
+S0325,scam,SMS,call_merge_otp,"To cancel unauthorized charge, accept incoming verification call and provide OTP.",CERT-In advisory
+S0326,scam,SMS,call_merge_otp,"Security Alert: We will merge a verification call. When prompted, share OTP to confirm cancellation.",RBI Cautions
+S0327,scam,SMS,fake_bank_notice,Kotak: Important security update. Verify account details at http://icici-verify.co.in to avoid restrictions.,NPCI Fraud Awareness
+S0328,scam,SMS,kyc_expiry,"Dear Customer, your Yes Bank UPI access will be blocked within 24 hours due to pending KYC. Verify here: http://paytm-verify-upi.in",Paytm UPI Fraud Guide
+S0329,scam,SMS,fake_reward,Loyalty Bonus ₹36797 added. Visit http://pay-verify-upi.com to redeem.,Razorpay Fake Payment Guide
+S0330,scam,SMS,fake_app_update,Update required: Your UPI app version is outdated. Update now at http://pay-verify-upi.com to continue transactions.,RBI Cautions
+S0331,scam,SMS,fake_app_update,Update required: Your UPI app version is outdated. Update now at http://icici-verify.co.in to continue transactions.,Fintech safety blog
+S0332,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹158602 to avoid arrest.,NPCI Fraud Awareness
+S0333,scam,SMS,fake_cashback,Cashback ₹124604 credited. Click http://lottery-claim-win.in to transfer to bank.,Fintech safety blog
+S0334,scam,SMS,fake_app_update,Critical update for Kotak app. Click http://paytm-verify-upi.in to download secure patch.,News reports on UPI scams
+S0335,scam,WhatsApp,overpayment,You have received ₹190. Please send back ₹23612 immediately by approving the UPI request from merchantx@ybl.,News reports on UPI scams
+S0336,scam,SMS,kyc_expiry,"Dear Customer, your IDBI UPI access will be blocked within 24 hours due to pending KYC. Verify here: http://icici-verify.co.in",RBI Cautions
+S0337,scam,SMS,fake_govt_subsidy,PMAY Subsidy: ₹73084 approved. Click http://upi-helpdesk.support to accept.,NPCI Fraud Awareness
+S0338,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹189672 to avoid arrest.,RBI Cautions
+S0339,scam,WhatsApp,fake_merchant_payment,Merchant: Paid ₹148779 to your UPI. Approve reversal request.,Paytm UPI Fraud Guide
+S0340,scam,SMS,fake_govt_subsidy,PMAY Subsidy: ₹199 approved. Click http://paytm-verify-upi.in to accept.,NPCI Fraud Awareness
+S0341,scam,SMS,fake_cashback,Cashback ₹124037 credited. Click http://lottery-claim-win.in to transfer to bank.,News reports on UPI scams
+S0342,scam,SMS,fake_govt_subsidy,PMAY Subsidy: ₹156034 approved. Click http://upi-helpdesk.support to accept.,RBI Cautions
+S0343,scam,SMS,fake_support,Support Desk: We require confirmation. Click http://hdfc-kyc-update.com to confirm your identity.,RBI Cautions
+S0344,scam,SMS,fake_bank_notice,HDFC: Important security update. Verify account details at http://lottery-claim-win.in to avoid restrictions.,Razorpay Fake Payment Guide
+S0345,scam,SMS,fake_loan_fee,Pre-approved loan ₹172376. Disbursal in 5 mins after processing fee ₹1527. Pay at http://govt-subsidy-claim.co.in,RBI Cautions
+S0346,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹64009 to avoid arrest.,RBI Cautions
+S0347,scam,SMS,fake_qr,Scan QR to accept payment: http://hdfc-kyc-update.com. For merchants only.,NPCI Fraud Awareness
+S0348,scam,SMS,kyc_expiry,"Dear Customer, your Federal Bank UPI access will be blocked within 24 hours due to pending KYC. Verify here: http://sbi-secure-verify.in",Paytm UPI Fraud Guide
+S0349,scam,SMS,lottery,RBI Lottery: You have won ₹197592. Pay registration fee ₹966 to claim: http://phonepe-cashback-claim.co,News reports on UPI scams
+S0350,scam,SMS,fake_qr,Scan QR to accept payment: http://refund-claim.in. For merchants only.,News reports on UPI scams
+S0351,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹85556 to avoid arrest.,CERT-In advisory
+S0352,scam,SMS,lottery,RBI Lottery: You have won ₹135729. Pay registration fee ₹919 to claim: http://upi-helpdesk.support,News reports on UPI scams
+S0353,scam,SMS,fake_bank_notice,HDFC: Important security update. Verify account details at http://refund-claim.in to avoid restrictions.,News reports on UPI scams
+S0354,scam,SMS,fake_bill_disconnection,Electricity Dept: Bill ₹172376 pending. Service will be disconnected tonight. Pay at http://upi-secure-help.in,Razorpay Fake Payment Guide
+S0355,scam,SMS,fake_bank_notice,Yes Bank Notice: Confirm your details here: http://sbi-secure-verify.in.,RBI Cautions
+S0356,scam,SMS,fake_app_update,Critical update for Axis Bank app. Click http://sbi-secure-verify.in to download secure patch.,Fintech safety blog
+S0357,scam,WhatsApp,refund_bait,Amazon Refund: ₹124483 sent by mistake. Click http://phonepe-cashback-claim.co to confirm reversal or face legal action.,Fintech safety blog
+S0358,scam,SMS,fake_support,Support Desk: We require confirmation. Click http://axisbank-alerts.net to confirm your identity.,Paytm UPI Fraud Guide
+S0359,scam,SMS,fake_reward,Loyalty Bonus ₹108130 added. Visit http://upi-secure-help.in to redeem.,Paytm UPI Fraud Guide
+S0360,scam,SMS,fake_govt_subsidy,PMAY Subsidy: ₹110973 approved. Click http://hdfc-kyc-update.com to accept.,News reports on UPI scams
+S0361,scam,SMS,fake_qr,Scan QR to accept payment: http://refund-claim.in. For merchants only.,CERT-In advisory
+S0362,scam,SMS,fake_charity,Charity Drive: Send ₹154271 to support. Quick transfer: http://sbi-secure-verify.in,Fintech safety blog
+S0363,scam,SMS,suspicious_login,Unusual activity on your account. Verify identity at http://pay-verify-upi.com to avoid freeze.,Paytm UPI Fraud Guide
+S0364,scam,WhatsApp,overpayment,You have received ₹101. Please send back ₹32231 immediately by approving the UPI request from seller01@upi.,News reports on UPI scams
+S0365,scam,SMS,fake_qr,Please scan this QR to receive your refund: http://lottery-claim-win.in. Do not share PIN.,RBI Cautions
+S0366,scam,SMS,fake_cashback,You have received ₹182819 cashback from PhonePe. Claim now: http://pay-verify-upi.com (valid 2 hrs),Fintech safety blog
+S0367,scam,SMS,impersonation_police,"This is SI Sharma, cyber cell. Assets will be frozen unless you refund ₹153056. Contact +91-9387484583.",Paytm UPI Fraud Guide
+S0368,scam,SMS,impersonation_police,"This is SI Sharma, cyber cell. Assets will be frozen unless you refund ₹117651. Contact +91-9673528321.",CERT-In advisory
+S0369,scam,SMS,fake_bill_disconnection,Fiber Net: Payment overdue ₹177052. Pay now: http://sbi-secure-verify.in or service suspended.,NPCI Fraud Awareness
+S0370,scam,SMS,fake_app_update,Critical update for PNB app. Click http://upi-helpdesk.support to download secure patch.,Paytm UPI Fraud Guide
+S0371,scam,SMS,call_merge_otp,"To cancel unauthorized charge, accept incoming verification call and provide OTP.",RBI Cautions
+S0372,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹86609 to avoid arrest.,Razorpay Fake Payment Guide
+S0373,scam,SMS,fake_govt_subsidy,Govt Subsidy credited ₹75262. Claim at http://phonepe-cashback-claim.co before deadline.,Razorpay Fake Payment Guide
+S0374,scam,SMS,fake_support,"Customer Support: To expedite refund, visit http://upi-helpdesk.support and enter UPI ID.",RBI Cautions
+S0375,scam,SMS,fake_app_update,Critical update for IDBI app. Click http://upi-secure-help.in to download secure patch.,Fintech safety blog
+S0376,scam,SMS,fake_govt_subsidy,Govt Subsidy credited ₹124092. Claim at http://upi-secure-help.in before deadline.,Paytm UPI Fraud Guide
+S0377,scam,SMS,call_merge_otp,"To cancel unauthorized charge, accept incoming verification call and provide OTP.",News reports on UPI scams
+S0378,scam,SMS,fake_reward,Exclusive Reward: ₹104823 for you. Claim via http://pay-verify-upi.com within 1 hour.,NPCI Fraud Awareness
+S0379,scam,SMS,fake_support,Support Desk: We require confirmation. Click http://phonepe-cashback-claim.co to confirm your identity.,Fintech safety blog
+S0380,scam,SMS,fake_bank_notice,ICICI Notice: Confirm your details here: http://hdfc-kyc-update.com.,Paytm UPI Fraud Guide
+S0381,scam,SMS,fake_bank_notice,Kotak Notice: Confirm your details here: http://lottery-claim-win.in.,Razorpay Fake Payment Guide
+S0382,scam,SMS,fake_bill_disconnection,Electricity Dept: Bill ₹493 pending. Service will be disconnected tonight. Pay at http://sbi-secure-verify.in,RBI Cautions
+S0383,scam,SMS,fake_support,"Customer Support: To expedite refund, visit http://hdfc-kyc-update.com and enter UPI ID.",CERT-In advisory
+S0384,scam,WhatsApp,overpayment,"Hi, I accidentally sent ₹345 to you. Please accept the payment and return ₹26548 by approving the request.",Fintech safety blog
+S0385,scam,WhatsApp,fake_payment_screenshot,See attached receipt: Transaction ID 1771600. Funds sent.,Paytm UPI Fraud Guide
+S0386,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹114917 to avoid arrest.,News reports on UPI scams
+S0387,scam,SMS,fake_charity,Charity Drive: Send ₹115874 to support. Quick transfer: http://phonepe-cashback-claim.co,CERT-In advisory
+S0388,scam,WhatsApp,overpayment,You have received ₹89. Please send back ₹20894 immediately by approving the UPI request from payshop@upi.,CERT-In advisory
+S0389,scam,SMS,fake_loan_fee,Loan approved: ₹98069. Pay ₹1646 to unlock funds via http://lottery-claim-win.in,NPCI Fraud Awareness
+S0390,scam,SMS,fake_bill_disconnection,Fiber Net: Payment overdue ₹19774. Pay now: http://axisbank-alerts.net or service suspended.,Razorpay Fake Payment Guide
+S0391,scam,SMS,suspicious_login,BOB Alert: Suspicious login detected on your UPI. Cancel transaction here: http://refund-claim.in. Ref: 8617381,CERT-In advisory
+S0392,scam,SMS,fake_bank_notice,Kotak Notice: Confirm your details here: http://phonepe-cashback-claim.co.,NPCI Fraud Awareness
+S0393,scam,SMS,fake_govt_subsidy,Govt Subsidy credited ₹138708. Claim at http://hdfc-kyc-update.com before deadline.,RBI Cautions
+S0394,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,Fintech safety blog
+S0395,scam,SMS,fake_charity,Urgent Flood Relief: Donate ₹141444 to help victims. Transfer to merchantx@ybl via UPI.,CERT-In advisory
+S0396,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹41320 to avoid arrest.,Razorpay Fake Payment Guide
+S0397,scam,WhatsApp,overpayment,You have received ₹205. Please send back ₹1826 immediately by approving the UPI request from shopkeeper@okicici.,CERT-In advisory
+S0398,scam,SMS,fake_charity,Urgent Flood Relief: Donate ₹188644 to help victims. Transfer to shopkeeper@okicici via UPI.,Razorpay Fake Payment Guide
+S0399,scam,WhatsApp,fake_payment_screenshot,See attached receipt: Transaction ID 5531230. Funds sent.,Razorpay Fake Payment Guide
+S0400,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 2561176. Screenshot attached. Release goods.,NPCI Fraud Awareness
+S0401,scam,SMS,fake_govt_subsidy,PMAY Subsidy: ₹174357 approved. Click http://hdfc-kyc-update.com to accept.,Fintech safety blog
+S0402,scam,SMS,impersonation_police,"This is SI Sharma, cyber cell. Assets will be frozen unless you refund ₹141406. Contact +91-9184611066.",CERT-In advisory
+S0403,scam,WhatsApp,refund_bait,Refund Dept: ₹191033 credited to your account by mistake. Approve reversal now via this request: http://phonepe-cashback-claim.co,Paytm UPI Fraud Guide
+S0404,scam,SMS,fake_reward,Loyalty Bonus ₹157059 added. Visit http://upi-helpdesk.support to redeem.,NPCI Fraud Awareness
+S0405,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹156437 to avoid arrest.,Paytm UPI Fraud Guide
+S0406,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,CERT-In advisory
+S0407,scam,SMS,fake_qr,Scan QR to accept payment: http://sbi-secure-verify.in. For merchants only.,NPCI Fraud Awareness
+S0408,scam,SMS,fake_bank_notice,Yes Bank Notice: Confirm your details here: http://axisbank-alerts.net.,News reports on UPI scams
+S0409,scam,SMS,impersonation_police,"This is SI Sharma, cyber cell. Assets will be frozen unless you refund ₹19066. Contact +91-9508157429.",Fintech safety blog
+S0410,scam,WhatsApp,overpayment,"Hi, I accidentally sent ₹64 to you. Please accept the payment and return ₹32809 by approving the request.",News reports on UPI scams
+S0411,scam,SMS,fake_support,Support Desk: We require confirmation. Click http://paytm-verify-upi.in to confirm your identity.,Fintech safety blog
+S0412,scam,WhatsApp,overpayment,"Hi, I accidentally sent ₹465 to you. Please accept the payment and return ₹6240 by approving the request.",News reports on UPI scams
+S0413,scam,SMS,fake_bill_disconnection,Fiber Net: Payment overdue ₹68720. Pay now: http://paytm-verify-upi.in or service suspended.,RBI Cautions
+S0414,scam,SMS,fake_app_update,Update required: Your UPI app version is outdated. Update now at http://upi-helpdesk.support to continue transactions.,RBI Cautions
+S0415,scam,WhatsApp,fake_merchant_payment,Merchant: Paid ₹162883 to your UPI. Approve reversal request.,Fintech safety blog
+S0416,scam,SMS,fake_charity,Charity Drive: Send ₹181196 to support. Quick transfer: http://icici-verify.co.in,News reports on UPI scams
+S0417,scam,SMS,fake_charity,Charity Drive: Send ₹172763 to support. Quick transfer: http://govt-subsidy-claim.co.in,Fintech safety blog
+S0418,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,Razorpay Fake Payment Guide
+S0419,scam,SMS,fake_charity,Charity Drive: Send ₹110938 to support. Quick transfer: http://upi-helpdesk.support,Paytm UPI Fraud Guide
+S0420,scam,SMS,kyc_expiry,Axis Bank ALERT: KYC not updated. Update now to avoid account suspension: http://axisbank-alerts.net,News reports on UPI scams
+S0421,scam,SMS,fake_app_update,Update required: Your UPI app version is outdated. Update now at http://sbi-secure-verify.in to continue transactions.,News reports on UPI scams
+S0422,scam,SMS,suspicious_login,Kotak Alert: Suspicious login detected on your UPI. Cancel transaction here: http://upi-secure-help.in. Ref: 7961578,NPCI Fraud Awareness
+S0423,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,Fintech safety blog
+S0424,scam,WhatsApp,fake_merchant_payment,Customer says payment done. Approve collect request to release order.,CERT-In advisory
+S0425,scam,SMS,suspicious_login,BOB Alert: Suspicious login detected on your UPI. Cancel transaction here: http://sbi-secure-verify.in. Ref: 1325197,Paytm UPI Fraud Guide
+S0426,scam,SMS,fake_app_update,Update required: Your UPI app version is outdated. Update now at http://sbi-secure-verify.in to continue transactions.,News reports on UPI scams
+S0427,scam,WhatsApp,overpayment,"Hi, I accidentally sent ₹77 to you. Please accept the payment and return ₹23031 by approving the request.",Fintech safety blog
+S0428,scam,WhatsApp,refund_bait,Amazon Refund: ₹69251 sent by mistake. Click http://hdfc-kyc-update.com to confirm reversal or face legal action.,News reports on UPI scams
+S0429,scam,SMS,fake_cashback,Cashback ₹176568 credited. Click http://phonepe-cashback-claim.co to transfer to bank.,RBI Cautions
+S0430,scam,WhatsApp,overpayment,You have received ₹304. Please send back ₹6871 immediately by approving the UPI request from merchantx@ybl.,Paytm UPI Fraud Guide
+S0431,scam,SMS,call_merge_otp,"Security Alert: We will merge a verification call. When prompted, share OTP to confirm cancellation.",CERT-In advisory
+S0432,scam,SMS,fake_charity,Urgent Flood Relief: Donate ₹169442 to help victims. Transfer to payshop@upi via UPI.,Fintech safety blog
+S0433,scam,WhatsApp,refund_bait,Refund Dept: ₹141444 credited to your account by mistake. Approve reversal now via this request: http://icici-verify.co.in,Razorpay Fake Payment Guide
+S0434,scam,SMS,impersonation_police,"This is SI Sharma, cyber cell. Assets will be frozen unless you refund ₹185036. Contact +91-9875340444.",Paytm UPI Fraud Guide
+S0435,scam,SMS,fake_reward,Loyalty Bonus ₹28467 added. Visit http://upi-helpdesk.support to redeem.,Fintech safety blog
+S0436,scam,SMS,fake_app_update,Update required: Your UPI app version is outdated. Update now at http://icici-verify.co.in to continue transactions.,Razorpay Fake Payment Guide
+S0437,scam,SMS,kyc_expiry,"Dear Customer, your BOB UPI access will be blocked within 24 hours due to pending KYC. Verify here: http://phonepe-cashback-claim.co",Paytm UPI Fraud Guide
+S0438,scam,SMS,fake_support,"Customer Support: To expedite refund, visit http://govt-subsidy-claim.co.in and enter UPI ID.",NPCI Fraud Awareness
+S0439,scam,SMS,fake_govt_subsidy,Govt Subsidy credited ₹182479. Claim at http://lottery-claim-win.in before deadline.,News reports on UPI scams
+S0440,scam,WhatsApp,fake_payment_screenshot,See attached receipt: Transaction ID 6144280. Funds sent.,Fintech safety blog
+S0441,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 5963914. Screenshot attached. Release goods.,News reports on UPI scams
+S0442,scam,SMS,fake_qr,Please scan this QR to receive your refund: http://pay-verify-upi.com. Do not share PIN.,Fintech safety blog
+S0443,scam,SMS,fake_bank_notice,BOB: Important security update. Verify account details at http://axisbank-alerts.net to avoid restrictions.,Razorpay Fake Payment Guide
+S0444,scam,SMS,fake_reward,Exclusive Reward: ₹178849 for you. Claim via http://phonepe-cashback-claim.co within 1 hour.,RBI Cautions
+S0445,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 5567533. Screenshot attached. Release goods.,News reports on UPI scams
+S0446,scam,SMS,lottery,RBI Lottery: You have won ₹95203. Pay registration fee ₹1901 to claim: http://icici-verify.co.in,Razorpay Fake Payment Guide
+S0447,scam,WhatsApp,fake_payment_screenshot,See attached receipt: Transaction ID 6398528. Funds sent.,News reports on UPI scams
+S0448,scam,SMS,fake_bank_notice,Yes Bank Notice: Confirm your details here: http://paytm-verify-upi.in.,NPCI Fraud Awareness
+S0449,scam,SMS,impersonation_police,"This is SI Sharma, cyber cell. Assets will be frozen unless you refund ₹30365. Contact +91-9964411347.",Razorpay Fake Payment Guide
+S0450,scam,SMS,fake_loan_fee,Pre-approved loan ₹19066. Disbursal in 5 mins after processing fee ₹1994. Pay at http://axisbank-alerts.net,Razorpay Fake Payment Guide
+S0451,scam,SMS,suspicious_login,Axis Bank Alert: Suspicious login detected on your UPI. Cancel transaction here: http://hdfc-kyc-update.com. Ref: 3634980,Fintech safety blog
+S0452,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,Paytm UPI Fraud Guide
+S0453,scam,SMS,fake_support,"Customer Support: To expedite refund, visit http://hdfc-kyc-update.com and enter UPI ID.",News reports on UPI scams
+S0454,scam,SMS,fake_support,"Customer Support: To expedite refund, visit http://refund-claim.in and enter UPI ID.",Razorpay Fake Payment Guide
+S0455,scam,WhatsApp,fake_payment_screenshot,See attached receipt: Transaction ID 8710313. Funds sent.,RBI Cautions
+S0456,scam,SMS,fake_charity,Charity Drive: Send ₹88677 to support. Quick transfer: http://upi-helpdesk.support,Razorpay Fake Payment Guide
+S0457,scam,SMS,fake_bill_disconnection,Fiber Net: Payment overdue ₹171485. Pay now: http://sbi-secure-verify.in or service suspended.,Razorpay Fake Payment Guide
+S0458,scam,WhatsApp,overpayment,You have received ₹374. Please send back ₹11747 immediately by approving the UPI request from payshop@upi.,NPCI Fraud Awareness
+S0459,scam,SMS,fake_charity,Charity Drive: Send ₹175614 to support. Quick transfer: http://govt-subsidy-claim.co.in,News reports on UPI scams
+S0460,scam,SMS,fake_support,"Customer Support: To expedite refund, visit http://pay-verify-upi.com and enter UPI ID.",CERT-In advisory
+S0461,scam,WhatsApp,refund_bait,Amazon Refund: ₹81127 sent by mistake. Click http://upi-secure-help.in to confirm reversal or face legal action.,RBI Cautions
+S0462,scam,SMS,fake_cashback,You have received ₹2100 cashback from PhonePe. Claim now: http://upi-secure-help.in (valid 2 hrs),Razorpay Fake Payment Guide
+S0463,scam,SMS,suspicious_login,Yes Bank Alert: Suspicious login detected on your UPI. Cancel transaction here: http://phonepe-cashback-claim.co. Ref: 9249789,NPCI Fraud Awareness
+S0464,scam,SMS,suspicious_login,Unusual activity on your account. Verify identity at http://phonepe-cashback-claim.co to avoid freeze.,NPCI Fraud Awareness
+S0465,scam,SMS,call_merge_otp,"Security Alert: We will merge a verification call. When prompted, share OTP to confirm cancellation.",NPCI Fraud Awareness
+S0466,scam,WhatsApp,refund_bait,Refund Dept: ₹104823 credited to your account by mistake. Approve reversal now via this request: http://icici-verify.co.in,CERT-In advisory
+S0467,scam,SMS,fake_reward,Exclusive Reward: ₹155899 for you. Claim via http://upi-helpdesk.support within 1 hour.,Paytm UPI Fraud Guide
+S0468,scam,SMS,fake_support,"Customer Support: To expedite refund, visit http://govt-subsidy-claim.co.in and enter UPI ID.",News reports on UPI scams
+S0469,scam,SMS,fake_bill_disconnection,Electricity Dept: Bill ₹58953 pending. Service will be disconnected tonight. Pay at http://paytm-verify-upi.in,Razorpay Fake Payment Guide
+S0470,scam,SMS,fake_bank_notice,BOB Notice: Confirm your details here: http://paytm-verify-upi.in.,RBI Cautions
+S0471,scam,SMS,fake_bank_notice,Federal Bank Notice: Confirm your details here: http://upi-helpdesk.support.,Fintech safety blog
+S0472,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 2672884. Screenshot attached. Release goods.,News reports on UPI scams
+S0473,scam,SMS,fake_bill_disconnection,Fiber Net: Payment overdue ₹152751. Pay now: http://pay-verify-upi.com or service suspended.,RBI Cautions
+S0474,scam,WhatsApp,fake_payment_screenshot,See attached receipt: Transaction ID 8190929. Funds sent.,Fintech safety blog
+S0475,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,Paytm UPI Fraud Guide
+S0476,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹40799 to avoid arrest.,Paytm UPI Fraud Guide
+S0477,scam,SMS,fake_charity,Charity Drive: Send ₹112716 to support. Quick transfer: http://govt-subsidy-claim.co.in,NPCI Fraud Awareness
+S0478,scam,SMS,fake_cashback,Cashback ₹119327 credited. Click http://hdfc-kyc-update.com to transfer to bank.,News reports on UPI scams
+S0479,scam,SMS,fake_govt_subsidy,PMAY Subsidy: ₹61619 approved. Click http://paytm-verify-upi.in to accept.,NPCI Fraud Awareness
+S0480,scam,SMS,fake_qr,Scan QR to accept payment: http://lottery-claim-win.in. For merchants only.,RBI Cautions
+S0481,scam,SMS,lottery,Congratulations! Govt prize of ₹114917 for you. Complete form at http://axisbank-alerts.net within 48 hrs.,News reports on UPI scams
+S0482,scam,SMS,fake_loan_fee,Pre-approved loan ₹38677. Disbursal in 5 mins after processing fee ₹1687. Pay at http://lottery-claim-win.in,CERT-In advisory
+S0483,scam,SMS,lottery,RBI Lottery: You have won ₹175126. Pay registration fee ₹1870 to claim: http://upi-helpdesk.support,NPCI Fraud Awareness
+S0484,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 5006492. Screenshot attached. Release goods.,Fintech safety blog
+S0485,scam,WhatsApp,fake_payment_screenshot,Payment done. UPI Ref 4050766. Screenshot attached. Release goods.,Paytm UPI Fraud Guide
+S0486,scam,SMS,fake_reward,Loyalty Bonus ₹99395 added. Visit http://phonepe-cashback-claim.co to redeem.,News reports on UPI scams
+S0487,scam,SMS,fake_reward,Exclusive Reward: ₹181196 for you. Claim via http://govt-subsidy-claim.co.in within 1 hour.,RBI Cautions
+S0488,scam,SMS,fake_govt_subsidy,Govt Subsidy credited ₹112165. Claim at http://paytm-verify-upi.in before deadline.,Fintech safety blog
+S0489,scam,WhatsApp,refund_bait,Refund Dept: ₹132664 credited to your account by mistake. Approve reversal now via this request: http://sbi-secure-verify.in,News reports on UPI scams
+S0490,scam,SMS,fake_charity,Charity Drive: Send ₹101026 to support. Quick transfer: http://pay-verify-upi.com,CERT-In advisory
+S0491,scam,SMS,fake_charity,Urgent Flood Relief: Donate ₹97939 to help victims. Transfer to merchantx@ybl via UPI.,RBI Cautions
+S0492,scam,SMS,suspicious_login,Yes Bank Alert: Suspicious login detected on your UPI. Cancel transaction here: http://upi-secure-help.in. Ref: 1621086,CERT-In advisory
+S0493,scam,SMS,vishing_text,Your card is blocked. Call back +91-XXXXXXXXXX to reactivate. Share OTP to verify.,RBI Cautions
+S0494,scam,WhatsApp,fake_payment_screenshot,See attached receipt: Transaction ID 2561176. Funds sent.,News reports on UPI scams
+S0495,scam,WhatsApp,overpayment,You have received ₹221. Please send back ₹16635 immediately by approving the UPI request from shopkeeper@okicici.,RBI Cautions
+S0496,scam,SMS,impersonation_police,Police Notice: Investigation ongoing. Transfer ₹75262 to avoid arrest.,CERT-In advisory
+S0497,scam,SMS,vishing_text,Bank Security: We will call to verify. Keep your OTP handy to cancel fraudulent transaction.,News reports on UPI scams
+S0498,scam,SMS,fake_bank_notice,PNB Notice: Confirm your details here: http://govt-subsidy-claim.co.in.,News reports on UPI scams
+S0499,scam,SMS,lottery,Congratulations! Govt prize of ₹73084 for you. Complete form at http://lottery-claim-win.in within 48 hrs.,News reports on UPI scams
+S0500,scam,SMS,kyc_expiry,"Dear Customer, your HDFC UPI access will be blocked within 24 hours due to pending KYC. Verify here: http://lottery-claim-win.in",RBI Cautions
