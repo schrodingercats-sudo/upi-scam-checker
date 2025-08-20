@@ -1,0 +1,21 @@
+id,label,channel,category,text,source
+L1,legit,SMS,transaction_credit,"Deutsche Bank: INR 35,000.00 credited to a/c 40XXXXXXXXX0019 on 20-Aug 10:55. Clear Balance: INR 75,000.00. Ref: NEFT/ABER000123.",https://www.deutschebank.co.in/en/connect-with-us/sms-alert.html
+L2,legit,SMS,transaction_debit,"ICICI Bank: INR 1,200.00 debited from A/c XX1234 on 20-Aug-2025 10:45 for UPI/rahim@icici/UPI Ref: 2345678912.",https://www.icicibank.com/mobile-banking/sms-banking
+L3,legit,SMS,atm_withdrawal,"PNB: Cash withdrawal of INR 5,000.00 from ATM at NEW DELHI on 19-Aug-2025 18:14. A/c XX7781. Avl Bal: INR 23,441.00.",Transactional SMS format references (DLT templates)
+L4,legit,SMS,otp,HDFC Bank: Your OTP for UPI login is 482193. Do not share this with anyone. Valid for 10 minutes.,https://www.infobip.com/docs/essentials/asia-registration/dlt-templates
+L5,legit,SMS,balance_alert,"SBI: Avl Bal in A/c XX4507 as of 20-Aug-2025 09:12 is INR 12,540.55. SMS charges as per schedule.",https://www.sbi.co.in/documents/16012/22770835/150722-Revision+in+Service+Charges+updated+as+on+30062022.pdf
+L6,legit,SMS,imps_notice,"ICICI Bank: IMPS transfer of INR 2,500.00 to 98XXXXXX54/MMID 9229134 is successful. Ref: IMPS 0287123291.",https://www.icicibank.com/mobile-banking/alerts
+L7,legit,WhatsApp,service_enrolment,SBI WhatsApp Banking: Registration successful for A/c ending 1234. Say 'Hi' to +919022690226 to start.,https://sbi.co.in/web/personal-banking/digital/whatsapp-banking
+L8,legit,SMS,card_settings,"SBI: International usage for Debit Card XXXX4456 is switched ON as requested. To switch OFF, send SMS SWOFF INTL 4456 to 9223966666.",https://www.sbi.co.in/documents/16012/78812/16102020_Enhanced+Seucirty+of+Card+Transactions.pdf
+L9,legit,SMS,upi_success,Axis Bank: UPI payment of INR 750.00 to singh@okicici on 20-Aug-2025 11:12 is SUCCESS. UPI Ref: 913827364512.,General bank UPI alert structure (DLT templates)
+L10,legit,SMS,security_advisory,SBI: Never share OTP/PIN with anyone. Bank will never ask for OTP/UPI PIN over phone or link.,https://www.icicibank.com/mobile-banking/sms-banking-faqs
+S1,scam,SMS,kyc_expiry,SBI NOTICE: Your YONO access will be blocked in 24 hrs due to KYC pending. Update now: https://sbi-yono-verification.com,Pattern per NPCI Fraud Awareness (never click unknown links)
+S2,scam,WhatsApp,refund_bait,"Amazon Refund Dept: ₹2,999 sent by mistake. Approve UPI reversal request now to avoid legal action.",https://paytm.com/blog/payments/upi/how-to-identify-fake-upi-payment-request/
+S3,scam,SMS,suspicious_login,ICICI Bank Alert: Unusual login detected. Cancel here immediately → http://icici-secure-check.in Ref: IC-229181,Phishing pattern per CERT-In advisories
+S4,scam,WhatsApp,overpayment,"Received ₹200 in error. Please send ₹20,000 now by approving the UPI request from randomid@upi.",https://m.economictimes.com/wealth/save/new-upi-scam-fraudsters-send-you-rs-200-00-and-asks-to-return-rs-20000-00-how-to-protect-yourself-from-upi-overpayment-scam/articleshow/110815938.cms
+S5,scam,SMS,fake_screenshot,Payment done. UPI Ref: 9823746123. Check screenshot attached. Release goods now.,https://razorpay.com/learn/fake-payment-screenshot-scam/
+S6,scam,SMS,lottery,"RBI LOTTERY 2025: You have won ₹10,00,000. Pay ₹1,999 registration to receive funds. http://rbilottery-verify.in",https://www.rbi.org.in/commonman/english/scripts/PressReleases.aspx?Id=2440
+S7,scam,WhatsApp,call_merge_otp,Bank Security: We will merge a verification call. Keep your line active and share OTP to cancel fraudulent transaction.,https://timesofindia.indiatimes.com/technology/tech-news/call-merging-scam-what-is-the-new-fraud-that-npci-has-warned-about/articleshow/118444907.cms
+S8,scam,SMS,loan_fee,"Axis Bank: Pre-approved loan ₹2,00,000. Get disbursed in 5 mins after processing fee ₹799. http://axisloan-fast.in",General phishing pattern; RBI awareness week coverage
+S9,scam,WhatsApp,power_bill,Electricity Dept: Bill pending. Disconnection tonight. Pay now: http://powerbill-upi.in Helpline: +91-9876543210,Common utility bill scam pattern (media reports)
+S10,scam,SMS,fake_credit_sms,"Your a/c credited ₹50,000. Refund excess ₹49,500 immediately via UPI link.",https://timesofindia.indiatimes.com/city/vadodara/senior-citizen-outwits-conmen-using-fake-credit-sms-trick/articleshow/122054377.cms

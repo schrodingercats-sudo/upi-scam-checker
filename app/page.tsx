@@ -41,25 +41,138 @@ export default function HomePage() {
   }
 
   const analyzeContent = async (input: string, type: 'sms' | 'url' | 'call'): Promise<AnalysisResult> => {
-    // This is a simplified AI analysis - in production, you'd integrate with actual AI models
+    try {
+      // Use ML-powered API for analysis
+      const response = await fetch('/api/analyze-sms', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sms_text: input,
+          type: type
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('API request failed')
+      }
+
+      const result = await response.json()
+      
+      // Return the ML analysis result
+      return {
+        label: result.label,
+        confidence: result.confidence,
+        redFlags: result.redFlags,
+        advice: result.advice,
+        riskLevel: result.riskLevel
+      }
+      
+    } catch (error) {
+      console.error('ML analysis failed, using fallback:', error)
+      
+      // Fallback to the original rule-based system
+      return fallbackAnalysis(input, type)
+    }
+  }
+
+  // Fallback rule-based analysis (original system)
+  const fallbackAnalysis = (input: string, type: 'sms' | 'url' | 'call'): AnalysisResult => {
+    // LEGITIMATE ENTITIES WHITELIST - These are trusted sources
+    const legitimateEntities = {
+      banks: [
+        'sbi', 'state bank of india', 'icici', 'hdfc', 'axis', 'kotak', 'yes bank',
+        'pnb', 'punjab national bank', 'canara', 'union bank', 'bank of baroda',
+        'idfc', 'federal bank', 'karnataka bank', 'south indian bank'
+      ],
+      government: [
+        'rbi', 'reserve bank of india', 'npci', 'upi', 'gov.in', 'nic.in',
+        'cybercrime.gov.in', 'trai', 'dot', 'meity', 'cert-in'
+      ],
+      upi: [
+        'upi', 'npci', 'paytm', 'phonepe', 'googlepay', 'amazonpay', 'bharatqr'
+      ]
+    }
+
+    // Check if message is from legitimate source
+    const isFromLegitimateSource = (text: string): boolean => {
+      const textLower = text.toLowerCase()
+      
+      // Check for official sender IDs
+      const officialPatterns = [
+        /^[A-Z]{2,4}-[A-Z]{2,4}$/, // SBI-SMS, ICICI-BNK
+        /^[A-Z]{2,4}BNK$/, // SBIBNK, HDFCBNK
+        /^[A-Z]{2,4}UPI$/, // SBIUPI, ICICIUPI
+        /^[A-Z]{2,4}GOV$/, // RBIGOV, NPCIGOV
+      ]
+      
+      // Check for legitimate domain patterns
+      const legitimateDomains = [
+        /@sbi\.co\.in$/i,
+        /@icicibank\.com$/i,
+        /@hdfcbank\.com$/i,
+        /@axisbank\.com$/i,
+        /@rbi\.org\.in$/i,
+        /@npc\.org\.in$/i,
+        /@gov\.in$/i,
+        /@nic\.in$/i
+      ]
+      
+      // Check if contains legitimate entity names
+      const hasLegitimateEntity = legitimateEntities.banks.some(bank => 
+        textLower.includes(bank)
+      ) || legitimateEntities.government.some(gov => 
+        textLower.includes(gov)
+      )
+      
+      return hasLegitimateEntity || officialPatterns.some(pattern => pattern.test(text))
+    }
+
+    // ENHANCED SCAM DETECTION with context awareness
     const suspiciousKeywords = [
-      'KYC expired', 'prize', 'urgent', 'verify account', 'bank account blocked',
-      'OTP', 'click here', 'limited time', 'free money', 'lottery', 'inheritance'
+      'kyc expired', 'prize', 'urgent', 'verify account', 'bank account blocked',
+      'otp', 'click here', 'limited time', 'free money', 'lottery', 'inheritance',
+      'account suspended', 'security alert', 'immediate action'
     ]
     
     const scamKeywords = [
       'your account has been suspended', 'immediate action required',
-      'click to verify', 'confirm your details', 'security alert'
+      'click to verify', 'confirm your details', 'security alert',
+      'verify your kyc', 'update your details', 'reactivate account'
     ]
     
     const inputLower = input.toLowerCase()
     let score = 0
     const redFlags: string[] = []
     
-    // Check for suspicious patterns
+    // FIRST: Check if it's from a legitimate source
+    if (isFromLegitimateSource(input)) {
+      // Reduce score for legitimate sources but still check for suspicious patterns
+      score -= 0.3
+      redFlags.push('Message appears to be from legitimate source')
+      
+      // Check for legitimate but urgent messages (like real security alerts)
+      if (/\b(urgent|immediate|security|alert)\b/i.test(input)) {
+        // These might be legitimate security alerts
+        if (inputLower.includes('otp') && inputLower.includes('transaction')) {
+          // Legitimate OTP message
+          score -= 0.2
+          redFlags.push('Appears to be legitimate transaction OTP')
+        } else if (inputLower.includes('kyc') && inputLower.includes('update')) {
+          // Legitimate KYC update request
+          score -= 0.1
+          redFlags.push('Appears to be legitimate KYC update request')
+        }
+      }
+    }
+    
+    // Check for suspicious patterns (but with reduced weight for legitimate sources)
+    const weightMultiplier = isFromLegitimateSource(input) ? 0.5 : 1.0
+    
     suspiciousKeywords.forEach(keyword => {
       if (inputLower.includes(keyword.toLowerCase())) {
-        score += 0.3
+        score += 0.3 * weightMultiplier
         redFlags.push(`Contains suspicious keyword: "${keyword}"`)
       }
     })
@@ -67,31 +180,49 @@ export default function HomePage() {
     // Check for scam patterns
     scamKeywords.forEach(keyword => {
       if (inputLower.includes(keyword.toLowerCase())) {
-        score += 0.5
+        score += 0.5 * weightMultiplier
         redFlags.push(`Contains scam keyword: "${keyword}"`)
       }
     })
     
     // Check for urgency indicators
     if (/\b(urgent|immediate|now|quick|hurry)\b/i.test(input)) {
-      score += 0.2
+      score += 0.2 * weightMultiplier
       redFlags.push('Uses urgency tactics')
     }
     
     // Check for suspicious URLs
-    if (type === 'url' && /(bit\.ly|tinyurl|goo\.gl)/i.test(input)) {
-      score += 0.4
-      redFlags.push('Uses URL shortener (potential redirection)')
+    if (type === 'url') {
+      if (/(bit\.ly|tinyurl|goo\.gl)/i.test(input)) {
+        score += 0.4
+        redFlags.push('Uses URL shortener (potential redirection)')
+      }
+      
+      // Check for legitimate bank domains
+      const legitimateBankDomains = [
+        'sbi.co.in', 'icicibank.com', 'hdfcbank.com', 'axisbank.com',
+        'pnb.co.in', 'canarabank.com', 'unionbankofindia.co.in',
+        'bankofbaroda.in', 'rbi.org.in', 'npc.org.in'
+      ]
+      
+      const hasLegitimateDomain = legitimateBankDomains.some(domain => 
+        inputLower.includes(domain)
+      )
+      
+      if (hasLegitimateDomain) {
+        score -= 0.3
+        redFlags.push('URL contains legitimate bank domain')
+      }
     }
     
-    // Determine result
+    // Determine result with improved logic
     let label: 'Safe' | 'Suspicious' | 'Scam'
     let riskLevel: 'Low' | 'Medium' | 'High'
     
     if (score >= 0.7) {
       label = 'Scam'
       riskLevel = 'High'
-    } else if (score >= 0.3) {
+    } else if (score >= 0.2) {
       label = 'Suspicious'
       riskLevel = 'Medium'
     } else {
@@ -99,16 +230,28 @@ export default function HomePage() {
       riskLevel = 'Low'
     }
     
-    const confidence = Math.min(0.95, Math.max(0.6, score + 0.6))
+    const confidence = Math.min(0.95, Math.max(0.6, Math.abs(score) + 0.6))
     
-    // Generate advice based on risk level
+    // Generate context-aware advice
     let advice = ''
     if (label === 'Safe') {
-      advice = 'This appears to be safe. Continue with normal caution.'
+      if (isFromLegitimateSource(input)) {
+        advice = 'This appears to be a legitimate message from a trusted source. However, always verify through official channels if unsure.'
+      } else {
+        advice = 'This appears to be safe. Continue with normal caution.'
+      }
     } else if (label === 'Suspicious') {
-      advice = 'Exercise caution. Do not share personal information or click suspicious links.'
+      if (isFromLegitimateSource(input)) {
+        advice = 'This message is from a legitimate source but contains some concerning elements. Contact the official support directly to verify.'
+      } else {
+        advice = 'Exercise caution. Do not share personal information or click suspicious links.'
+      }
     } else {
-      advice = 'This is likely a scam. Do not respond, click, or share any information. Report immediately.'
+      if (isFromLegitimateSource(input)) {
+        advice = 'WARNING: This appears to be from a legitimate source but shows high scam indicators. Contact the official support immediately to verify authenticity.'
+      } else {
+        advice = 'This is likely a scam. Do not respond, click, or share any information. Report immediately.'
+      }
     }
     
     return {

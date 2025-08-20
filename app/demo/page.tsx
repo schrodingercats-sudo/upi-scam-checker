@@ -16,7 +16,7 @@ export default function DemoPage() {
       risk: 'Scam',
       confidence: 92,
       redFlags: [
-        'Contains suspicious keyword: "KYC expired"',
+        'Contains suspicious keyword: "kyc expired"',
         'Uses urgency tactics',
         'Uses URL shortener (potential redirection)',
         'Contains scam keyword: "click to verify"'
@@ -52,6 +52,47 @@ export default function DemoPage() {
         'Contains suspicious keyword: "limited time"'
       ],
       advice: 'This is definitely a scam. No legitimate company gives away money like this. Do not click any links or provide personal information.'
+    },
+    {
+      id: 'legitimate-bank-otp',
+      title: 'Legitimate SBI OTP',
+      type: 'SMS',
+      content: 'SBI: Your OTP for transaction of ₹500 to merchant XYZ is 123456. Valid for 10 minutes. Do not share this OTP with anyone. -SBIBNK',
+      risk: 'Safe',
+      confidence: 85,
+      redFlags: [
+        'Message appears to be from legitimate source',
+        'Appears to be legitimate transaction OTP'
+      ],
+      advice: 'This appears to be a legitimate message from a trusted source. However, always verify through official channels if unsure.'
+    },
+    {
+      id: 'legitimate-kyc-update',
+      title: 'Legitimate KYC Update Request',
+      type: 'SMS',
+      content: 'HDFC Bank: Dear Customer, please update your KYC details by visiting your nearest branch or through NetBanking. This is mandatory for continued banking services. -HDFCBNK',
+      risk: 'Safe',
+      confidence: 78,
+      redFlags: [
+        'Message appears to be from legitimate source',
+        'Appears to be legitimate KYC update request'
+      ],
+      advice: 'This appears to be a legitimate message from a trusted source. However, always verify through official channels if unsure.'
+    },
+    {
+      id: 'suspicious-legitimate-source',
+      title: 'Suspicious Message from Legitimate Source',
+      type: 'SMS',
+      content: 'ICICI Bank: URGENT: Your account has been suspended due to security concerns. Click here to verify: icicibank.com/verify-now. Immediate action required. -ICICIBK',
+      risk: 'Suspicious',
+      confidence: 72,
+      redFlags: [
+        'Message appears to be from legitimate source',
+        'Contains suspicious keyword: "account suspended"',
+        'Uses urgency tactics',
+        'Contains scam keyword: "click to verify"'
+      ],
+      advice: 'This message is from a legitimate source but contains some concerning elements. Contact the official support directly to verify.'
     },
     {
       id: 'safe-message',
