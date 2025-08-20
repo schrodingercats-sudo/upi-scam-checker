@@ -38,12 +38,15 @@ def parse_domains(urls: List[str]) -> List[str]:
 
 
 def sender_heuristics(text: str) -> str:
-    # Try extract possible sender tokens like "-HDFCBK", or prefixes in text body
-    m = re.search(r'\b(?:-([A-Z]{3,8}))\b', text)
+    """
+    Extract a probable sender identifier only when a real sender ID pattern
+    is present (e.g., VM-HDFCBK). We deliberately avoid returning matches
+    based solely on brand names appearing in the body to prevent spoofed
+    messages (e.g., "ICICI" mentioned in text) from being whitelisted.
+    """
+    # Common sender ID formats used by Indian DLT (e.g., VM-ICICIB, AX-HDFCBK)
+    m = re.search(r'\b[A-Z]{2,4}-([A-Z0-9]{3,10})\b', text)
     if m:
         return m.group(1).lower()
-    # fallback: look for bank names in body
-    for k in ['sbi', 'icici', 'hdfc', 'axis', 'pnb', 'canara', 'kotak', 'yes bank', 'union bank']:
-        if k in text.lower():
-            return k
+    # No reliable sender token found
     return ''

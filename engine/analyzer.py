@@ -123,6 +123,15 @@ def analyze_message(text: str, phone: str = '', url: str = '') -> Dict[str, Any]
         level = 'Medium'
         conf = min(conf, 80)
 
+    # Extra guard: if any domain contains a bank brand but is not whitelisted, ensure at least Suspicious
+    if cat == 'Safe':
+        brand_tokens = ['sbi', 'hdfc', 'icici', 'axis', 'pnb', 'canara', 'kotak']
+        if any(any(bt in d for bt in brand_tokens) for d in domains):
+            if not any(d in domains for d in ['sbi.co.in','icicibank.com','hdfcbank.com','axisbank.com','pnb.co.in','canarabank.com','kotak.com']):
+                cat = 'Suspicious'
+                level = 'Medium'
+                conf = min(conf, 80)
+
     out = {
         'classification': cat,
         'confidence_score': f'{conf}%',

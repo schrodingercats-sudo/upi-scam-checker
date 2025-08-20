@@ -24,10 +24,12 @@ TIME_PRESSURE = re.compile(r'\b(\d+\s*(?:min|mins|minutes|hour|hours|hr|hrs))\b|
 
 def is_whitelisted(sender: str, domains: List[str]) -> bool:
     s = (sender or '').lower().strip()
+    # Sender-based whitelist only if we have a true sender token (from DLT pattern), not just brand mention
     if s and s in WHITELIST_SENDERS:
         return True
     for d in domains or []:
         host = d.lower()
+        # Exact official domains only. Do not treat lookalikes or hyphenated brand domains as whitelisted.
         if host in WHITELIST_DOMAINS or any(host.endswith('.' + w) for w in WHITELIST_DOMAINS):
             return True
     return False
@@ -45,10 +47,17 @@ def link_risk(domains: List[str]) -> (int, List[str]):
         if any(sh in host for sh in SHORTENERS):
             score += 10
             reasons.append('Shortened URL detected')
-        # homograph/brand misuse heuristic
-        if '-' in host and any(b in host for b in ['sbi', 'hdfc', 'icici', 'axis', 'pnb']):
+        # brand-spoof/homograph detection e.g., icici-bank-verify.net
+        brand_tokens = ['sbi', 'hdfc', 'icici', 'axis', 'pnb', 'canara', 'kotak']
+        if any(bt in host for bt in brand_tokens):
+            # If host is not an exact whitelisted bank domain (or subdomain), penalize strongly
+            if host not in WHITELIST_DOMAINS and not any(host.endswith('.' + w) for w in WHITELIST_DOMAINS):
+                score += 15
+                reasons.append('Brand name present on non-official domain')
+        # hyphenated or multi-token brand-like domain often used in phishing
+        if '-' in host and any(bt in host for bt in brand_tokens):
             score += 10
-            reasons.append('Potential homograph/brand misuse in domain')
+            reasons.append('Suspicious hyphenated brand-like domain')
     return min(score, WEIGHTS['link_risk']), reasons
 
 

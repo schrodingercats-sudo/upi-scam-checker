@@ -43,15 +43,18 @@ export default function HomePage() {
   const analyzeContent = async (input: string, type: 'sms' | 'url' | 'call' | 'track'): Promise<AnalysisResult> => {
     try {
       // Use ML-powered API for analysis
+      // Build correct payload for the API route
+      const payload: any = {}
+      if (type === 'sms') payload.text = input
+      else if (type === 'url') payload.url = input
+      else if (type === 'track') payload.phone = input
+
       const response = await fetch('/api/analyze-sms', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          sms_text: input,
-          type: type
-        }),
+        body: JSON.stringify(payload),
       })
 
       if (!response.ok) {
@@ -59,14 +62,27 @@ export default function HomePage() {
       }
 
       const result = await response.json()
-      
-      // Return the ML analysis result
+
+      // Map backend fields → frontend shape
+      const classification = (result.classification || result.label || 'Suspicious') as 'Safe' | 'Suspicious' | 'Scam'
+      const riskLevel = (result.risk_level || result.riskLevel || 'Medium') as 'Low' | 'Medium' | 'High'
+      const redFlags: string[] = result.red_flags || result.redFlags || []
+      const advice: string = result.recommended_action || result.advice || 'Be cautious. Verify via official site.'
+      const confidenceRaw: string | number = result.confidence_score ?? result.confidence ?? '0%'
+      const confidence = typeof confidenceRaw === 'number'
+        ? Math.max(0, Math.min(1, confidenceRaw > 1 ? confidenceRaw / 100 : confidenceRaw))
+        : Math.max(0, Math.min(1, parseFloat(String(confidenceRaw).replace('%', '')) / 100))
+
+      // Frontend safety guard: any red flag ⇒ at least Suspicious and cap Safe confidence at 0.8
+      const safeGuardedLabel: 'Safe' | 'Suspicious' | 'Scam' = (redFlags.length > 0 && classification === 'Safe') ? 'Suspicious' : classification
+      const safeGuardedConfidence = (redFlags.length > 0 && safeGuardedLabel === 'Safe') ? Math.min(confidence, 0.8) : confidence
+
       return {
-        label: result.label,
-        confidence: result.confidence,
-        redFlags: result.redFlags,
-        advice: result.advice,
-        riskLevel: result.riskLevel
+        label: safeGuardedLabel,
+        confidence: safeGuardedConfidence,
+        redFlags,
+        advice,
+        riskLevel
       }
       
     } catch (error) {
