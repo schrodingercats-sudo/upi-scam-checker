@@ -44,3 +44,43 @@ next-env.d.ts
 
 # OS
 Thumbs.db
+
+# python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# logs and caches
+logs/
+*.log
+*.tmp
+*.cache
+
+# model/data artifacts (avoid pushing huge files)
+*.csv
+*.jsonl
+*.pkl
+*.pkl.bz2
+*.pkl.gz
+*.joblib
+*.h5
+*.hdf5
+*.ckpt
+*.weights.h5
+*.pt
+*.onnx
+
+# allow small public assets
+!public/favicon.ico
+!public/icon.png
+!public/apple-icon.png
+!public/manifest.json
+
+# known large artifacts in repo root
+ultimate_scam_dataset.csv
+ultimate_scam_dataset.json
+ckpt_10m.weights.h5
+scam_detector_10m.h5
+ultimate_scam_detector_10m.h5

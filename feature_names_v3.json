@@ -1,0 +1,1 @@
+["text_length", "word_count", "contains_bank", "contains_gov", "contains_scam_keywords", "urgency_count", "contains_url", "contains_short_url_or_suspicious_domain", "contains_otp", "contains_amount", "official_sender", "caps_percentage", "lottery_prize", "processing_fee", "account_blocked", "kyc_issues", "security_alert", "action_required", "suspicious_actions", "refund_claim"]

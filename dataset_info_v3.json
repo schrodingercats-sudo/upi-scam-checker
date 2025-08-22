@@ -1,0 +1,35 @@
+{
+  "total_samples": 25537,
+  "scam_count": 23290,
+  "safe_count": 2247,
+  "feature_count": 20,
+  "training_samples": 20429,
+  "testing_samples": 5108,
+  "cv_model": "RandomForest",
+  "cv_accuracy": 0.9998042094958395,
+  "test_accuracy": 1.0,
+  "metadata": {
+    "sources": [
+      {
+        "file": "ml_training_data.csv",
+        "count": 12739,
+        "loaded": 11630
+      },
+      {
+        "file": "enhanced_training_data.csv",
+        "count": 12739,
+        "loaded": 23260
+      },
+      {
+        "file": "collected_sms_data.csv",
+        "count": 39,
+        "loaded": 23280
+      },
+      {
+        "file": "upi_sms_whatsapp_dataset_seed.csv",
+        "count": 20,
+        "loaded": 23290
+      }
+    ]
+  }
+}

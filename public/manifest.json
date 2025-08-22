@@ -1,0 +1,21 @@
+{
+  "name": "UPI Scam Checker",
+  "short_name": "UPI Checker",
+  "description": "AI-powered UPI scam detection tool to protect yourself from digital fraud",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

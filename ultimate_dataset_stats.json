@@ -1,0 +1,8 @@
+{
+  "total_samples": 1000000,
+  "scam_count": 500000,
+  "legitimate_count": 500000,
+  "evasion_detected": 172196,
+  "generated_at": "2025-08-22T10:09:46.279197",
+  "dataset_version": "4.0_ultimate"
+}

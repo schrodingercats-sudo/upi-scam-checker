@@ -19,20 +19,21 @@ _FEATURES = None
 def _load_ml():
     global _MODEL, _SCALER, _FEATURES
     if _MODEL is None:
-        with open('sms_scam_model.pkl', 'rb') as f:
+        # Use the enhanced v3 model instead of the old one
+        with open('sms_scam_model_v3.pkl', 'rb') as f:
             _MODEL = pickle.load(f)
     if _SCALER is None:
-        with open('sms_scam_scaler.pkl', 'rb') as f:
+        with open('sms_scam_scaler_v3.pkl', 'rb') as f:
             _SCALER = pickle.load(f)
     if _FEATURES is None:
-        with open('feature_names.json', 'r') as f:
+        with open('feature_names_v3.json', 'r') as f:
             _FEATURES = json.load(f)
 
 
 def _ml_score(text: str) -> float:
-    from train_ml_model import SMSFeatureExtractor
+    from train_enhanced_model_v3 import EnhancedSMSFeatureExtractor
     _load_ml()
-    extractor = SMSFeatureExtractor()
+    extractor = EnhancedSMSFeatureExtractor()
     feats = extractor.extract_features(text)
     X = _SCALER.transform([feats])
     proba = _MODEL.predict_proba(X)[0][1]
@@ -93,7 +94,16 @@ def analyze_message(text: str, phone: str = '', url: str = '') -> Dict[str, Any]
     risk += lscore + pscore
     risk = max(0, min(100, risk))
 
-    if risk <= 20 and not reasons and not lreasons and not preasons:
+    # Enhanced classification logic with ML priority
+    if ml_prob >= 0.95:  # Very high ML confidence for scam
+        cat = 'Scam'
+        level = 'High'
+        conf = max(90, int(ml_prob * 100))
+    elif ml_prob >= 0.8:  # High ML confidence for scam
+        cat = 'Scam'
+        level = 'High'
+        conf = max(80, int(ml_prob * 100))
+    elif risk <= 20 and not reasons and not lreasons and not preasons:
         cat = 'Safe'
         level = 'Low'
         conf = max(80, int((1 - ml_prob) * 100))
@@ -131,6 +141,19 @@ def analyze_message(text: str, phone: str = '', url: str = '') -> Dict[str, Any]
                 cat = 'Suspicious'
                 level = 'Medium'
                 conf = min(conf, 80)
+
+    # Hard rule: brand-spoof domain present ⇒ at least Suspicious; with time pressure/verify language ⇒ Scam
+    brand_spoof = any('non-official domain' in r.lower() or 'hyphenated brand' in r.lower() for r in lreasons)
+    if brand_spoof:
+        if any('time pressure' in r.lower() or 'urgent' in r.lower() or 'verify' in r.lower() for r in reasons):
+            cat = 'Scam'
+            level = 'High'
+            conf = max(conf, 85)
+        else:
+            if cat == 'Safe':
+                cat = 'Suspicious'
+                level = 'Medium'
+                conf = min(max(conf, 70), 85)
 
     out = {
         'classification': cat,

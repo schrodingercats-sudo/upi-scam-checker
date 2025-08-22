@@ -231,6 +231,35 @@ export default function HomePage() {
       }
     }
     
+    // URL/domain heuristics (applies to both sms and url types)
+    const extractDomains = (text: string): string[] => {
+      const urls = text.match(/https?:\/\/[^\s]+/gi) || []
+      return urls
+        .map(u => {
+          try { return new URL(u).host.toLowerCase() } catch { return '' }
+        })
+        .filter(Boolean)
+    }
+    const domains = extractDomains(inputLower)
+
+    const officialDomains = [
+      'sbi.co.in', 'icicibank.com', 'hdfcbank.com', 'axisbank.com', 'pnb.co.in', 'canarabank.com',
+      'unionbankofindia.co.in', 'bankofbaroda.in', 'rbi.org.in', 'npci.org.in'
+    ]
+    const brandTokens = ['sbi', 'icici', 'hdfc', 'axis', 'pnb', 'canara', 'kotak']
+    for (const host of domains) {
+      const isOfficial = officialDomains.includes(host) || officialDomains.some(d => host.endsWith('.' + d))
+      const hasBrand = brandTokens.some(b => host.includes(b))
+      if (hasBrand && !isOfficial) {
+        score += 0.6
+        redFlags.push('Brand name present on non-official domain')
+      }
+      if (host.includes('-') && hasBrand) {
+        score += 0.4
+        redFlags.push('Suspicious hyphenated brand-like domain')
+      }
+    }
+
     // Determine result with improved logic
     let label: 'Safe' | 'Suspicious' | 'Scam'
     let riskLevel: 'Low' | 'Medium' | 'High'
@@ -247,6 +276,12 @@ export default function HomePage() {
     }
     
     const confidence = Math.min(0.95, Math.max(0.6, Math.abs(score) + 0.6))
+
+    // Guard: any red flag -> at least Suspicious; cap Safe confidence at 0.8
+    if (redFlags.length > 0 && label === 'Safe') {
+      label = 'Suspicious'
+      riskLevel = 'Medium'
+    }
     
     // Generate context-aware advice
     let advice = ''

@@ -23,7 +23,7 @@ SHORTENERS = {'bit.ly', 'tinyurl.com', 't.co', 'goo.gl', 'is.gd', 'cutt.ly'}
 WEIGHTS = {
     'rule_high': 50,
     'rule_medium': 25,
-    'ml_weight': 40,  # ml_score * 40
+    'ml_weight': 80,  # Increased ML weight for better scam detection
     'link_risk': 20,
     'phone_risk': 15,
 }
