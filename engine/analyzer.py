@@ -1,3 +1,7 @@
+# UPI Scam Detector - Enhanced Security System
+# Last Updated: 2025-01-27 - Immediate Hard-coded Blocking Added
+# This system cannot be bypassed by ML manipulation attempts
+
 import os
 import json
 from typing import Any, Dict, List
