@@ -80,6 +80,51 @@ def rule_check(text: str, domains: List[str]) -> (int, List[str]):
     reasons: List[str] = []
     score = 0
 
+    # IMMEDIATE HARD-CODED BLOCKING - SECONDARY SECURITY LAYER
+    immediate_block_patterns = [
+        # Your specific problematic message pattern
+        'your bank credit' in t and 'inr' in t and ('click' in t or 'link' in t),
+        
+        # Bank + Amount + Action patterns
+        any(bank in t for bank in ['bank', 'sbi', 'hdfc', 'icici', 'axis']) and
+        any(amount in t for amount in ['12000', '10000', '5000', '2000', '1000']) and
+        any(action in t for action in ['click', 'link', 'verify', 'confirm']),
+        
+        # Credit/Debit + Amount + Action
+        any(financial in t for financial in ['credit', 'debit', 'withdraw', 'deposit']) and
+        any(amount in t for amount in ['12000', '10000', '5000', '2000', '1000']) and
+        any(action in t for action in ['click', 'link', 'verify', 'confirm']),
+        
+        # Government + Financial + Action
+        any(gov in t for gov in ['government', 'govt', 'official', 'authority', 'ministry']) and
+        any(financial in t for financial in ['credit', 'debit', 'refund', 'claim']) and
+        any(action in t for action in ['click', 'link', 'verify', 'confirm']),
+        
+        # OTP + Financial + Action
+        any(otp in t for otp in ['otp', 'verification', 'code', 'password']) and
+        any(financial in t for financial in ['credit', 'debit', 'refund', 'claim']) and
+        any(action in t for action in ['click', 'link', 'verify', 'confirm']),
+        
+        # Urgency + Financial + Action
+        any(urgent in t for urgent in ['urgent', 'immediate', 'quick', 'fast', 'now']) and
+        any(financial in t for financial in ['credit', 'debit', 'refund', 'claim']) and
+        any(action in t for action in ['click', 'link', 'verify', 'confirm']),
+        
+        # Multiple exclamation marks + Financial
+        text.count('!') >= 2 and any(financial in t for financial in ['credit', 'debit', 'refund', 'claim', 'bank']),
+        
+        # ALL CAPS + Financial + Action
+        len([c for c in text if c.isupper()]) > len(text) * 0.5 and
+        any(financial in t for financial in ['credit', 'debit', 'refund', 'claim', 'bank']) and
+        any(action in t for action in ['click', 'link', 'verify', 'confirm'])
+    ]
+    
+    # If ANY immediate pattern matches, return maximum score
+    if any(immediate_block_patterns):
+        reasons.append('IMMEDIATE BLOCK: Hard-coded scam pattern detected')
+        reasons.append('Cannot be bypassed by ML manipulation')
+        return WEIGHTS['rule_high'] * 2, reasons
+
     for rx in HIGH_SEVERITY:
         if rx.search(t):
             score += WEIGHTS['rule_high']

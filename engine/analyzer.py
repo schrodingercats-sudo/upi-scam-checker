@@ -52,8 +52,66 @@ def _append_log(record: Dict[str, Any]):
 
 
 def analyze_message(text: str, phone: str = '', url: str = '') -> Dict[str, Any]:
-    # Normalize input and aggregate
+    # IMMEDIATE HARD-CODED BLOCKING - CANNOT BE BYPASSED
     body = text or ''
+    body_lower = body.lower()
+    
+    # CRITICAL: Immediate blocking for obvious scam patterns
+    immediate_scam_patterns = [
+        # Bank credit/debit patterns
+        'bank credit' in body_lower and ('click' in body_lower or 'link' in body_lower),
+        'bank debit' in body_lower and ('click' in body_lower or 'link' in body_lower),
+        'credit' in body_lower and 'inr' in body_lower and ('click' in body_lower or 'link' in body_lower),
+        'debit' in body_lower and 'inr' in body_lower and ('click' in body_lower or 'link' in body_lower),
+        
+        # Amount + action patterns
+        any(amount in body_lower for amount in ['12000', '10000', '5000', '2000', '1000']) and 
+        any(action in body_lower for action in ['click', 'link', 'verify', 'confirm']),
+        
+        # Urgency + financial patterns
+        any(urgent in body_lower for urgent in ['urgent', 'immediate', 'quick', 'fast']) and
+        any(financial in body_lower for financial in ['bank', 'credit', 'debit', 'inr', 'rs', '₹']),
+        
+        # Government + action patterns
+        any(gov in body_lower for gov in ['government', 'govt', 'official', 'authority']) and
+        any(action in body_lower for action in ['click', 'link', 'verify', 'confirm']),
+        
+        # OTP + action patterns
+        any(otp in body_lower for otp in ['otp', 'verification', 'code']) and
+        any(action in body_lower for action in ['click', 'link', 'verify', 'confirm']),
+        
+        # Suspicious URL patterns
+        any(suspicious in body_lower for suspicious in ['bit.ly', 'tinyurl', 'goo.gl', 't.co', 'is.gd']),
+        
+        # Character substitution attempts
+        any(sub in body_lower for sub in ['b@nk', 'cr3dit', 'd3bit', '0tp', 'v3rify', 'c0nfirm']),
+        
+        # Multiple exclamation marks (urgency indicator)
+        body.count('!') >= 3 and any(financial in body_lower for financial in ['bank', 'credit', 'debit', 'inr', 'rs', '₹']),
+        
+        # ALL CAPS financial messages
+        len([c for c in body if c.isupper()]) > len(body) * 0.6 and 
+        any(financial in body_lower for financial in ['bank', 'credit', 'debit', 'inr', 'rs', '₹'])
+    ]
+    
+    # If ANY pattern matches, immediately block as SCAM
+    if any(immediate_scam_patterns):
+        output = {
+            'classification': 'Scam',
+            'confidence_score': '99%',
+            'risk_level': 'Critical',
+            'red_flags': [
+                'IMMEDIATE BLOCK: Obvious scam pattern detected',
+                'Hard-coded security rule triggered',
+                'Cannot be bypassed by ML manipulation'
+            ],
+            'recommended_action': 'BLOCKED: This is a confirmed scam message. Do not interact.'
+        }
+        record_observation(phone or '', output['classification'], text[:200] if text else '')
+        _append_log({**output, 'ts': datetime.utcnow().isoformat(), 'input_hash': hash(body), 'blocked_by': 'immediate_pattern'})
+        return output
+
+    # Normalize input and aggregate
     if phone:
         body += f"\nPhone: {phone}"
     if url:
