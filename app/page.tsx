@@ -122,7 +122,10 @@ export default function Home() {
         {activeTab === 'analyzer' && (
           <ScamAnalyzer
             activeTab="sms"
-            onTabChange={(tab) => setActiveTab(tab)}
+            onTabChange={(tab) => {
+              // Handle internal ScamAnalyzer tab changes
+              console.log('ScamAnalyzer tab changed to:', tab)
+            }}
             onAnalyze={handleAnalyze}
             isAnalyzing={isAnalyzing}
           />
