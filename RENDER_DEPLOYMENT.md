@@ -27,7 +27,7 @@ python render_backend/deploy_to_render.py
    - **Root Directory**: `render_backend`
    - **Runtime**: `Python 3`
    - **Build Command**: `pip install -r requirements_simple.txt`
-   - **Start Command**: `gunicorn app:app`
+   - **Start Command**: `gunicorn app:app` ⭐ **IMPORTANT: Use `gunicorn` not `unicorn`**
    - **Plan**: Free (or paid if you need more resources)
 
 ### 3. Environment Variables (Optional)
@@ -97,6 +97,10 @@ Once deployed, you'll get a URL like: `https://your-app-name.onrender.com`
 - Use `requirements_simple.txt` instead of `requirements.txt`
 - This avoids pandas/numpy compatibility issues with Python 3.13
 
+### Start Command Error
+- **CRITICAL**: Use `gunicorn app:app` NOT `unicorn app:app`
+- The command must be exactly: `gunicorn app:app`
+
 ### Backend Not Responding
 - Check Render logs for errors
 - Verify `requirements_simple.txt` has all dependencies
@@ -137,6 +141,7 @@ If you encounter issues:
 3. Test backend endpoints directly
 4. Check environment variables in Vercel
 5. Use `requirements_simple.txt` for initial deployment
+6. **Ensure start command is exactly: `gunicorn app:app`**
 
 ---
 

@@ -7,222 +7,188 @@ Deploy on Render to run ML models
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
-import sys
 import json
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app)  # Allow cross-origin requests from Vercel
+CORS(app)
+
+# Import the enhanced analyzer
+try:
+    from engine.enhanced_analyzer import analyze_message_enhanced
+    ENHANCED_ANALYZER_AVAILABLE = True
+    print("✅ Enhanced analyzer imported successfully")
+except ImportError as e:
+    print(f"⚠️ Enhanced analyzer not available: {e}")
+    ENHANCED_ANALYZER_AVAILABLE = False
 
 @app.route('/health', methods=['GET'])
 def health_check():
-    """Health check endpoint for Render"""
+    """Health check endpoint"""
     return jsonify({
-        'status': 'healthy',
-        'ml_available': False,  # Will be True once ML modules are loaded
-        'timestamp': datetime.utcnow().isoformat(),
-        'version': '2.0.0',
-        'backend': 'Render Python Backend'
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "enhanced_analyzer": ENHANCED_ANALYZER_AVAILABLE
     })
 
 @app.route('/analyze', methods=['POST'])
-def analyze():
-    """Main analysis endpoint with immediate blocking"""
+def analyze_message():
+    """Analyze message using enhanced detection"""
     try:
         data = request.get_json()
-        text = data.get('text', '')
-        phone = data.get('phone', '')
-        url = data.get('url', '')
         
-        if not text and not phone and not url:
-            return jsonify({'error': 'Provide at least one of: text, phone, url'}), 400
+        if not data or 'text' not in data:
+            return jsonify({"error": "Missing 'text' field"}), 400
         
-        # Apply immediate hard-coded blocking (same logic as Vercel)
-        immediate_blocking_result = immediate_blocking_check(text)
-        if immediate_blocking_result:
-            return jsonify(immediate_blocking_result)
+        message = data['text']
+        message_type = data.get('type', 'sms')
         
-        # For now, use enhanced fallback analysis
-        result = enhanced_fallback_analysis(text, phone, url)
-        return jsonify(result)
+        print(f"🔍 Analyzing message: {message[:50]}...")
+        
+        # Use enhanced analyzer if available
+        if ENHANCED_ANALYZER_AVAILABLE:
+            try:
+                # Get Gemini API key from environment
+                gemini_api_key = os.getenv('GOOGLE_GEMINI_API_KEY')
+                
+                if gemini_api_key:
+                    print("✅ Using enhanced analyzer with Google Gemini API")
+                    result = analyze_message_enhanced(message, message_type, gemini_api_key)
+                else:
+                    print("⚠️ No Gemini API key, using enhanced analyzer without Gemini")
+                    result = analyze_message_enhanced(message, message_type)
+                
+                # Format response
+                response = {
+                    "is_scam": result.get('is_scam', False),
+                    "risk_level": result.get('risk_level', 'Unknown'),
+                    "confidence": result.get('confidence', 0.0),
+                    "message_type": message_type,
+                    "timestamp": datetime.now().isoformat(),
+                    "analysis_method": result.get('analysis_method', 'enhanced_hybrid'),
+                    "risk_factors": result.get('risk_factors', []),
+                    "recommendations": result.get('recommendations', []),
+                    "summary": result.get('summary', ''),
+                    "technical_analysis": result.get('technical_analysis', ''),
+                    "ml_result": result.get('ml_result', {}),
+                    "rule_result": result.get('rule_result', {}),
+                    "gemini_result": result.get('gemini_result', {})
+                }
+                
+                print(f"🎯 Analysis complete: {response['risk_level']} ({response['confidence']:.1f}%)")
+                return jsonify(response)
+                
+            except Exception as e:
+                print(f"❌ Enhanced analyzer failed: {e}")
+                # Fall back to immediate blocking check
+                return immediate_blocking_check(message, message_type)
+        
+        else:
+            # Fall back to immediate blocking check
+            print("⚠️ Using fallback immediate blocking check")
+            return immediate_blocking_check(message, message_type)
             
     except Exception as e:
+        print(f"❌ Analysis failed: {e}")
         return jsonify({
-            'error': str(e),
-            'classification': 'Suspicious',
-            'confidence_score': '70%',
-            'risk_level': 'Medium',
-            'red_flags': [f'Analysis error: {str(e)}'],
-            'recommended_action': 'Error occurred during analysis. Exercise caution.'
+            "error": "Analysis failed",
+            "details": str(e)
         }), 500
 
-def immediate_blocking_check(text):
-    """Immediate blocking for obvious scam patterns - CANNOT BE BYPASSED"""
-    if not text:
-        return None
-        
-    body = text.lower()
+def immediate_blocking_check(message: str, message_type: str = "sms"):
+    """Immediate blocking check for obvious scam patterns"""
+    message_lower = message.lower()
     
-    # CRITICAL: Immediate blocking for obvious scam patterns
-    immediate_scam_patterns = [
-        # Bank credit/debit patterns
-        'bank credit' in body and ('click' in body or 'link' in body),
-        'bank debit' in body and ('click' in body or 'link' in body),
-        'credit' in body and 'inr' in body and ('click' in body or 'link' in body),
-        'debit' in body and 'inr' in body and ('click' in body or 'link' in body),
-        
-        # Amount + action patterns
-        any(amount in body for amount in ['12000', '10000', '5000', '2000', '1000']) and 
-        any(action in body for action in ['click', 'link', 'verify', 'confirm']),
-        
-        # Urgency + financial patterns
-        any(urgent in body for urgent in ['urgent', 'immediate', 'quick', 'fast']) and
-        any(financial in body for financial in ['bank', 'credit', 'debit', 'inr', 'rs', '₹']),
-        
-        # Government + action patterns
-        any(gov in body for gov in ['government', 'govt', 'official', 'authority']) and
-        any(action in body for action in ['click', 'link', 'verify', 'confirm']),
-        
-        # OTP + action patterns
-        any(otp in body for otp in ['otp', 'verification', 'code']) and
-        any(action in body for action in ['click', 'link', 'verify', 'confirm']),
-        
-        # Suspicious URL patterns
-        any(suspicious in body for suspicious in ['bit.ly', 'tinyurl', 'goo.gl', 't.co', 'is.gd']),
-        
-        # Character substitution attempts
-        any(sub in body for sub in ['b@nk', 'cr3dit', 'd3bit', '0tp', 'v3rify', 'c0nfirm']),
-        
-        # Multiple exclamation marks (urgency indicator)
-        text.count('!') >= 3 and any(financial in body for financial in ['bank', 'credit', 'debit', 'inr', 'rs', '₹']),
-        
-        # ALL CAPS financial messages
-        len([c for c in text if c.isupper()]) > len(text) * 0.6 and 
-        any(financial in body for financial in ['bank', 'credit', 'debit', 'inr', 'rs', '₹'])
+    # Critical scam patterns that should be blocked immediately
+    critical_patterns = [
+        "your bank credit",
+        "click on this link",
+        "urgent action required",
+        "account suspended",
+        "verify immediately",
+        "unusual activity detected",
+        "payment failed",
+        "refund available",
+        "prize won",
+        "lottery winner",
+        "inheritance",
+        "government refund",
+        "tax refund",
+        "bank transfer",
+        "upi payment",
+        "otp verification",
+        "account verification"
     ]
     
-    # If ANY pattern matches, immediately block as SCAM
-    if any(immediate_scam_patterns):
-        return {
-            'classification': 'Scam',
-            'confidence_score': '99%',
-            'risk_level': 'High',
-            'red_flags': [
-                'IMMEDIATE BLOCK: Obvious scam pattern detected',
-                'Hard-coded security rule triggered',
-                'Cannot be bypassed by ML manipulation'
-            ],
-            'recommended_action': 'BLOCKED: This is a confirmed scam message. Do not interact.',
-            'blocked_by': 'immediate_pattern',
-            'backend': 'Render Python Backend'
-        }
+    # Check for critical patterns
+    for pattern in critical_patterns:
+        if pattern in message_lower:
+            return jsonify({
+                "is_scam": True,
+                "risk_level": "Critical",
+                "confidence": 99.0,
+                "message_type": message_type,
+                "timestamp": datetime.now().isoformat(),
+                "analysis_method": "immediate_blocking",
+                "blocked_reason": f"Critical pattern detected: '{pattern}'",
+                "risk_factors": [f"Contains critical scam pattern: {pattern}"],
+                "recommendations": [
+                    "DO NOT click any links",
+                    "DO NOT provide personal information",
+                    "DO NOT call any numbers",
+                    "Report to authorities if needed"
+                ],
+                "summary": f"Message blocked due to critical scam pattern: {pattern}",
+                "technical_analysis": "Immediate blocking system detected obvious scam indicators"
+            })
     
-    return None  # No immediate blocking needed
-
-def enhanced_fallback_analysis(text, phone='', url=''):
-    """Enhanced fallback analysis system"""
-    input_text = text or ''
-    input_lower = input_text.lower()
+    # Check for suspicious URLs or phone numbers
+    if any(char in message for char in ['http://', 'https://', 'www.']):
+        if any(word in message_lower for word in ['click', 'verify', 'login', 'secure']):
+            return jsonify({
+                "is_scam": True,
+                "risk_level": "Critical",
+                "confidence": 95.0,
+                "message_type": message_type,
+                "timestamp": datetime.now().isoformat(),
+                "analysis_method": "immediate_blocking",
+                "blocked_reason": "Suspicious URL with action words",
+                "risk_factors": ["Contains suspicious URL with action words"],
+                "recommendations": [
+                    "DO NOT click the link",
+                    "Verify the sender independently",
+                    "Check official website directly"
+                ],
+                "summary": "Message blocked due to suspicious URL with action words",
+                "technical_analysis": "Immediate blocking system detected suspicious URL patterns"
+            })
     
-    # Enhanced scam detection patterns
-    scam_keywords = [
-        'urgent', 'immediate', 'suspended', 'blocked', 'expired', 'verification',
-        'click', 'click here', 'verify now', 'kyc pending', 'kyc expiring', 'lottery', 'prize',
-        'won', 'inheritance', 'free money', 'processing fee', 'refund', 'penalty', 'fir',
-        'under verification', 'share otp', 'provide otp', 'account blocked', 'security alert'
-    ]
-    
-    suspicious_keywords = [
-        'bank', 'credit', 'debit', 'inr', 'rs', '₹', 'otp', 'verification', 'kyc',
-        'update', 'confirm', 'verify', 'reactivate', 'suspended', 'blocked'
-    ]
-    
-    score = 0
-    red_flags = []
-    
-    # Check for scam keywords
-    for keyword in scam_keywords:
-        if keyword in input_lower:
-            score += 0.4
-            red_flags.append(f'Contains scam keyword: "{keyword}"')
-    
-    # Check for suspicious patterns
-    for keyword in suspicious_keywords:
-        if keyword in input_lower:
-            score += 0.2
-            red_flags.append(f'Contains suspicious keyword: "{keyword}"')
-    
-    # Check for urgency indicators
-    if any(urgent in input_lower for urgent in ['urgent', 'immediate', 'now', 'quick', 'hurry', 'fast']):
-        score += 0.3
-        red_flags.append('Uses urgency tactics')
-    
-    # Check for suspicious URLs
-    if any(suspicious in input_lower for suspicious in ['bit.ly', 'tinyurl', 'goo.gl', 't.co', 'is.gd']):
-        score += 0.5
-        red_flags.append('Uses URL shortener (potential redirection)')
-    
-    # Check for amount patterns
-    import re
-    if re.search(r'\d+[\d,]*(?:\.\d+)?\s*(?:inr|rs\.?|₹)', input_lower) or re.search(r'(?:inr|rs\.?|₹)\s?\d+[\d,]*(?:\.\d+)?', input_lower):
-        score += 0.3
-        red_flags.append('Contains financial amount')
-    
-    # Check for action words
-    if any(action in input_lower for action in ['click', 'verify', 'confirm', 'update', 'reactivate']):
-        score += 0.3
-        red_flags.append('Requests action')
-    
-    # Check for multiple exclamation marks
-    exclamation_count = input_text.count('!')
-    if exclamation_count >= 2:
-        score += 0.2 * exclamation_count
-        red_flags.append(f'Uses {exclamation_count} exclamation marks (urgency indicator)')
-    
-    # Check for ALL CAPS
-    upper_case_count = len([c for c in input_text if c.isupper()])
-    if upper_case_count > len(input_text) * 0.5:
-        score += 0.3
-        red_flags.append('Uses excessive capitalization')
-    
-    # Determine classification
-    if score >= 0.8:
-        classification = 'Scam'
-        risk_level = 'High'
-        confidence = '90%'
-    elif score >= 0.4:
-        classification = 'Suspicious'
-        risk_level = 'Medium'
-        confidence = '75%'
-    else:
-        classification = 'Safe'
-        risk_level = 'Low'
-        confidence = '85%'
-    
-    # Safety guard: any red flag → at least Suspicious
-    if red_flags and classification == 'Safe':
-        classification = 'Suspicious'
-        risk_level = 'Medium'
-        confidence = '70%'
-    
-    # Generate advice
-    if classification == 'Safe':
-        recommended_action = 'This appears to be safe. Continue with normal caution.'
-    elif classification == 'Suspicious':
-        recommended_action = 'Exercise caution. Do not share personal information or click suspicious links.'
-    else:
-        recommended_action = 'This is likely a scam. Do not respond, click, or share any information. Report immediately.'
-    
-    return {
-        'classification': classification,
-        'confidence_score': confidence,
-        'risk_level': risk_level,
-        'red_flags': red_flags[:6],
-        'recommended_action': recommended_action,
-        'backend': 'Render Python Backend',
-        'analysis_type': 'enhanced_fallback'
-    }
+    # If no immediate blocking, return safe result
+    return jsonify({
+        "is_scam": False,
+        "risk_level": "Safe",
+        "confidence": 0.0,
+        "message_type": message_type,
+        "timestamp": datetime.now().isoformat(),
+        "analysis_method": "immediate_blocking",
+        "blocked_reason": None,
+        "risk_factors": [],
+        "recommendations": ["Continue with normal caution"],
+        "summary": "No immediate scam indicators detected",
+        "technical_analysis": "Immediate blocking system found no obvious scam patterns"
+    })
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    # Check for Gemini API key
+    gemini_api_key = os.getenv('GOOGLE_GEMINI_API_KEY')
+    if gemini_api_key:
+        print("✅ Google Gemini API key found")
+        print(f"🔑 API Key: {gemini_api_key[:10]}...{gemini_api_key[-4:]}")
+    else:
+        print("⚠️ No Google Gemini API key found")
+        print("   Set GOOGLE_GEMINI_API_KEY environment variable to enable Gemini analysis")
+    
+    print("🚀 Enhanced UPI Scam Detector Backend Starting...")
+    print(f"📊 Enhanced Analyzer Available: {ENHANCED_ANALYZER_AVAILABLE}")
+    
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)), debug=False)
