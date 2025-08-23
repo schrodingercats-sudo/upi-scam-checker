@@ -59,3 +59,6 @@ web_scraper.py
 enhanced_scraper.py
 debug_amount.py
 t_blocking.py
+
+# Exclude SecureUPI folder (causes build errors)
+SecureUPI/
