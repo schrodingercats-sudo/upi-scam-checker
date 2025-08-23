@@ -17,7 +17,7 @@ CORS(app)
 try:
     from engine.enhanced_analyzer import analyze_message_enhanced
     ENHANCED_ANALYZER_AVAILABLE = True
-    print("✅ Enhanced analyzer imported successfully")
+    print("✅ Enhanced analyzer with 2-step verification imported successfully")
 except ImportError as e:
     print(f"⚠️ Enhanced analyzer not available: {e}")
     ENHANCED_ANALYZER_AVAILABLE = False
@@ -28,12 +28,13 @@ def health_check():
     return jsonify({
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
-        "enhanced_analyzer": ENHANCED_ANALYZER_AVAILABLE
+        "enhanced_analyzer": ENHANCED_ANALYZER_AVAILABLE,
+        "features": ["2-step_verification", "false_positive_detection", "ml_model_verification"]
     })
 
 @app.route('/analyze', methods=['POST'])
 def analyze_message():
-    """Analyze message using enhanced detection"""
+    """Analyze message using enhanced 2-step verification system"""
     try:
         data = request.get_json()
         
@@ -43,7 +44,7 @@ def analyze_message():
         message = data['text']
         message_type = data.get('type', 'sms')
         
-        print(f"🔍 Analyzing message: {message[:50]}...")
+        print(f"🔍 Analyzing message with 2-step verification: {message[:50]}...")
         
         # Use enhanced analyzer if available
         if ENHANCED_ANALYZER_AVAILABLE:
@@ -52,34 +53,59 @@ def analyze_message():
                 gemini_api_key = os.getenv('GOOGLE_GEMINI_API_KEY')
                 
                 if gemini_api_key:
-                    print("✅ Using enhanced analyzer with Google Gemini API")
+                    print("✅ Using enhanced analyzer with 2-step verification and Google Gemini API")
                     result = analyze_message_enhanced(message, message_type, gemini_api_key)
                 else:
-                    print("⚠️ No Gemini API key, using enhanced analyzer without Gemini")
+                    print("⚠️ No Gemini API key, using enhanced analyzer without 2-step verification")
                     result = analyze_message_enhanced(message, message_type)
                 
-                # Format response
+                # Format response with 2-step verification details
                 response = {
                     "is_scam": result.get('is_scam', False),
                     "risk_level": result.get('risk_level', 'Unknown'),
                     "confidence": result.get('confidence', 0.0),
                     "message_type": message_type,
                     "timestamp": datetime.now().isoformat(),
-                    "analysis_method": result.get('analysis_method', 'enhanced_hybrid'),
+                    "analysis_method": result.get('analysis_method', 'enhanced_2step_verification'),
+                    
+                    # 2-step verification details
+                    "false_positive_detected": result.get('false_positive_detected', False),
+                    "false_negative_detected": result.get('false_negative_detected', False),
+                    "ml_model_verification": result.get('ml_model_verification', ''),
+                    "confidence_adjustment": result.get('confidence_adjustment', ''),
+                    
+                    # Analysis results
                     "risk_factors": result.get('risk_factors', []),
                     "recommendations": result.get('recommendations', []),
                     "summary": result.get('summary', ''),
                     "technical_analysis": result.get('technical_analysis', ''),
+                    
+                    # Detailed results from each step
                     "ml_result": result.get('ml_result', {}),
                     "rule_result": result.get('rule_result', {}),
-                    "gemini_result": result.get('gemini_result', {})
+                    "gemini_result": result.get('gemini_result', {}),
+                    
+                    # System information
+                    "system_version": "2.0.0",
+                    "features": ["immediate_blocking", "ml_analysis", "rule_analysis", "2step_verification"]
                 }
                 
-                print(f"🎯 Analysis complete: {response['risk_level']} ({response['confidence']:.1f}%)")
+                # Log the analysis results
+                if result.get('false_positive_detected'):
+                    print(f"🔍 2-STEP VERIFICATION: False positive detected and corrected!")
+                    print(f"   Original ML result: {result.get('ml_result', {}).get('risk_level', 'Unknown')}")
+                    print(f"   Final result: {response['risk_level']} ({response['confidence']:.1f}%)")
+                elif result.get('false_negative_detected'):
+                    print(f"🔍 2-STEP VERIFICATION: False negative detected and corrected!")
+                    print(f"   Original ML result: {result.get('ml_result', {}).get('risk_level', 'Unknown')}")
+                    print(f"   Final result: {response['risk_level']} ({response['confidence']:.1f}%)")
+                else:
+                    print(f"🎯 2-STEP VERIFICATION: Analysis complete - {response['risk_level']} ({response['confidence']:.1f}%)")
+                
                 return jsonify(response)
                 
             except Exception as e:
-                print(f"❌ Enhanced analyzer failed: {e}")
+                print(f"❌ Enhanced analyzer with 2-step verification failed: {e}")
                 # Fall back to immediate blocking check
                 return immediate_blocking_check(message, message_type)
         
@@ -139,7 +165,13 @@ def immediate_blocking_check(message: str, message_type: str = "sms"):
                     "Report to authorities if needed"
                 ],
                 "summary": f"Message blocked due to critical scam pattern: {pattern}",
-                "technical_analysis": "Immediate blocking system detected obvious scam indicators"
+                "technical_analysis": "Immediate blocking system detected obvious scam indicators",
+                "false_positive_detected": False,
+                "false_negative_detected": False,
+                "ml_model_verification": "Not applicable - immediate blocking",
+                "confidence_adjustment": "Not applicable - immediate blocking",
+                "system_version": "2.0.0",
+                "features": ["immediate_blocking"]
             })
     
     # Check for suspicious URLs or phone numbers
@@ -160,7 +192,13 @@ def immediate_blocking_check(message: str, message_type: str = "sms"):
                     "Check official website directly"
                 ],
                 "summary": "Message blocked due to suspicious URL with action words",
-                "technical_analysis": "Immediate blocking system detected suspicious URL patterns"
+                "technical_analysis": "Immediate blocking system detected suspicious URL patterns",
+                "false_positive_detected": False,
+                "false_negative_detected": False,
+                "ml_model_verification": "Not applicable - immediate blocking",
+                "confidence_adjustment": "Not applicable - immediate blocking",
+                "system_version": "2.0.0",
+                "features": ["immediate_blocking"]
             })
     
     # If no immediate blocking, return safe result
@@ -175,7 +213,13 @@ def immediate_blocking_check(message: str, message_type: str = "sms"):
         "risk_factors": [],
         "recommendations": ["Continue with normal caution"],
         "summary": "No immediate scam indicators detected",
-        "technical_analysis": "Immediate blocking system found no obvious scam patterns"
+        "technical_analysis": "Immediate blocking system found no obvious scam patterns",
+        "false_positive_detected": False,
+        "false_negative_detected": False,
+        "ml_model_verification": "Not applicable - immediate blocking",
+        "confidence_adjustment": "Not applicable - immediate blocking",
+        "system_version": "2.0.0",
+        "features": ["immediate_blocking"]
     })
 
 if __name__ == '__main__':
@@ -184,11 +228,20 @@ if __name__ == '__main__':
     if gemini_api_key:
         print("✅ Google Gemini API key found")
         print(f"🔑 API Key: {gemini_api_key[:10]}...{gemini_api_key[-4:]}")
+        print("🔄 2-Step Verification System: ENABLED")
     else:
         print("⚠️ No Google Gemini API key found")
-        print("   Set GOOGLE_GEMINI_API_KEY environment variable to enable Gemini analysis")
+        print("   Set GOOGLE_GEMINI_API_KEY environment variable to enable 2-step verification")
+        print("🔄 2-Step Verification System: DISABLED")
     
-    print("🚀 Enhanced UPI Scam Detector Backend Starting...")
+    print("🚀 Enhanced UPI Scam Detector with 2-Step Verification Backend Starting...")
     print(f"📊 Enhanced Analyzer Available: {ENHANCED_ANALYZER_AVAILABLE}")
+    print("🎯 Key Features:")
+    print("   • Immediate blocking for obvious scams")
+    print("   • ML model analysis (Step 1)")
+    print("   • Rule-based analysis")
+    print("   • Gemini AI 2-step verification (Step 2)")
+    print("   • False positive/negative detection")
+    print("   • Confidence score adjustments")
     
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)), debug=False)

@@ -12,6 +12,7 @@ from .config import WEIGHTS
 class EnhancedUPIAnalyzer:
     """
     Enhanced UPI Scam Detector combining ML model, rule-based analysis, and Google Gemini AI
+    with 2-step verification system
     """
     
     def __init__(self, gemini_api_key: str = None):
@@ -50,7 +51,7 @@ class EnhancedUPIAnalyzer:
     
     def analyze_message(self, message: str, message_type: str = "sms") -> Dict[str, Any]:
         """
-        Analyze message using multiple detection methods
+        Analyze message using 2-step verification system
         
         Args:
             message: Message content to analyze
@@ -74,22 +75,23 @@ class EnhancedUPIAnalyzer:
                 "timestamp": pd.Timestamp.now().isoformat()
             }
         
-        # 2. ML Model Analysis
+        # 2. ML Model Analysis (Step 1)
         ml_result = self._ml_analysis(message)
-        print(f"🤖 ML Analysis: {ml_result['risk_level']} ({ml_result['confidence']:.1f}%)")
+        print(f"🤖 ML Analysis (Step 1): {ml_result['risk_level']} ({ml_result['confidence']:.1f}%)")
         
         # 3. Rule-based Analysis
         rule_result = self._rule_analysis(message)
         print(f"📋 Rule Analysis: {rule_result['risk_level']} ({rule_result['confidence']:.1f}%)")
         
-        # 4. Google Gemini AI Analysis (if available)
+        # 4. Google Gemini AI Analysis with 2-Step Verification (Step 2)
         gemini_result = None
         if self.gemini_available and self.gemini_model:
             try:
-                gemini_result = self._gemini_analysis(message, message_type)
-                print(f"🧠 Gemini Analysis: {gemini_result['risk_level']} ({gemini_result['confidence']:.1f}%)")
+                # Pass BOTH original message AND our model's response to Gemini
+                gemini_result = self._gemini_2step_verification(message, message_type, ml_result, rule_result)
+                print(f"🧠 Gemini 2-Step Verification (Step 2): {gemini_result['risk_level']} ({gemini_result['confidence']:.1f}%)")
             except Exception as e:
-                print(f"⚠️ Gemini analysis failed: {e}")
+                print(f"⚠️ Gemini 2-step verification failed: {e}")
                 gemini_result = None
         
         # 5. Combine all results for final decision
@@ -172,7 +174,7 @@ class EnhancedUPIAnalyzer:
     
     def _ml_analysis(self, message: str) -> Dict[str, Any]:
         """
-        Analyze message using our trained ML model
+        Analyze message using our trained ML model (Step 1)
         """
         try:
             # Use existing ML analyzer
@@ -234,40 +236,57 @@ class EnhancedUPIAnalyzer:
                 "recommendations": ["Manual review required"]
             }
     
-    def _gemini_analysis(self, message: str, message_type: str) -> Dict[str, Any]:
+    def _gemini_2step_verification(self, message: str, message_type: str, 
+                                  ml_result: Dict, rule_result: Dict) -> Dict[str, Any]:
         """
-        Analyze message using Google Gemini AI
+        2-Step Verification: Gemini analyzes both original message AND our model's response
         """
         try:
-            # Create detailed prompt for UPI scam detection
-            prompt = f"""You are a highly specialized UPI (Unified Payments Interface) scam detection AI designed for deployment in fintech applications. Your role is to analyze {message_type} messages to identify potential fraud and scams related to digital banking and UPI transactions.
+            # Create detailed prompt for 2-step verification
+            prompt = f"""You are a highly specialized UPI (Unified Payments Interface) scam detection AI designed for deployment in fintech applications. You are performing a 2-step verification analysis.
 
-Key capabilities:
-- Detect phishing attempts, fake payment confirmations, and social engineering
-- Identify suspicious URLs, phone numbers, and sender information
-- Recognize common scam patterns in Indian digital payment systems
-- Analyze language patterns, urgency tactics, and legitimacy indicators
-- Provide actionable security recommendations
+**STEP 1 ANALYSIS RESULTS FROM OUR ML MODEL:**
+- ML Model Classification: {ml_result.get('is_scam', False)}
+- ML Confidence: {ml_result.get('confidence', 0):.1f}%
+- ML Risk Level: {ml_result.get('risk_level', 'Unknown')}
+- ML Risk Factors: {ml_result.get('risk_factors', [])}
+
+**STEP 1 ANALYSIS RESULTS FROM OUR RULE ENGINE:**
+- Rule Engine Classification: {rule_result.get('is_scam', False)}
+- Rule Confidence: {rule_result.get('confidence', 0):.1f}%
+- Rule Risk Level: {rule_result.get('risk_level', 'Unknown')}
+- Rule Risk Factors: {rule_result.get('risk_factors', [])}
+
+**ORIGINAL MESSAGE TO ANALYZE:**
+Message Type: {message_type}
+Message Content:
+\"\"\"
+{message}
+\"\"\"
+
+**YOUR TASK - 2-STEP VERIFICATION:**
+1. Analyze the original message independently
+2. Compare your analysis with our ML model's results
+3. Identify if our model made a false positive/negative
+4. Provide final verification with explanation
 
 You must respond with ONLY a valid JSON object in this exact format (no additional text before or after):
 {{
-  "summary": "Brief 2-3 sentence summary of the analysis",
+  "summary": "Brief 2-3 sentence summary of the 2-step verification analysis",
+  "original_message_analysis": "Your independent analysis of the original message",
+  "ml_model_verification": "Whether our ML model was correct or made an error",
+  "false_positive_detected": true/false,
+  "false_negative_detected": true/false,
   "risk_factors": ["Array of specific red flags found"],
   "legitimacy_indicators": ["Array of signs that suggest legitimacy"],
   "recommendations": ["Array of specific actions the user should take"],
   "technical_analysis": "Detailed technical explanation of findings",
   "risk_score": 1-10,
-  "is_scam": true/false
+  "is_scam": true/false,
+  "confidence_adjustment": "Explanation of any confidence adjustments made"
 }}
 
 CRITICAL: Respond with ONLY the JSON object above. No markdown, no explanations, no extra text.
-
-Analyze this {message_type} message for UPI/digital banking scam indicators:
-
-Message Content:
-\"\"\"
-{message}
-\"\"\"
 
 JSON response:"""
 
@@ -293,12 +312,21 @@ JSON response:"""
             confidence = (gemini_risk_score / 10) * 100
             risk_level = self._get_risk_level(confidence)
             
+            # Check for false positives/negatives
+            false_positive = analysis.get('false_positive_detected', False)
+            false_negative = analysis.get('false_negative_detected', False)
+            
             return {
                 "is_scam": analysis.get('is_scam', False) or confidence > 70,
                 "risk_level": risk_level,
                 "confidence": confidence,
                 "gemini_score": gemini_risk_score,
                 "summary": analysis.get('summary', ''),
+                "original_message_analysis": analysis.get('original_message_analysis', ''),
+                "ml_model_verification": analysis.get('ml_model_verification', ''),
+                "false_positive_detected": false_positive,
+                "false_negative_detected": false_negative,
+                "confidence_adjustment": analysis.get('confidence_adjustment', ''),
                 "risk_factors": analysis.get('risk_factors', []),
                 "legitimacy_indicators": analysis.get('legitimacy_indicators', []),
                 "recommendations": analysis.get('recommendations', []),
@@ -306,29 +334,34 @@ JSON response:"""
             }
             
         except Exception as e:
-            print(f"Gemini analysis failed: {e}")
+            print(f"Gemini 2-step verification failed: {e}")
             return {
                 "is_scam": False,
                 "risk_level": "Unknown",
                 "confidence": 0.0,
                 "gemini_score": 5,
-                "summary": "Gemini analysis failed",
+                "summary": "Gemini 2-step verification failed",
+                "original_message_analysis": "",
+                "ml_model_verification": "",
+                "false_positive_detected": False,
+                "false_negative_detected": False,
+                "confidence_adjustment": "",
                 "risk_factors": ["AI analysis unavailable"],
                 "legitimacy_indicators": [],
                 "recommendations": ["Manual review recommended"],
-                "technical_analysis": f"Gemini analysis failed: {str(e)}"
+                "technical_analysis": f"Gemini 2-step verification failed: {str(e)}"
             }
     
     def _combine_analyses(self, ml_result: Dict, rule_result: Dict, 
                           gemini_result: Optional[Dict], message_type: str) -> Dict[str, Any]:
         """
-        Combine all analysis results for final decision
+        Combine all analysis results for final decision with 2-step verification
         """
         # Calculate weighted confidence
         weights = {
-            'ml': 0.4,      # ML model weight
-            'rule': 0.3,    # Rule-based weight
-            'gemini': 0.3   # Gemini AI weight
+            'ml': 0.3,      # ML model weight (reduced due to 2-step verification)
+            'rule': 0.2,    # Rule-based weight (reduced due to 2-step verification)
+            'gemini': 0.5   # Gemini AI weight (increased due to 2-step verification)
         }
         
         total_confidence = 0
@@ -344,9 +377,13 @@ JSON response:"""
             total_confidence += rule_result['confidence'] * weights['rule']
             total_weight += weights['rule']
         
-        # Gemini confidence
+        # Gemini confidence (with 2-step verification bonus)
         if gemini_result and gemini_result['confidence'] > 0:
-            total_confidence += gemini_result['confidence'] * weights['gemini']
+            # Bonus for 2-step verification
+            verification_bonus = 1.1 if gemini_result.get('false_positive_detected') else 1.0
+            adjusted_confidence = min(gemini_result['confidence'] * verification_bonus, 100)
+            
+            total_confidence += adjusted_confidence * weights['gemini']
             total_weight += weights['gemini']
         
         # Calculate final confidence
@@ -357,11 +394,17 @@ JSON response:"""
         
         # Determine final risk level and scam status
         final_risk_level = self._get_risk_level(final_confidence)
-        final_is_scam = final_confidence > 70 or any([
-            ml_result.get('is_scam', False),
-            rule_result.get('is_scam', False),
-            gemini_result.get('is_scam', False) if gemini_result else False
-        ])
+        
+        # Check for false positives detected by Gemini
+        false_positive_detected = gemini_result.get('false_positive_detected', False) if gemini_result else False
+        
+        # If Gemini detected a false positive, adjust the final decision
+        if false_positive_detected:
+            print("🔍 Gemini detected false positive - adjusting confidence")
+            final_confidence = max(final_confidence * 0.7, 30)  # Reduce confidence but don't go below 30%
+            final_risk_level = self._get_risk_level(final_confidence)
+        
+        final_is_scam = final_confidence > 70 and not false_positive_detected
         
         # Combine risk factors and recommendations
         all_risk_factors = []
@@ -389,14 +432,17 @@ JSON response:"""
             "confidence": round(final_confidence, 1),
             "message_type": message_type,
             "timestamp": pd.Timestamp.now().isoformat(),
-            "analysis_method": "enhanced_hybrid",
+            "analysis_method": "enhanced_2step_verification",
             "ml_result": ml_result,
             "rule_result": rule_result,
             "gemini_result": gemini_result,
+            "false_positive_detected": false_positive_detected,
             "risk_factors": all_risk_factors,
             "recommendations": all_recommendations,
             "summary": gemini_result.get('summary', '') if gemini_result else '',
-            "technical_analysis": gemini_result.get('technical_analysis', '') if gemini_result else ''
+            "technical_analysis": gemini_result.get('technical_analysis', '') if gemini_result else '',
+            "ml_model_verification": gemini_result.get('ml_model_verification', '') if gemini_result else '',
+            "confidence_adjustment": gemini_result.get('confidence_adjustment', '') if gemini_result else ''
         }
     
     def _get_risk_level(self, confidence: float) -> str:
@@ -467,7 +513,7 @@ JSON response:"""
 def analyze_message_enhanced(message: str, message_type: str = "sms", 
                             gemini_api_key: str = None) -> Dict[str, Any]:
     """
-    Convenience function to analyze a message with enhanced detection
+    Convenience function to analyze a message with enhanced 2-step verification
     
     Args:
         message: Message content to analyze
@@ -475,7 +521,7 @@ def analyze_message_enhanced(message: str, message_type: str = "sms",
         gemini_api_key: Google Gemini API key (optional)
         
     Returns:
-        Dictionary containing comprehensive analysis results
+        Dictionary containing comprehensive analysis results with 2-step verification
     """
     analyzer = EnhancedUPIAnalyzer(gemini_api_key)
     return analyzer.analyze_message(message, message_type)
