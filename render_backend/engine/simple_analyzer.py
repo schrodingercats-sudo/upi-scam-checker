@@ -47,6 +47,21 @@ class SimpleUPIAnalyzer:
             self.scaler = None
             self.feature_names = None
 
+    def check_legitimate_provider(self, text: str) -> Dict[str, Any] | None:
+        """Check if message is from a legitimate provider (whitelist)"""
+        text_lower = text.lower()
+        
+        for provider in self.legitimate_providers:
+            if provider in text_lower:
+                return {
+                    'is_scam': False,
+                    'confidence': 0.95,
+                    'method': 'whitelist',
+                    'reason': f'Legitimate provider: {provider}'
+                }
+        
+        return None
+
     def extract_features(self, text: str) -> List[float]:
         """Extract features from text for ML model"""
         if not self.feature_names:
@@ -128,16 +143,6 @@ class SimpleUPIAnalyzer:
         score = 0
         red_flags = []
         
-        # Check for legitimate providers first
-        for provider in self.legitimate_providers:
-            if provider in text_lower:
-                return {
-                    'is_scam': False,
-                    'confidence': 0.95,
-                    'method': 'whitelist',
-                    'reason': f'Legitimate provider: {provider}'
-                }
-        
         # Scam patterns
         scam_patterns = [
             ('bank credit.*click', 0.9, 'Bank credit + click pattern'),
@@ -151,7 +156,7 @@ class SimpleUPIAnalyzer:
             ('inheritance.*claim', 0.9, 'Inheritance scam'),
             ('free.*money', 0.8, 'Free money scam'),
             ('processing.*fee', 0.8, 'Processing fee scam'),
-            ('bit\.ly|tinyurl|goo\.gl', 0.7, 'URL shortener'),
+            (r'bit\.ly|tinyurl|goo\.gl', 0.7, 'URL shortener'),
             ('share.*otp', 0.9, 'OTP sharing request'),
             ('provide.*otp', 0.9, 'OTP provision request')
         ]
@@ -269,13 +274,31 @@ class SimpleUPIAnalyzer:
                 'recommended_action': 'No message provided'
             }
         
+        # STEP 0: Check legitimate providers FIRST (whitelist)
+        legitimate_check = self.check_legitimate_provider(text)
+        if legitimate_check:
+            return {
+                'classification': 'Safe',
+                'confidence_score': '95%',
+                'risk_level': 'Low',
+                'red_flags': [],
+                'recommended_action': f"This is a legitimate message from {legitimate_check['reason']}. Continue with normal caution.",
+                'analysis_details': {
+                    'ml_result': legitimate_check,
+                    'rule_result': legitimate_check,
+                    'gemini_result': legitimate_check,
+                    'false_positive_detected': False,
+                    'confidence_adjustment': 'same'
+                }
+            }
+        
         # Step 1: ML Analysis
         ml_result = self.ml_analysis(text)
         
-        # Step 1: Rule Analysis  
+        # Step 2: Rule Analysis  
         rule_result = self.rule_analysis(text)
         
-        # Step 2: Gemini Verification
+        # Step 3: Gemini Verification
         gemini_result = self.gemini_verification(text, ml_result, rule_result)
         
         # Combine results

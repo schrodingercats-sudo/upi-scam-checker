@@ -1,37 +1,65 @@
 #!/usr/bin/env python3
 """
-Simple test script for the enhanced analyzer
+Simple test for the unified analyzer system
 """
 
-import sys
-import os
+from engine.simple_analyzer import analyze_message_simple
 
-# Add the current directory to Python path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+def test_fast2sms_message():
+    """Test the Fast2SMS legitimate message"""
+    message = "Dear user, Rs: 100.00 credited successfully into your Fast2SMS wallet. Current wallet balance is Rs: 150.00. - Team Fast2SMS"
+    
+    print("🧪 Testing Fast2SMS message:")
+    print(f"Message: {message}")
+    print()
+    
+    result = analyze_message_simple(message)
+    
+    print("📊 Analysis Result:")
+    print(f"Classification: {result['classification']}")
+    print(f"Confidence: {result['confidence_score']}")
+    print(f"Risk Level: {result['risk_level']}")
+    print(f"Action: {result['recommended_action']}")
+    print()
+    
+    if result['classification'] == 'Safe':
+        print("✅ SUCCESS: Fast2SMS message correctly identified as SAFE")
+    else:
+        print("❌ FAILURE: Fast2SMS message incorrectly flagged as SCAM")
+        print(f"Red flags: {result['red_flags']}")
+    
+    print("\n" + "="*50 + "\n")
 
-try:
-    from engine.enhanced_analyzer import analyze_message_enhanced
-    print("✅ Enhanced analyzer imported successfully!")
+def test_scam_message():
+    """Test the original scam message"""
+    message = "Your bank credit 12000 INR click on this link"
     
-    # Test message
-    test_message = "Your bank credit 12000 INR click on this link"
+    print("🧪 Testing scam message:")
+    print(f"Message: {message}")
+    print()
     
-    print(f"🧪 Testing message: {test_message}")
+    result = analyze_message_simple(message)
     
-    # Test without Gemini first
-    result = analyze_message_enhanced(test_message, 'sms')
+    print("📊 Analysis Result:")
+    print(f"Classification: {result['classification']}")
+    print(f"Confidence: {result['confidence_score']}")
+    print(f"Risk Level: {result['risk_level']}")
+    print(f"Action: {result['recommended_action']}")
+    print()
     
-    print(f"🎯 Result: {result['risk_level']}")
-    print(f"📊 Confidence: {result['confidence']:.1f}%")
-    print(f"🚨 Is Scam: {result['is_scam']}")
-    print(f"⚡ Method: {result['analysis_method']}")
+    if result['classification'] == 'Scam':
+        print("✅ SUCCESS: Scam message correctly identified as SCAM")
+    else:
+        print("❌ FAILURE: Scam message incorrectly flagged as SAFE")
+        print(f"Red flags: {result['red_flags']}")
     
-    print("\n✅ Test completed successfully!")
+    print("\n" + "="*50 + "\n")
+
+if __name__ == "__main__":
+    print("🚀 Testing Simple Unified Analyzer System")
+    print("="*50)
     
-except ImportError as e:
-    print(f"❌ Import error: {e}")
-    print("This might be a Python path issue")
-except Exception as e:
-    print(f"❌ Error: {e}")
-    import traceback
-    traceback.print_exc()
+    test_fast2sms_message()
+    test_scam_message()
+    
+    print("🎯 Test completed!")
