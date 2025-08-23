@@ -1,5 +1,3 @@
-[33m929d9e3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m feat: Add immediate hard-coded blocking system - cannot be bypassed by ML manipulation
+[33m4c583d8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Force Vercel redeploy - Security system upgrade with immediate hard-coded blocking
+[33m929d9e3[m feat: Add immediate hard-coded blocking system - cannot be bypassed by ML manipulation
 [33mc503e98[m feat: 10M-parameter training, enhanced analyzer, favicon + manifest, resumable training
-[33m8322320[m chore: trigger vercel deploy
-[33ma6f72a2[m feat: add Gemini 2-step verification (env GEMINI_API_KEY); unify result mapping on frontend
-[33m3439def[m chore: deploy-ready cleanup (remove pnpm-lock, fix types, add APIs, UI tweaks)

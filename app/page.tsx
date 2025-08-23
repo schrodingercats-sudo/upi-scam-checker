@@ -1,3 +1,8 @@
+// UPI Scam Checker - Version 2.0.0
+// Last Updated: 2025-01-27 15:30 UTC
+// Security Update: Immediate Hard-coded Blocking System
+// This version cannot be bypassed by ML manipulation
+
 'use client'
 
 import { useState } from 'react'
@@ -327,6 +332,12 @@ export default function HomePage() {
             <div className="text-sm text-gray-600">
               Powered by AI • Protect Yourself
             </div>
+            {/* Version Display */}
+            <div className="ml-4">
+              <div className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium border border-green-200">
+                🛡️ v2.0.0 - Security Active
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -334,6 +345,12 @@ export default function HomePage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}
                   <div className="text-center mb-12">
+            {/* Security Version Badge */}
+            <div className="mb-4">
+              <div className="inline-block bg-red-100 text-red-800 px-4 py-2 rounded-full text-sm font-semibold border-2 border-red-300 shadow-sm">
+                🚨 IMMEDIATE BLOCKING SYSTEM ACTIVE - v2.0.0
+              </div>
+            </div>
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
               Detect Digital Scams with AI
             </h2>

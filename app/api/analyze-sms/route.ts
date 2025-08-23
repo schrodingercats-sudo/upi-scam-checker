@@ -1,3 +1,8 @@
+// UPI Scam Checker API - Version 2.0.0
+// Last Updated: 2025-01-27 15:30 UTC
+// Security Update: Immediate Hard-coded Blocking System
+// This version cannot be bypassed by ML manipulation
+
 export const runtime = 'nodejs'
 import { NextRequest, NextResponse } from 'next/server'
 import { exec } from 'child_process'

@@ -1,0 +1,20 @@
+UPI Scam Checker - Version 2.0.0
+====================================
+
+Build Date: 2025-01-27 15:30 UTC
+Security Level: MAXIMUM
+Deployment: FORCE UPDATE
+
+CHANGELOG:
+- ✅ Immediate Hard-coded Blocking System
+- ✅ Cannot be bypassed by ML manipulation
+- ✅ 99% confidence for confirmed scams
+- ✅ Critical risk level for threats
+- ✅ Enhanced security rules
+- ✅ Updated ML analyzer (v3)
+
+TEST MESSAGE:
+"Your bank credit 12000 INR click on this link"
+SHOULD BE BLOCKED AS SCAM WITH 99% CONFIDENCE
+
+This file forces Vercel to rebuild the entire application.
