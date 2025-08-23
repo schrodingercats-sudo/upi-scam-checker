@@ -6,10 +6,133 @@
 'use client'
 
 import { useState } from 'react';
-import ScamAnalyzer from '../components/ScamAnalyzer';
 import LatestScams from '../components/LatestScams';
 import PhoneTracker from '../components/PhoneTracker';
 import ComplaintGenerator from '../components/ComplaintGenerator';
+
+// Simple SMS Analyzer Component
+function SimpleSMSAnalyzer() {
+  const [input, setInput] = useState('');
+  const [result, setResult] = useState<any>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const handleAnalyze = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    setIsAnalyzing(true);
+    try {
+      const response = await fetch('/api/analyze-sms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: input })
+      });
+      const data = await response.json();
+      setResult(data);
+    } catch (error) {
+      console.error('Analysis failed:', error);
+      setResult({ error: 'Analysis failed. Please try again.' });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  return (
+    <div className="card">
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          🛡️ SMS Scam Detection (v3.0.0)
+        </h3>
+        <p className="text-gray-600">
+          Paste any SMS message to analyze it with our 100K trained AI model and SMS Sender ID analysis.
+        </p>
+      </div>
+
+      <form onSubmit={handleAnalyze} className="space-y-4">
+        <div>
+          <label htmlFor="sms-input" className="block text-sm font-medium text-gray-700 mb-2">
+            SMS Message
+          </label>
+          <textarea
+            id="sms-input"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Paste your SMS message here..."
+            className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={isAnalyzing || !input.trim()}
+          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+        >
+          {isAnalyzing ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              Analyzing...
+            </>
+          ) : (
+            '🔍 Analyze Message'
+          )}
+        </button>
+      </form>
+
+      {result && (
+        <div className="mt-6 p-4 rounded-lg border">
+          {result.error ? (
+            <div className="text-red-600">{result.error}</div>
+          ) : (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold">Classification:</span>
+                <span className={`px-2 py-1 rounded text-sm font-medium ${
+                  result.classification === 'Safe' ? 'bg-green-100 text-green-800' :
+                  result.classification === 'Suspicious' ? 'bg-yellow-100 text-yellow-800' :
+                  'bg-red-100 text-red-800'
+                }`}>
+                  {result.classification}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-semibold">Confidence:</span>
+                <span className="text-sm">{result.confidence_score}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-semibold">Risk Level:</span>
+                <span className="text-sm">{result.risk_level}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Recommendation:</span>
+                <p className="text-sm mt-1">{result.recommended_action}</p>
+              </div>
+              {result.sender_analysis && (
+                <div>
+                  <span className="font-semibold">SMS Sender Analysis:</span>
+                  <p className="text-sm mt-1">
+                    {result.sender_analysis.category} ({result.sender_analysis.category_code}) - 
+                    Trust Score: {(result.sender_analysis.trust_score * 100).toFixed(1)}%
+                  </p>
+                </div>
+              )}
+              {result.red_flags && result.red_flags.length > 0 && (
+                <div>
+                  <span className="font-semibold">Red Flags:</span>
+                  <ul className="text-sm mt-1 list-disc list-inside">
+                    {result.red_flags.map((flag: string, index: number) => (
+                      <li key={index}>{flag}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('analyzer');
@@ -98,7 +221,7 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'analyzer' && <ScamAnalyzer />}
+        {activeTab === 'analyzer' && <SimpleSMSAnalyzer />}
         {activeTab === 'scams' && <LatestScams />}
         {activeTab === 'phone' && <PhoneTracker />}
         {activeTab === 'complaint' && <ComplaintGenerator />}
