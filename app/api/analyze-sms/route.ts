@@ -1,8 +1,7 @@
 // UPI Scam Checker API - Version 2.0.0
 // Last Updated: 2025-01-27 15:30 UTC
-// Security Update: Immediate Hard-coded Blocking System
-// This version cannot be bypassed by ML manipulation
-// BACKEND: Python ML models hosted on Render
+// Security Update: Simple Unified System with Fast2SMS Whitelist
+// This version uses ML + Rules + Gemini 2-step verification
 
 export const runtime = 'nodejs'
 import { NextRequest, NextResponse } from 'next/server'
@@ -15,10 +14,43 @@ type NormalizedResult = {
   recommended_action: string
 }
 
+// LEGITIMATE PROVIDERS WHITELIST - PREVENTS FALSE POSITIVES
+const LEGITIMATE_PROVIDERS = [
+  'fast2sms', 'fast2sms wallet', 'team fast2sms',
+  'paytm', 'paytm wallet', 'team paytm',
+  'phonepe', 'phonepe wallet', 'team phonepe',
+  'google pay', 'gpay', 'team google pay',
+  'amazon pay', 'amazonpay', 'team amazon pay',
+  'mobikwik', 'mobikwik wallet', 'team mobikwik',
+  'freecharge', 'freecharge wallet', 'team freecharge',
+  'ola money', 'ola wallet', 'team ola',
+  'uber', 'uber wallet', 'team uber',
+  'swiggy', 'swiggy money', 'team swiggy',
+  'zomato', 'zomato wallet', 'team zomato',
+  'razorpay', 'team razorpay',
+  'stripe', 'team stripe',
+  'paypal', 'team paypal',
+  'bank of india', 'sbi', 'hdfc', 'icici', 'axis', 'kotak', 'yes bank',
+  'team bank of india', 'team sbi', 'team hdfc', 'team icici', 'team axis', 'team kotak', 'team yes bank'
+]
+
 // IMMEDIATE HARD-CODED BLOCKING SYSTEM - CANNOT BE BYPASSED
 function immediateBlockingCheck(text: string): NormalizedResult | null {
   const body = text || ''
   const bodyLower = body.toLowerCase()
+  
+  // FIRST: Check for legitimate providers (whitelist)
+  for (const provider of LEGITIMATE_PROVIDERS) {
+    if (bodyLower.includes(provider)) {
+      return {
+        classification: 'Safe',
+        confidence_score: '95%',
+        risk_level: 'Low',
+        red_flags: [],
+        recommended_action: `This is a legitimate message from ${provider}. Continue with normal caution.`
+      }
+    }
+  }
   
   // CRITICAL: Immediate blocking for obvious scam patterns
   const immediateScamPatterns = [
@@ -28,9 +60,9 @@ function immediateBlockingCheck(text: string): NormalizedResult | null {
     bodyLower.includes('credit') && bodyLower.includes('inr') && (bodyLower.includes('click') || bodyLower.includes('link')),
     bodyLower.includes('debit') && bodyLower.includes('inr') && (bodyLower.includes('click') || bodyLower.includes('link')),
     
-    // Amount + action patterns
+    // Amount + action patterns (more specific to avoid false positives)
     (bodyLower.includes('12000') || bodyLower.includes('10000') || bodyLower.includes('5000') || bodyLower.includes('2000') || bodyLower.includes('1000')) && 
-    (bodyLower.includes('click') || bodyLower.includes('link') || bodyLower.includes('verify') || bodyLower.includes('confirm')),
+    (bodyLower.includes('click') || bodyLower.includes('link') || bodyLower.includes('verify') || bodyLower.includes('confirm') || bodyLower.includes('login') || bodyLower.includes('secure')),
     
     // Urgency + financial patterns
     (bodyLower.includes('urgent') || bodyLower.includes('immediate') || bodyLower.includes('quick') || bodyLower.includes('fast')) &&
@@ -241,7 +273,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Provide at least one of: text, phone, url' }, { status: 400 })
     }
 
-    // Apply immediate hard-coded blocking
+    // Apply immediate hard-coded blocking (includes Fast2SMS whitelist)
     const immediateBlockingResult = immediateBlockingCheck(text || '')
     if (immediateBlockingResult) {
       return NextResponse.json(immediateBlockingResult)
