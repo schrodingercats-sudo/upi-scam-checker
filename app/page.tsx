@@ -14,26 +14,7 @@ import ComplaintGenerator from '../components/ComplaintGenerator'
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'analyzer' | 'scams' | 'phone' | 'complaint'>('analyzer')
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [result, setResult] = useState<any>(null)
-
-  const handleAnalyze = async (input: string, type: 'sms' | 'url' | 'call' | 'track') => {
-    setIsAnalyzing(true)
-    try {
-      const response = await fetch('/api/analyze-sms', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: input })
-      })
-      const data = await response.json()
-      setResult(data)
-    } catch (error) {
-      console.error('Analysis failed:', error)
-      setResult({ error: 'Analysis failed. Please try again.' })
-    } finally {
-      setIsAnalyzing(false)
-    }
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
@@ -103,7 +84,7 @@ export default function Home() {
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id)}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === tab.id
                     ? 'border-blue-500 text-blue-600'
@@ -126,8 +107,8 @@ export default function Home() {
               // Handle internal ScamAnalyzer tab changes
               console.log('ScamAnalyzer tab changed to:', tab)
             }}
-            onAnalyze={handleAnalyze}
-            isAnalyzing={isAnalyzing}
+            onAnalyze={() => {}} // Not used anymore, ScamAnalyzer handles its own analysis
+            isAnalyzing={false} // Not used anymore, ScamAnalyzer manages its own state
           />
         )}
         {activeTab === 'scams' && <LatestScams />}

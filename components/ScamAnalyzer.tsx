@@ -20,28 +20,39 @@ export default function ScamAnalyzer({
 }: ScamAnalyzerProps) {
   const [input, setInput] = useState('')
   const [audioFile, setAudioFile] = useState<File | null>(null)
+  const [result, setResult] = useState<any>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
     if (activeTab === 'call') {
       if (!audioFile) return
       const form = new FormData()
       form.append('file', audioFile)
-      fetch('/api/analyze-call', { method: 'POST', body: form })
-        .then(r => r.json())
-        .then(res => {
-          // Display via text area for now
-          setInput(JSON.stringify(res))
-        })
-        .catch(() => {})
+      try {
+        const response = await fetch('/api/analyze-call', { method: 'POST', body: form })
+        const res = await response.json()
+        setResult(res)
+      } catch (error) {
+        setResult({ error: 'Audio analysis failed' })
+      }
       return
     }
+    
     if (input.trim()) {
-      onAnalyze(input.trim(), activeTab)
+      try {
+        const response = await fetch('/api/analyze-sms', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: input })
+        })
+        const data = await response.json()
+        setResult(data)
+      } catch (error) {
+        setResult({ error: 'Analysis failed' })
+      }
     }
   }
-
-  
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -78,10 +89,10 @@ export default function ScamAnalyzer({
           return (
             <button
               key={tab.id}
-              onClick={() => onTabChange(tab.id as 'sms' | 'url' | 'call' | 'track')}
+              onClick={() => onTabChange(tab.id)}
               className={`flex-1 flex items-center justify-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                 isActive
-                  ? 'bg-white text-primary-600 shadow-sm'
+                  ? 'bg-white text-blue-600 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
             >
@@ -120,7 +131,7 @@ export default function ScamAnalyzer({
                     <PhoneTracker />
                   ) : tab.id === 'call' ? (
                     <div className="space-y-4">
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors">
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
                         <input
                           type="file"
                           accept="audio/*"
@@ -134,7 +145,7 @@ export default function ScamAnalyzer({
                         >
                           <Upload className="h-8 w-8 text-gray-400" />
                           <div>
-                            <span className="text-primary-600 font-medium">Click to upload</span>
+                            <span className="text-blue-600 font-medium">Click to upload</span>
                             <span className="text-gray-500"> or drag and drop</span>
                           </div>
                           <p className="text-sm text-gray-500">
@@ -160,7 +171,7 @@ export default function ScamAnalyzer({
                           ? 'Paste the SMS or WhatsApp message here...'
                           : 'Paste the URL or link here...'
                       }
-                      className="input-field min-h-[120px] resize-none"
+                      className="w-full min-h-[120px] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
                       disabled={isAnalyzing}
                     />
                   )}
@@ -169,7 +180,7 @@ export default function ScamAnalyzer({
                     <button
                       onClick={handleSubmit}
                       disabled={isAnalyzing || (!input.trim() && !audioFile)}
-                      className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                     >
                       {isAnalyzing ? (
                         <>
@@ -187,6 +198,63 @@ export default function ScamAnalyzer({
           )
         })}
       </div>
+
+      {/* Results Display */}
+      {result && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-6 p-4 rounded-lg border"
+        >
+          {result.error ? (
+            <div className="text-red-600">{result.error}</div>
+          ) : (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold">Classification:</span>
+                <span className={`px-2 py-1 rounded text-sm font-medium ${
+                  result.classification === 'Safe' ? 'bg-green-100 text-green-800' :
+                  result.classification === 'Suspicious' ? 'bg-yellow-100 text-yellow-800' :
+                  'bg-red-100 text-red-800'
+                }`}>
+                  {result.classification}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-semibold">Confidence:</span>
+                <span className="text-sm">{result.confidence_score}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-semibold">Risk Level:</span>
+                <span className="text-sm">{result.risk_level}</span>
+              </div>
+              <div>
+                <span className="font-semibold">Recommendation:</span>
+                <p className="text-sm mt-1">{result.recommended_action}</p>
+              </div>
+              {result.sender_analysis && (
+                <div>
+                  <span className="font-semibold">SMS Sender Analysis:</span>
+                  <p className="text-sm mt-1">
+                    {result.sender_analysis.category} ({result.sender_analysis.category_code}) - 
+                    Trust Score: {(result.sender_analysis.trust_score * 100).toFixed(1)}%
+                  </p>
+                </div>
+              )}
+              {result.red_flags && result.red_flags.length > 0 && (
+                <div>
+                  <span className="font-semibold">Red Flags:</span>
+                  <ul className="text-sm mt-1 list-disc list-inside">
+                    {result.red_flags.map((flag: string, index: number) => (
+                      <li key={index}>{flag}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+        </motion.div>
+      )}
 
       {/* Help Text */}
       <div className="mt-6 p-4 bg-blue-50 rounded-lg">
