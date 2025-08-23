@@ -13,7 +13,7 @@ import PhoneTracker from '../components/PhoneTracker'
 import ComplaintGenerator from '../components/ComplaintGenerator'
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'sms' | 'url' | 'call' | 'track'>('sms')
+  const [activeTab, setActiveTab] = useState<'analyzer' | 'scams' | 'phone' | 'complaint'>('analyzer')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [result, setResult] = useState<any>(null)
 
