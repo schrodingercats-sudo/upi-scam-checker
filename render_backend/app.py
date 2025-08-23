@@ -21,9 +21,15 @@ CORS(app)
 def health_check():
     return jsonify({
         'status': 'healthy',
-        'version': '2.0.0',
-        'features': ['ML Model', 'Rule-Based Analysis', 'Gemini 2-Step Verification'],
-        'message': 'UPI Scam Checker Backend is running'
+        'version': '2.1.0',
+        'features': ['ML Model', 'Rule-Based Analysis', 'Gemini 2-Step Verification', 'SMS Sender ID Analysis'],
+        'message': 'UPI Scam Checker Backend is running',
+        'sms_categories': {
+            's': 'Service (banks, companies)',
+            'g': 'Government (official messages)',
+            'p': 'Promotional (marketing, ads)',
+            't': 'Transactional/OTP (passwords, transactions)'
+        }
     })
 
 @app.route('/analyze', methods=['POST'])
@@ -33,12 +39,13 @@ def analyze():
         text = data.get('text', '')
         phone = data.get('phone', '')
         url = data.get('url', '')
+        sender_id = data.get('sender_id', '')  # NEW: SMS Sender ID
         
         if not text and not phone and not url:
             return jsonify({'error': 'Provide at least one of: text, phone, url'}), 400
         
-        # Use the simple analyzer
-        result = analyze_message_simple(text, phone, url)
+        # Use the simple analyzer with SMS sender ID support
+        result = analyze_message_simple(text, phone, url, sender_id)
         
         return jsonify(result)
         
@@ -50,7 +57,8 @@ def analyze():
         }), 500
 
 if __name__ == '__main__':
-    print("🚀 Starting UPI Scam Checker Backend v2.0.0")
-    print("✅ Features: ML Model + Rule-Based + Gemini 2-Step Verification")
+    print("🚀 Starting UPI Scam Checker Backend v2.1.0")
+    print("✅ Features: ML Model + Rule-Based + Gemini 2-Step Verification + SMS Sender ID Analysis")
+    print("📱 SMS Categories: s=Service, g=Government, p=Promotional, t=Transactional/OTP")
     print("🌐 CORS enabled for frontend integration")
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False)

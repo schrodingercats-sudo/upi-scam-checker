@@ -1,7 +1,7 @@
-// UPI Scam Checker API - Version 2.0.0
-// Last Updated: 2025-01-27 15:30 UTC
-// Security Update: Simple Unified System with Fast2SMS Whitelist
-// This version uses ML + Rules + Gemini 2-step verification
+// UPI Scam Checker API - Version 2.1.0
+// Last Updated: 2025-01-27 16:00 UTC
+// Security Update: SMS Sender ID Analysis + Simple Unified System
+// This version uses ML + Rules + Gemini + SMS Sender ID Classification
 
 export const runtime = 'nodejs'
 import { NextRequest, NextResponse } from 'next/server'
@@ -12,6 +12,7 @@ type NormalizedResult = {
   risk_level: 'Low' | 'Medium' | 'High'
   red_flags: string[]
   recommended_action: string
+  sender_analysis?: any
 }
 
 // LEGITIMATE PROVIDERS WHITELIST - PREVENTS FALSE POSITIVES
@@ -34,8 +35,42 @@ const LEGITIMATE_PROVIDERS = [
   'team bank of india', 'team sbi', 'team hdfc', 'team icici', 'team axis', 'team kotak', 'team yes bank'
 ]
 
+// SMS SENDER ID ANALYSIS (DND Classification)
+function analyzeSmsSenderId(senderId: string): any {
+  if (!senderId) return null
+  
+  const lastChar = senderId.slice(-1).toLowerCase()
+  
+  const categories = {
+    's': { name: 'Service', risk: 'Low', trust: 0.9, desc: 'Legitimate service messages (banks, companies)' },
+    'g': { name: 'Government', risk: 'Low', trust: 0.95, desc: 'Official government messages' },
+    'p': { name: 'Promotional', risk: 'Medium', trust: 0.3, desc: 'Marketing and promotional messages' },
+    't': { name: 'Transactional/OTP', risk: 'Low', trust: 0.8, desc: 'One-time passwords and transaction messages' }
+  }
+  
+  if (lastChar in categories) {
+    return {
+      category: categories[lastChar].name,
+      risk_level: categories[lastChar].risk,
+      trust_score: categories[lastChar].trust,
+      description: categories[lastChar].desc,
+      sender_id: senderId,
+      category_code: lastChar
+    }
+  }
+  
+  return {
+    category: 'Unknown',
+    risk_level: 'Medium',
+    trust_score: 0.5,
+    description: 'Unknown sender ID pattern',
+    sender_id: senderId,
+    category_code: '?'
+  }
+}
+
 // IMMEDIATE HARD-CODED BLOCKING SYSTEM - CANNOT BE BYPASSED
-function immediateBlockingCheck(text: string): NormalizedResult | null {
+function immediateBlockingCheck(text: string, senderId?: string): NormalizedResult | null {
   const body = text || ''
   const bodyLower = body.toLowerCase()
   
@@ -48,6 +83,21 @@ function immediateBlockingCheck(text: string): NormalizedResult | null {
         risk_level: 'Low',
         red_flags: [],
         recommended_action: `This is a legitimate message from ${provider}. Continue with normal caution.`
+      }
+    }
+  }
+  
+  // SECOND: Check SMS Sender ID (NEW FEATURE!)
+  if (senderId) {
+    const senderAnalysis = analyzeSmsSenderId(senderId)
+    if (senderAnalysis && ['s', 'g', 't'].includes(senderAnalysis.category_code)) {
+      return {
+        classification: 'Safe',
+        confidence_score: `${(senderAnalysis.trust_score * 100).toFixed(0)}%`,
+        risk_level: 'Low',
+        red_flags: [],
+        recommended_action: `This appears to be a legitimate ${senderAnalysis.category} message. Continue with normal caution.`,
+        sender_analysis: senderAnalysis
       }
     }
   }
@@ -109,7 +159,7 @@ function immediateBlockingCheck(text: string): NormalizedResult | null {
 }
 
 // Call Python ML backend on Render
-async function callRenderBackend(text: string, phone?: string, url?: string): Promise<NormalizedResult> {
+async function callRenderBackend(text: string, phone?: string, url?: string, senderId?: string): Promise<NormalizedResult> {
   try {
     // TODO: Replace with your actual Render backend URL
     const RENDER_BACKEND_URL = process.env.RENDER_BACKEND_URL || 'https://your-app-name.onrender.com'
@@ -119,7 +169,7 @@ async function callRenderBackend(text: string, phone?: string, url?: string): Pr
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ text, phone, url }),
+      body: JSON.stringify({ text, phone, url, sender_id: senderId }),
     })
 
     if (!response.ok) {
@@ -132,7 +182,8 @@ async function callRenderBackend(text: string, phone?: string, url?: string): Pr
       confidence_score: result.confidence_score || '70%',
       risk_level: result.risk_level || 'Medium',
       red_flags: result.red_flags || [],
-      recommended_action: result.recommended_action || 'Analysis completed.'
+      recommended_action: result.recommended_action || 'Analysis completed.',
+      sender_analysis: result.sender_analysis
     }
   } catch (error) {
     console.error('Render backend call failed:', error)
@@ -148,7 +199,7 @@ async function callRenderBackend(text: string, phone?: string, url?: string): Pr
 }
 
 // COMPREHENSIVE FALLBACK ANALYSIS SYSTEM (for when Render backend is unavailable)
-function fallbackAnalysis(text: string, phone?: string, url?: string): NormalizedResult {
+function fallbackAnalysis(text: string, phone?: string, url?: string, senderId?: string): NormalizedResult {
   const input = text || ''
   const inputLower = input.toLowerCase()
   let score = 0
@@ -262,31 +313,32 @@ function fallbackAnalysis(text: string, phone?: string, url?: string): Normalize
     confidence_score: confidence,
     risk_level: riskLevel,
     red_flags: redFlags.slice(0, 6),
-    recommended_action: recommendedAction
+    recommended_action: recommendedAction,
+    sender_analysis: senderId ? analyzeSmsSenderId(senderId) : undefined
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const { text, phone, url } = await request.json()
+    const { text, phone, url, sender_id } = await request.json()
     if (!text && !phone && !url) {
       return NextResponse.json({ error: 'Provide at least one of: text, phone, url' }, { status: 400 })
     }
 
-    // Apply immediate hard-coded blocking (includes Fast2SMS whitelist)
-    const immediateBlockingResult = immediateBlockingCheck(text || '')
+    // Apply immediate hard-coded blocking (includes Fast2SMS whitelist + SMS Sender ID)
+    const immediateBlockingResult = immediateBlockingCheck(text || '', sender_id)
     if (immediateBlockingResult) {
       return NextResponse.json(immediateBlockingResult)
     }
 
     // Try to call Render Python backend first
     try {
-      const mlResult = await callRenderBackend(text || '', phone, url)
+      const mlResult = await callRenderBackend(text || '', phone, url, sender_id)
       return NextResponse.json(mlResult)
     } catch (error) {
       console.error('ML backend failed, using fallback:', error)
       // If ML backend fails, use fallback analysis
-      const fallbackResult = fallbackAnalysis(text || '', phone, url)
+      const fallbackResult = fallbackAnalysis(text || '', phone, url, sender_id)
       return NextResponse.json(fallbackResult)
     }
     

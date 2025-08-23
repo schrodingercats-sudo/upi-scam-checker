@@ -30,6 +30,34 @@ class SimpleUPIAnalyzer:
             'team bank of india', 'team sbi', 'team hdfc', 'team icici', 'team axis', 'team kotak', 'team yes bank'
         ]
         
+        # SMS Sender ID Categories (DND Classification)
+        self.sms_categories = {
+            's': {
+                'name': 'Service',
+                'description': 'Legitimate service messages (banks, companies)',
+                'risk_level': 'Low',
+                'trust_score': 0.9
+            },
+            'g': {
+                'name': 'Government',
+                'description': 'Official government messages',
+                'risk_level': 'Low',
+                'trust_score': 0.95
+            },
+            'p': {
+                'name': 'Promotional',
+                'description': 'Marketing and promotional messages',
+                'risk_level': 'Medium',
+                'trust_score': 0.3
+            },
+            't': {
+                'name': 'Transactional/OTP',
+                'description': 'One-time passwords and transaction messages',
+                'risk_level': 'Low',
+                'trust_score': 0.8
+            }
+        }
+        
         # Load your current ML model files
         try:
             with open('sms_scam_model_v3.pkl', 'rb') as f:
@@ -46,6 +74,114 @@ class SimpleUPIAnalyzer:
             self.ml_model = None
             self.scaler = None
             self.feature_names = None
+
+    def analyze_sms_sender_id(self, sender_id: str) -> Dict[str, Any]:
+        """Analyze SMS sender ID based on DND classification"""
+        if not sender_id:
+            return {
+                'category': 'Unknown',
+                'risk_level': 'Medium',
+                'trust_score': 0.5,
+                'description': 'No sender ID provided'
+            }
+        
+        # Extract the last character (category indicator)
+        sender_id_upper = sender_id.upper()
+        last_char = sender_id_upper[-1] if sender_id_upper else ''
+        
+        # Check if it matches known categories
+        if last_char in self.sms_categories:
+            category_info = self.sms_categories[last_char]
+            return {
+                'category': category_info['name'],
+                'risk_level': category_info['risk_level'],
+                'trust_score': category_info['trust_score'],
+                'description': category_info['description'],
+                'sender_id': sender_id,
+                'category_code': last_char
+            }
+        
+        # If no category found, analyze the sender ID pattern
+        return self._analyze_unknown_sender_id(sender_id)
+
+    def _analyze_unknown_sender_id(self, sender_id: str) -> Dict[str, Any]:
+        """Analyze unknown sender ID patterns"""
+        sender_id_upper = sender_id.upper()
+        
+        # Check for common legitimate patterns
+        legitimate_patterns = [
+            ('BANK', 'Likely bank sender'),
+            ('SBI', 'State Bank of India'),
+            ('HDFC', 'HDFC Bank'),
+            ('ICICI', 'ICICI Bank'),
+            ('AXIS', 'Axis Bank'),
+            ('PAYTM', 'Paytm'),
+            ('PHONEPE', 'PhonePe'),
+            ('GPAY', 'Google Pay'),
+            ('AMAZON', 'Amazon'),
+            ('FLIPKART', 'Flipkart'),
+            ('SWIGGY', 'Swiggy'),
+            ('ZOMATO', 'Zomato'),
+            ('OLA', 'Ola'),
+            ('UBER', 'Uber'),
+            ('GOVT', 'Government'),
+            ('INCOME', 'Income Tax'),
+            ('AADHAAR', 'Aadhaar'),
+            ('PAN', 'PAN Card'),
+            ('GST', 'GST'),
+            ('INDIAN', 'Indian Railways'),
+            ('IRCTC', 'IRCTC')
+        ]
+        
+        for pattern, description in legitimate_patterns:
+            if pattern in sender_id_upper:
+                return {
+                    'category': 'Service',
+                    'risk_level': 'Low',
+                    'trust_score': 0.8,
+                    'description': f'Legitimate: {description}',
+                    'sender_id': sender_id,
+                    'category_code': 's'
+                }
+        
+        # Check for suspicious patterns
+        suspicious_patterns = [
+            ('LOTTERY', 'Lottery scam'),
+            ('PRIZE', 'Prize scam'),
+            ('WIN', 'Winning scam'),
+            ('FREE', 'Free money scam'),
+            ('URGENT', 'Urgency scam'),
+            ('SUSPEND', 'Account suspension scam'),
+            ('BLOCK', 'Account blocking scam'),
+            ('VERIFY', 'Verification scam'),
+            ('UPDATE', 'Update scam'),
+            ('SECURE', 'Security scam'),
+            ('ALERT', 'Alert scam'),
+            ('WARNING', 'Warning scam'),
+            ('CRITICAL', 'Critical scam'),
+            ('IMMEDIATE', 'Immediate action scam')
+        ]
+        
+        for pattern, description in suspicious_patterns:
+            if pattern in sender_id_upper:
+                return {
+                    'category': 'Suspicious',
+                    'risk_level': 'High',
+                    'trust_score': 0.1,
+                    'description': f'Suspicious: {description}',
+                    'sender_id': sender_id,
+                    'category_code': 'p'
+                }
+        
+        # Default for unknown patterns
+        return {
+            'category': 'Unknown',
+            'risk_level': 'Medium',
+            'trust_score': 0.5,
+            'description': 'Unknown sender ID pattern',
+            'sender_id': sender_id,
+            'category_code': '?'
+        }
 
     def check_legitimate_provider(self, text: str) -> Dict[str, Any] | None:
         """Check if message is from a legitimate provider (whitelist)"""
@@ -263,8 +399,8 @@ class SimpleUPIAnalyzer:
                 'reason': f'Gemini error: {str(e)}'
             }
 
-    def analyze_message(self, text: str, phone: str = None, url: str = None) -> Dict[str, Any]:
-        """Main analysis function - combines ML, rules, and Gemini"""
+    def analyze_message(self, text: str, phone: str = None, url: str = None, sender_id: str = None) -> Dict[str, Any]:
+        """Main analysis function - combines ML, rules, and Gemini with SMS sender ID analysis"""
         if not text:
             return {
                 'classification': 'Safe',
@@ -274,7 +410,13 @@ class SimpleUPIAnalyzer:
                 'recommended_action': 'No message provided'
             }
         
-        # STEP 0: Check legitimate providers FIRST (whitelist)
+        # STEP 0: Analyze SMS Sender ID (NEW FEATURE!)
+        sender_analysis = None
+        if sender_id:
+            sender_analysis = self.analyze_sms_sender_id(sender_id)
+            print(f"📱 SMS Sender Analysis: {sender_id} → {sender_analysis['category']} ({sender_analysis['category_code']})")
+        
+        # STEP 1: Check legitimate providers FIRST (whitelist)
         legitimate_check = self.check_legitimate_provider(text)
         if legitimate_check:
             return {
@@ -287,23 +429,55 @@ class SimpleUPIAnalyzer:
                     'ml_result': legitimate_check,
                     'rule_result': legitimate_check,
                     'gemini_result': legitimate_check,
+                    'sender_analysis': sender_analysis,
                     'false_positive_detected': False,
                     'confidence_adjustment': 'same'
                 }
             }
         
-        # Step 1: ML Analysis
+        # STEP 2: Apply SMS Sender ID logic
+        if sender_analysis and sender_analysis['category_code'] in ['s', 'g', 't']:
+            # Service, Government, or Transactional messages are generally safe
+            if sender_analysis['trust_score'] >= 0.8:
+                return {
+                    'classification': 'Safe',
+                    'confidence_score': f"{sender_analysis['trust_score']:.1%}",
+                    'risk_level': 'Low',
+                    'red_flags': [],
+                    'recommended_action': f"This appears to be a legitimate {sender_analysis['category']} message. Continue with normal caution.",
+                    'analysis_details': {
+                        'ml_result': {'is_scam': False, 'confidence': sender_analysis['trust_score'], 'method': 'SMS Sender ID'},
+                        'rule_result': {'is_scam': False, 'confidence': sender_analysis['trust_score'], 'method': 'SMS Sender ID'},
+                        'gemini_result': {'is_scam': False, 'confidence': sender_analysis['trust_score'], 'method': 'SMS Sender ID'},
+                        'sender_analysis': sender_analysis,
+                        'false_positive_detected': False,
+                        'confidence_adjustment': 'same'
+                    }
+                }
+        
+        # STEP 3: ML Analysis
         ml_result = self.ml_analysis(text)
         
-        # Step 2: Rule Analysis  
+        # STEP 4: Rule Analysis  
         rule_result = self.rule_analysis(text)
         
-        # Step 3: Gemini Verification
+        # STEP 5: Gemini Verification
         gemini_result = self.gemini_verification(text, ml_result, rule_result)
         
-        # Combine results
+        # STEP 6: Combine results with SMS Sender ID
         final_scam = gemini_result['is_scam']
         final_confidence = gemini_result['confidence']
+        
+        # Adjust confidence based on SMS Sender ID
+        if sender_analysis:
+            if sender_analysis['category_code'] == 'p':  # Promotional
+                final_confidence = min(final_confidence + 0.2, 1.0)  # Increase suspicion
+                if final_confidence >= 0.7:
+                    final_scam = True
+            elif sender_analysis['category_code'] in ['s', 'g', 't']:  # Service, Government, Transactional
+                final_confidence = max(final_confidence - 0.1, 0.0)  # Reduce suspicion
+                if final_confidence <= 0.3:
+                    final_scam = False
         
         # Determine classification
         if final_scam:
@@ -331,10 +505,12 @@ class SimpleUPIAnalyzer:
             'risk_level': risk_level,
             'red_flags': rule_result.get('red_flags', []),
             'recommended_action': action,
+            'sender_analysis': sender_analysis,
             'analysis_details': {
                 'ml_result': ml_result,
                 'rule_result': rule_result,
                 'gemini_result': gemini_result,
+                'sender_analysis': sender_analysis,
                 'false_positive_detected': gemini_result.get('false_positive_detected', False),
                 'confidence_adjustment': gemini_result.get('confidence_adjustment', 'same')
             }
@@ -343,6 +519,6 @@ class SimpleUPIAnalyzer:
 # Global instance
 analyzer = SimpleUPIAnalyzer()
 
-def analyze_message_simple(text: str, phone: str = None, url: str = None) -> Dict[str, Any]:
-    """Simple interface function"""
-    return analyzer.analyze_message(text, phone, url)
+def analyze_message_simple(text: str, phone: str = None, url: str = None, sender_id: str = None) -> Dict[str, Any]:
+    """Simple interface function with SMS sender ID support"""
+    return analyzer.analyze_message(text, phone, url, sender_id)
