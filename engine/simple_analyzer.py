@@ -58,130 +58,184 @@ class SimpleUPIAnalyzer:
             }
         }
         
-        # Load your current ML model files
+        # Load your 100K trained ML model files
         try:
-            with open('sms_scam_model_v3.pkl', 'rb') as f:
+            with open('sms_scam_model_100k.pkl', 'rb') as f:
                 import pickle
                 self.ml_model = pickle.load(f)
             
-            with open('sms_scam_scaler_v3.pkl', 'rb') as f:
+            with open('sms_scam_scaler_100k.pkl', 'rb') as f:
                 self.scaler = pickle.load(f)
                 
-            with open('feature_names_v3.json', 'r') as f:
+            with open('feature_names_100k.json', 'r') as f:
                 self.feature_names = json.load(f)
+                
+            print("✅ Loaded 100K trained model successfully!")
         except:
-            print("Warning: ML model files not found, using rule-based only")
-            self.ml_model = None
-            self.scaler = None
-            self.feature_names = None
+            print("⚠️ 100K model files not found, trying v3 model...")
+            try:
+                with open('sms_scam_model_v3.pkl', 'rb') as f:
+                    import pickle
+                    self.ml_model = pickle.load(f)
+                
+                with open('sms_scam_scaler_v3.pkl', 'rb') as f:
+                    self.scaler = pickle.load(f)
+                    
+                with open('feature_names_v3.json', 'r') as f:
+                    self.feature_names = json.load(f)
+                    
+                print("✅ Loaded v3 model successfully!")
+            except:
+                print("Warning: No ML model files found, using rule-based only")
+                self.ml_model = None
+                self.scaler = None
+                self.feature_names = None
 
-    def analyze_sms_sender_id(self, sender_id: str) -> Dict[str, Any]:
-        """Analyze SMS sender ID based on DND classification"""
-        if not sender_id:
-            return {
-                'category': 'Unknown',
-                'risk_level': 'Medium',
-                'trust_score': 0.5,
-                'description': 'No sender ID provided'
-            }
+    def extract_advanced_features(self, text: str, sender_id: str = None) -> List[float]:
+        """Extract advanced features using 100K model approach"""
+        if not self.feature_names:
+            return []
+            
+        text_lower = text.lower()
+        features = []
         
-        # Extract the last character (category indicator)
-        sender_id_upper = sender_id.upper()
-        last_char = sender_id_upper[-1] if sender_id_upper else ''
+        # Basic text features (50 features)
+        features.append(len(text))
+        features.append(len(text.split()))
+        features.append(len([c for c in text if c.isupper()]))
+        features.append(len([c for c in text if c.isdigit()]))
+        features.append(len([c for c in text if c in '!@#$%^&*()']))
         
-        # Check if it matches known categories
-        if last_char in self.sms_categories:
-            category_info = self.sms_categories[last_char]
-            return {
-                'category': category_info['name'],
-                'risk_level': category_info['risk_level'],
-                'trust_score': category_info['trust_score'],
-                'description': category_info['description'],
-                'sender_id': sender_id,
-                'category_code': last_char
-            }
+        # Word count features
+        features.append(len([word for word in text.split() if len(word) > 5]))
+        features.append(len([word for word in text.split() if len(word) < 3]))
         
-        # If no category found, analyze the sender ID pattern
-        return self._analyze_unknown_sender_id(sender_id)
-
-    def _analyze_unknown_sender_id(self, sender_id: str) -> Dict[str, Any]:
-        """Analyze unknown sender ID patterns"""
-        sender_id_upper = sender_id.upper()
+        # Character features
+        features.append(text.count('!'))
+        features.append(text.count('?'))
+        features.append(text.count('.'))
+        features.append(text.count(','))
+        features.append(text.count(':'))
+        features.append(text.count(';'))
         
-        # Check for common legitimate patterns
-        legitimate_patterns = [
-            ('BANK', 'Likely bank sender'),
-            ('SBI', 'State Bank of India'),
-            ('HDFC', 'HDFC Bank'),
-            ('ICICI', 'ICICI Bank'),
-            ('AXIS', 'Axis Bank'),
-            ('PAYTM', 'Paytm'),
-            ('PHONEPE', 'PhonePe'),
-            ('GPAY', 'Google Pay'),
-            ('AMAZON', 'Amazon'),
-            ('FLIPKART', 'Flipkart'),
-            ('SWIGGY', 'Swiggy'),
-            ('ZOMATO', 'Zomato'),
-            ('OLA', 'Ola'),
-            ('UBER', 'Uber'),
-            ('GOVT', 'Government'),
-            ('INCOME', 'Income Tax'),
-            ('AADHAAR', 'Aadhaar'),
-            ('PAN', 'PAN Card'),
-            ('GST', 'GST'),
-            ('INDIAN', 'Indian Railways'),
-            ('IRCTC', 'IRCTC')
+        # URL features
+        features.append(1 if 'http' in text_lower or 'www' in text_lower else 0)
+        features.append(1 if any(shortener in text_lower for shortener in ['bit.ly', 'tinyurl', 'goo.gl', 't.co']) else 0)
+        
+        # Financial features
+        features.append(1 if re.search(r'\d+[\d,]*(?:\.\d+)?\s*(?:inr|rs\.?|₹)', text_lower) else 0)
+        features.append(1 if re.search(r'(?:inr|rs\.?|₹)\s?\d+[\d,]*(?:\.\d+)?', text_lower) else 0)
+        features.append(1 if re.search(r'\b\d{4,}\b', text_lower) else 0)  # Large numbers
+        
+        # Action words
+        action_words = ['click', 'verify', 'confirm', 'update', 'reactivate', 'login', 'secure', 'activate']
+        features.append(sum(1 for word in action_words if word in text_lower))
+        
+        # Urgency words
+        urgency_words = ['urgent', 'immediate', 'now', 'quick', 'hurry', 'fast', 'asap', 'emergency']
+        features.append(sum(1 for word in urgency_words if word in text_lower))
+        
+        # Scam keywords
+        scam_keywords = [
+            'suspended', 'blocked', 'expired', 'verification', 'kyc', 'lottery', 'prize', 'won', 
+            'inheritance', 'free money', 'processing fee', 'refund', 'penalty', 'fir', 'otp',
+            'share otp', 'provide otp', 'account blocked', 'security alert', 'unusual activity'
         ]
+        features.append(sum(1 for word in scam_keywords if word in text_lower))
         
-        for pattern, description in legitimate_patterns:
-            if pattern in sender_id_upper:
-                return {
-                    'category': 'Service',
-                    'risk_level': 'Low',
-                    'trust_score': 0.8,
-                    'description': f'Legitimate: {description}',
-                    'sender_id': sender_id,
-                    'category_code': 's'
-                }
-        
-        # Check for suspicious patterns
-        suspicious_patterns = [
-            ('LOTTERY', 'Lottery scam'),
-            ('PRIZE', 'Prize scam'),
-            ('WIN', 'Winning scam'),
-            ('FREE', 'Free money scam'),
-            ('URGENT', 'Urgency scam'),
-            ('SUSPEND', 'Account suspension scam'),
-            ('BLOCK', 'Account blocking scam'),
-            ('VERIFY', 'Verification scam'),
-            ('UPDATE', 'Update scam'),
-            ('SECURE', 'Security scam'),
-            ('ALERT', 'Alert scam'),
-            ('WARNING', 'Warning scam'),
-            ('CRITICAL', 'Critical scam'),
-            ('IMMEDIATE', 'Immediate action scam')
+        # Suspicious keywords
+        suspicious_keywords = [
+            'bank', 'credit', 'debit', 'inr', 'rs', '₹', 'update', 'confirm', 'reactivate',
+            'government', 'official', 'authority', 'tax', 'income', 'aadhaar', 'pan'
         ]
+        features.append(sum(1 for word in suspicious_keywords if word in text_lower))
         
-        for pattern, description in suspicious_patterns:
-            if pattern in sender_id_upper:
-                return {
-                    'category': 'Suspicious',
-                    'risk_level': 'High',
-                    'trust_score': 0.1,
-                    'description': f'Suspicious: {description}',
-                    'sender_id': sender_id,
-                    'category_code': 'p'
-                }
+        # Legitimate keywords
+        legitimate_keywords = [
+            'thank you', 'successful', 'completed', 'verified', 'confirmed', 'welcome',
+            'team', 'support', 'customer', 'service', 'help', 'assist'
+        ]
+        features.append(sum(1 for word in legitimate_keywords if word in text_lower))
         
-        # Default for unknown patterns
-        return {
-            'category': 'Unknown',
-            'risk_level': 'Medium',
-            'trust_score': 0.5,
-            'description': 'Unknown sender ID pattern',
-            'sender_id': sender_id,
-            'category_code': '?'
-        }
+        # Language patterns
+        features.append(1 if text.isupper() else 0)  # ALL CAPS
+        features.append(1 if text.islower() else 0)  # all lowercase
+        features.append(1 if text[0].isupper() and text[1:].islower() else 0)  # Title case
+        
+        # Punctuation patterns
+        features.append(len(re.findall(r'[!]{2,}', text)))  # Multiple exclamation marks
+        features.append(len(re.findall(r'[?]{2,}', text)))  # Multiple question marks
+        
+        # Number patterns
+        features.append(len(re.findall(r'\d+', text)))  # Count of numbers
+        features.append(len(re.findall(r'\b\d{6}\b', text)))  # 6-digit numbers (OTP)
+        features.append(len(re.findall(r'\b\d{10}\b', text)))  # 10-digit numbers (phone)
+        
+        # Special character patterns
+        features.append(len(re.findall(r'[^\w\s]', text)))  # Special characters
+        features.append(len(re.findall(r'[0-9]', text)))  # Digits
+        
+        # Fill remaining text features
+        while len(features) < 50:
+            features.append(0)
+        
+        # Header features (20 features)
+        if sender_id:
+            header_upper = sender_id.upper()
+            
+            # Category features (your sir's concept!)
+            last_char = header_upper[-1] if header_upper else ''
+            features.append(1 if last_char == 'S' else 0)  # Service
+            features.append(1 if last_char == 'G' else 0)  # Government
+            features.append(1 if last_char == 'P' else 0)  # Promotional
+            features.append(1 if last_char == 'T' else 0)  # Transactional
+            
+            # Trust score based on category
+            trust_score = 0.5  # Default
+            if last_char in self.sms_categories:
+                trust_score = self.sms_categories[last_char]['trust_score']
+            features.append(trust_score)
+            
+            # Header length features
+            features.append(len(sender_id))
+            features.append(len(sender_id.split('-')))
+            features.append(len(sender_id.split('_')))
+            
+            # Known legitimate patterns
+            legitimate_patterns = ['BANK', 'SBI', 'HDFC', 'ICICI', 'AXIS', 'PAYTM', 'PHONEPE', 'GPAY', 'AMAZON', 'GOVT', 'INCOME', 'AADHAAR', 'PAN', 'GST', 'INDIAN', 'IRCTC']
+            features.append(sum(1 for pattern in legitimate_patterns if pattern in header_upper))
+            
+            # Suspicious patterns
+            suspicious_patterns = ['LOTTERY', 'PRIZE', 'WIN', 'FREE', 'URGENT', 'SUSPEND', 'BLOCK', 'VERIFY', 'UPDATE', 'SECURE', 'ALERT', 'WARNING', 'CRITICAL', 'IMMEDIATE']
+            features.append(sum(1 for pattern in suspicious_patterns if pattern in header_upper))
+            
+            # Header complexity
+            features.append(len(set(sender_id)))  # Unique characters
+            features.append(len([c for c in sender_id if c.isupper()]))  # Uppercase count
+            features.append(len([c for c in sender_id if c.isdigit()]))  # Digit count
+            features.append(len([c for c in sender_id if c in '-_']))  # Separator count
+            
+            # Fill remaining header features
+            while len(features) < 70:
+                features.append(0)
+            
+            # Interaction feature
+            if sender_id and text:
+                header_lower = sender_id.lower()
+                text_lower = text.lower()
+                
+                # Check if header keywords appear in text
+                header_words = set(header_lower.replace('-', ' ').replace('_', ' ').split())
+                text_words = set(text_lower.split())
+                interaction_score = len(header_words.intersection(text_words)) / max(len(header_words), 1)
+                features.append(interaction_score)
+            else:
+                features.append(0)
+        else:
+            # No sender ID, fill with zeros
+            features.extend([0] * 21)
+            
+        return features[:len(self.feature_names)]
 
     def check_legitimate_provider(self, text: str) -> Dict[str, Any] | None:
         """Check if message is from a legitimate provider (whitelist)"""
@@ -198,55 +252,23 @@ class SimpleUPIAnalyzer:
         
         return None
 
-    def extract_features(self, text: str) -> List[float]:
-        """Extract features from text for ML model"""
-        if not self.feature_names:
-            return []
-            
-        features = []
+    def analyze_sms_sender_id(self, text: str) -> Dict[str, Any] | None:
+        """Check if message is from a legitimate provider (whitelist)"""
         text_lower = text.lower()
         
-        # Basic features
-        features.append(len(text))
-        features.append(len(text.split()))
-        features.append(len([c for c in text if c.isupper()]))
-        features.append(len([c for c in text if c.isdigit()]))
-        features.append(len([c for c in text if c in '!@#$%^&*()']))
+        for provider in self.legitimate_providers:
+            if provider in text_lower:
+                return {
+                    'is_scam': False,
+                    'confidence': 0.95,
+                    'method': 'whitelist',
+                    'reason': f'Legitimate provider: {provider}'
+                }
         
-        # Keyword features
-        scam_keywords = ['urgent', 'immediate', 'suspended', 'blocked', 'expired', 'verification', 
-                        'click', 'verify', 'kyc', 'lottery', 'prize', 'won', 'inheritance', 
-                        'free money', 'processing fee', 'refund', 'penalty', 'fir', 'otp']
-        
-        suspicious_keywords = ['bank', 'credit', 'debit', 'inr', 'rs', '₹', 'update', 'confirm', 'reactivate']
-        
-        scam_count = sum(1 for word in scam_keywords if word in text_lower)
-        suspicious_count = sum(1 for word in suspicious_keywords if word in text_lower)
-        
-        features.append(scam_count)
-        features.append(suspicious_count)
-        
-        # URL features
-        features.append(1 if 'http' in text_lower or 'www' in text_lower else 0)
-        features.append(1 if any(shortener in text_lower for shortener in ['bit.ly', 'tinyurl', 'goo.gl']) else 0)
-        
-        # Amount features
-        features.append(1 if re.search(r'\d+[\d,]*(?:\.\d+)?\s*(?:inr|rs\.?|₹)', text_lower) else 0)
-        
-        # Action features
-        features.append(1 if any(action in text_lower for action in ['click', 'verify', 'confirm', 'update']) else 0)
-        
-        # Urgency features
-        features.append(1 if any(urgent in text_lower for urgent in ['urgent', 'immediate', 'now', 'quick']) else 0)
-        
-        # Fill remaining features with zeros
-        while len(features) < len(self.feature_names):
-            features.append(0)
-            
-        return features[:len(self.feature_names)]
+        return None
 
-    def ml_analysis(self, text: str) -> Dict[str, Any]:
-        """Run ML model analysis"""
+    def ml_analysis(self, text: str, sender_id: str = None) -> Dict[str, Any]:
+        """Run ML model analysis with 100K trained model"""
         if not self.ml_model or not self.scaler:
             return {
                 'is_scam': False,
@@ -255,7 +277,7 @@ class SimpleUPIAnalyzer:
             }
         
         try:
-            features = self.extract_features(text)
+            features = self.extract_advanced_features(text, sender_id)
             features_scaled = self.scaler.transform([features])
             prediction = self.ml_model.predict(features_scaled)[0]
             probability = self.ml_model.predict_proba(features_scaled)[0]
@@ -263,7 +285,7 @@ class SimpleUPIAnalyzer:
             return {
                 'is_scam': bool(prediction),
                 'confidence': float(max(probability)),
-                'method': 'ML model v3'
+                'method': 'ML model (100K trained)'
             }
         except Exception as e:
             print(f"ML analysis error: {e}")
@@ -335,7 +357,7 @@ class SimpleUPIAnalyzer:
             'red_flags': red_flags[:5]
         }
 
-    def gemini_verification(self, text: str, ml_result: Dict, rule_result: Dict) -> Dict[str, Any]:
+    def gemini_verification(self, text: str, ml_result: Dict, rule_result: Dict, sender_id: str = None) -> Dict[str, Any]:
         """Use Gemini to verify ML and rule results"""
         if not GOOGLE_GEMINI_API_KEY:
             return {
@@ -348,13 +370,22 @@ class SimpleUPIAnalyzer:
         try:
             model = genai.GenerativeModel('gemini-pro')
             
+            # Extract category from sender_id
+            category = 'unknown'
+            if sender_id:
+                last_char = sender_id.upper()[-1] if sender_id else ''
+                if last_char in self.sms_categories:
+                    category = last_char
+            
             prompt = f"""
             Analyze this SMS message for scam detection. This is a 2-step verification system.
 
+            SENDER ID: {sender_id or 'Unknown'}
+            CATEGORY: {category}
             MESSAGE: "{text}"
 
             STEP 1 RESULTS:
-            - ML Model: {'SCAM' if ml_result['is_scam'] else 'SAFE'} ({ml_result['confidence']:.1%} confidence)
+            - ML Model (100K trained): {'SCAM' if ml_result['is_scam'] else 'SAFE'} ({ml_result['confidence']:.1%} confidence)
             - Rule-Based: {'SCAM' if rule_result['is_scam'] else 'SAFE'} ({rule_result['confidence']:.1%} confidence)
             - Red Flags: {rule_result.get('red_flags', [])}
 
@@ -363,6 +394,7 @@ class SimpleUPIAnalyzer:
             2. Are there obvious scam indicators?
             3. Does the language seem natural or suspicious?
             4. Are there urgency tactics or pressure?
+            5. Sender ID category analysis (s=Service, g=Government, p=Promotional, t=Transactional)
 
             Respond in JSON format:
             {{
@@ -413,8 +445,8 @@ class SimpleUPIAnalyzer:
         # STEP 0: Analyze SMS Sender ID (NEW FEATURE!)
         sender_analysis = None
         if sender_id:
-            sender_analysis = self.analyze_sms_sender_id(sender_id)
-            print(f"📱 SMS Sender Analysis: {sender_id} → {sender_analysis['category']} ({sender_analysis['category_code']})")
+            sender_analysis = self.analyze_sms_sender_id(text)
+            print(f"📱 SMS Sender Analysis: {sender_id} → {sender_analysis['category'] if sender_analysis else 'Unknown'} ({sender_analysis['category_code'] if sender_analysis else '?'})")
         
         # STEP 1: Check legitimate providers FIRST (whitelist)
         legitimate_check = self.check_legitimate_provider(text)
@@ -455,14 +487,14 @@ class SimpleUPIAnalyzer:
                     }
                 }
         
-        # STEP 3: ML Analysis
-        ml_result = self.ml_analysis(text)
+        # STEP 3: ML Analysis (100K trained model)
+        ml_result = self.ml_analysis(text, sender_id)
         
         # STEP 4: Rule Analysis  
         rule_result = self.rule_analysis(text)
         
         # STEP 5: Gemini Verification
-        gemini_result = self.gemini_verification(text, ml_result, rule_result)
+        gemini_result = self.gemini_verification(text, ml_result, rule_result, sender_id)
         
         # STEP 6: Combine results with SMS Sender ID
         final_scam = gemini_result['is_scam']
