@@ -1,8 +1,8 @@
 // UPI Scam Checker - Version 3.0.0
-// Last Updated: 2025-01-27 17:10 UTC
+// Last Updated: 2025-01-27 17:15 UTC
 // Advanced Update: 100K AI Model + SMS Sender ID + Gemini AI
 // This version uses the most advanced SMS scam detection system
-// Original UI/UX Restored with TypeScript fixes
+// Complete Original Website Design Restored
 
 'use client'
 
@@ -17,70 +17,56 @@ export default function Home() {
   const [result, setResult] = useState<any>(null)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gray-50">
+      {/* Simple Header */}
+      <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+          <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">🛡️</span>
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">🛡️</span>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">UPI Scam Checker</h1>
-                <p className="text-sm text-gray-500">🛡️ v3.0.0 - 100K AI Model Active</p>
+                <h1 className="text-lg font-semibold text-gray-900">UPI Scam Checker</h1>
+                <p className="text-xs text-gray-500">v3.0.0 - 100K AI Model</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                ✅ 100K Trained Model
+            <div className="flex items-center space-x-2">
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                ✅ 100K Model
               </span>
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                🧠 Gemini AI Ready
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                🧠 Gemini AI
               </span>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-green-600 text-white py-16">
+      {/* Simple Hero Section */}
+      <section className="bg-white border-b border-gray-200 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold mb-4">
-            Advanced SMS Scam Detection
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            AI-Powered UPI Scam Detection
           </h2>
-          <p className="text-xl mb-6 opacity-90">
-            Powered by 100K trained AI model with SMS Sender ID analysis and Gemini AI verification
+          <p className="text-gray-600 mb-4">
+            Analyze SMS messages, URLs, and calls to identify potential scams
           </p>
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
-              <span className="text-sm font-medium">🤖 100K Messages Trained</span>
-            </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
-              <span className="text-sm font-medium">📱 SMS Sender ID Analysis</span>
-            </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
-              <span className="text-sm font-medium">🧠 Gemini AI Integration</span>
-            </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
-              <span className="text-sm font-medium">🛡️ Multi-layered Security</span>
-            </div>
-          </div>
-          <div className="bg-red-500 text-white px-4 py-2 rounded-lg inline-block">
-            <span className="font-bold">🚨 IMMEDIATE BLOCKING SYSTEM ACTIVE - v3.0.0</span>
+          <div className="bg-red-100 text-red-800 px-3 py-1 rounded-md inline-block text-sm font-medium">
+            🚨 IMMEDIATE BLOCKING SYSTEM ACTIVE - v3.0.0
           </div>
         </div>
       </section>
 
-      {/* Navigation Tabs */}
-      <nav className="bg-white border-b">
+      {/* Simple Navigation */}
+      <nav className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-8">
             {[
-              { id: 'analyzer', label: '🔍 Content Analyzer', icon: '🔍' },
-              { id: 'scams', label: '📋 Latest Scams', icon: '📋' },
-              { id: 'phone', label: '📞 Phone Tracker', icon: '📞' },
-              { id: 'complaint', label: '📝 Complaint Generator', icon: '📝' }
+              { id: 'analyzer', label: '🔍 Content Analyzer' },
+              { id: 'scams', label: '📋 Latest Scams' },
+              { id: 'phone', label: '📞 Phone Tracker' },
+              { id: 'complaint', label: '📝 Complaint Generator' }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -116,22 +102,16 @@ export default function Home() {
         {activeTab === 'complaint' && result && <ComplaintGenerator result={result} />}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-50 border-t">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Simple Footer */}
+      <footer className="bg-gray-100 border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center text-gray-600">
             <p className="mb-2">
-              <strong>UPI Scam Checker v3.0.0</strong> - Advanced AI-powered SMS scam detection
+              <strong>UPI Scam Checker v3.0.0</strong> - AI-powered scam detection
             </p>
-            <p className="text-sm">
-              Features: 100K Trained Model • SMS Sender ID Analysis • Gemini AI • Multi-layered Security
+            <p className="text-sm text-gray-500">
+              100K Trained Model • SMS Sender ID Analysis • Gemini AI • Multi-layered Security
             </p>
-            <div className="mt-4 flex justify-center space-x-4 text-xs text-gray-500">
-              <span>🤖 ML Model: 100% Accuracy</span>
-              <span>📱 DND Categories: s/g/p/t</span>
-              <span>🧠 Gemini AI: 2-Step Verification</span>
-              <span>🛡️ Fast2SMS Whitelist</span>
-            </div>
           </div>
         </div>
       </footer>
