@@ -1,0 +1,61 @@
+# Large dataset files that exceed Vercel limits
+ultimate_scam_dataset.json
+ultimate_scam_dataset.csv
+enhanced_training_data.json
+feature_names*.json
+dataset_info*.json
+dataset_statistics.json
+ultimate_dataset_stats.json
+collected_sms_data.json
+phone_registry.json
+upi_scam_dataset_350k.csv
+upi_fake_scams_10000.csv
+upi_fake_scams_500.csv
+all_stages_combined.csv
+god_dataset.csv
+hacker_dataset.csv
+pro_dataset.csv
+intimate_dataset.csv
+hard_dataset.csv
+medium_dataset.csv
+easy_dataset.csv
+ml_training_data.csv
+enhanced_training_data.csv
+upi_sms_dataset.csv
+upi_sms_whatsapp_dataset_seed.csv
+
+# Large binary files
+_pywrap_tensorflow_common.dll
+libclang.dll
+next-swc.win32-x64-msvc.node
+
+# Python and ML files (not needed for web deployment)
+*.py
+*.pyc
+__pycache__/
+*.pkl
+*.h5
+*.model
+
+# Training and model files
+engine/
+ml_integration.py
+ml_scam_detector.py
+ultimate_scam_detector.py
+*.bat
+
+# Logs and temporary files
+logs/
+temp_*
+test_*
+train_*
+
+# Development files
+requirements*.txt
+setup_ml_system.py
+simple_*.py
+working_*.py
+web_scraper.py
+enhanced_scraper.py
+debug_amount.py
+t_blocking.py
