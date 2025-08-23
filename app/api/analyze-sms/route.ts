@@ -224,7 +224,7 @@ function fallbackAnalysis(text: string, phone?: string, url?: string): Normalize
   } else {
     recommendedAction = 'This is likely a scam. Do not respond, click, or share any information. Report immediately.'
   }
-  
+
   return {
     classification,
     confidence_score: confidence,

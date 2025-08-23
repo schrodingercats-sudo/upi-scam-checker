@@ -1,6 +1,6 @@
 # 🚀 Deploy Python ML Backend on Render
 
-This guide will help you deploy your Python ML models on Render so they can work with your Vercel frontend.
+This guide will help you deploy your Python backend on Render so it can work with your Vercel frontend.
 
 ## 📋 Prerequisites
 
@@ -11,13 +11,11 @@ This guide will help you deploy your Python ML models on Render so they can work
 
 ### 1. Prepare the Backend Files
 
-Run the setup script to copy all necessary files:
+The setup script has already copied all necessary files:
 
 ```bash
 python render_backend/deploy_to_render.py
 ```
-
-This will create a `render_backend` directory with all required files.
 
 ### 2. Deploy on Render
 
@@ -28,14 +26,13 @@ This will create a `render_backend` directory with all required files.
    - **Name**: `upi-scam-checker-backend` (or any name you prefer)
    - **Root Directory**: `render_backend`
    - **Runtime**: `Python 3`
-   - **Build Command**: `pip install -r requirements.txt`
+   - **Build Command**: `pip install -r requirements_simple.txt`
    - **Start Command**: `gunicorn app:app`
    - **Plan**: Free (or paid if you need more resources)
 
 ### 3. Environment Variables (Optional)
 
 Add these if you have them:
-- `GEMINI_API_KEY`: Your Gemini API key for enhanced analysis
 - `LOG_LEVEL`: Set to `INFO` or `DEBUG` for logging
 
 ### 4. Deploy
@@ -73,7 +70,9 @@ Once deployed, you'll get a URL like: `https://your-app-name.onrender.com`
        "Hard-coded security rule triggered",
        "Cannot be bypassed by ML manipulation"
      ],
-     "recommended_action": "BLOCKED: This is a confirmed scam message. Do not interact."
+     "recommended_action": "BLOCKED: This is a confirmed scam message. Do not interact.",
+     "blocked_by": "immediate_pattern",
+     "backend": "Render Python Backend"
    }
    ```
 
@@ -81,28 +80,27 @@ Once deployed, you'll get a URL like: `https://your-app-name.onrender.com`
 
 1. **Vercel frontend** receives user input
 2. **Immediate blocking** checks for obvious scams (99% confidence)
-3. **If not blocked**, calls **Render Python backend** for ML analysis
-4. **If backend fails**, uses **fallback analysis** on Vercel
+3. **If not blocked**, calls **Render Python backend** for enhanced analysis
+4. **Enhanced fallback analysis** provides comprehensive scam detection
 5. **Results displayed** to user
 
 ## 🛡️ Security Features
 
 - ✅ **Immediate blocking** for obvious scams (cannot be bypassed)
-- ✅ **ML-powered analysis** via Python backend
-- ✅ **Fallback system** if backend is down
+- ✅ **Enhanced fallback analysis** with comprehensive patterns
 - ✅ **99% confidence** for confirmed threats
+- ✅ **Lightweight deployment** (no heavy ML dependencies)
 
 ## 🚨 Troubleshooting
 
+### Build Errors
+- Use `requirements_simple.txt` instead of `requirements.txt`
+- This avoids pandas/numpy compatibility issues with Python 3.13
+
 ### Backend Not Responding
 - Check Render logs for errors
-- Verify `requirements.txt` has all dependencies
+- Verify `requirements_simple.txt` has all dependencies
 - Ensure `gunicorn` is in requirements
-
-### Import Errors
-- Verify all `engine/` files are copied to `render_backend/`
-- Check Python version compatibility
-- Ensure ML model files (`.pkl`, `.json`) are present
 
 ### CORS Issues
 - Backend includes `Flask-CORS` for cross-origin requests
@@ -116,11 +114,20 @@ Once deployed, you'll get a URL like: `https://your-app-name.onrender.com`
 
 ## 🎯 Benefits
 
-1. **Keep your ML models** working
-2. **Immediate blocking** still active
-3. **Scalable backend** on Render
-4. **Fast frontend** on Vercel
-5. **Fallback system** for reliability
+1. **Immediate blocking** still active (99% confidence)
+2. **Enhanced analysis** on Render backend
+3. **Fast frontend** on Vercel
+4. **Fallback system** for reliability
+5. **No compatibility issues** with Python versions
+
+## 🔄 Future ML Integration
+
+Once the basic backend is working, you can gradually add ML capabilities:
+
+1. **Start with simple requirements** (current setup)
+2. **Test thoroughly** on Render
+3. **Gradually add ML libraries** with compatible versions
+4. **Use `requirements.txt`** for full ML capabilities
 
 ## 📞 Support
 
@@ -129,11 +136,13 @@ If you encounter issues:
 2. Verify all files are copied correctly
 3. Test backend endpoints directly
 4. Check environment variables in Vercel
+5. Use `requirements_simple.txt` for initial deployment
 
 ---
 
 **Your UPI Scam Checker will now have:**
 - 🚨 **Immediate blocking** (99% confidence)
-- 🤖 **ML-powered analysis** (Python backend)
+- 🤖 **Enhanced analysis** (Render backend)
 - 🛡️ **Fallback protection** (Vercel)
 - ⚡ **Fast performance** (both platforms)
+- 🔧 **Easy deployment** (no compatibility issues)
