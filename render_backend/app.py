@@ -7,11 +7,7 @@ Deploy on Render to run ML models
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
-import sys
-
-# Add the parent directory to path to import engine modules
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
+import json
 from engine.simple_analyzer import analyze_message_simple
 
 app = Flask(__name__)
@@ -19,46 +15,66 @@ CORS(app)
 
 @app.route('/health', methods=['GET'])
 def health_check():
+    """Health check endpoint"""
     return jsonify({
         'status': 'healthy',
-        'version': '2.1.0',
-        'features': ['ML Model', 'Rule-Based Analysis', 'Gemini 2-Step Verification', 'SMS Sender ID Analysis'],
-        'message': 'UPI Scam Checker Backend is running',
+        'version': '3.0.0',
+        'model': '100K SMS Trained Model',
+        'features': [
+            'Advanced ML Model (100K messages)',
+            'SMS Sender ID Analysis (DND Categories)',
+            'Gemini API Integration',
+            'Multi-layered Detection',
+            'Fast2SMS Whitelist',
+            'Rule-based + ML + AI Analysis'
+        ],
         'sms_categories': {
-            's': 'Service (banks, companies)',
-            'g': 'Government (official messages)',
-            'p': 'Promotional (marketing, ads)',
-            't': 'Transactional/OTP (passwords, transactions)'
+            's': 'Service (banks, companies) - TRUSTED',
+            'g': 'Government (official messages) - TRUSTED',
+            'p': 'Promotional (marketing, ads) - SUSPICIOUS',
+            't': 'Transactional/OTP (passwords, transactions) - TRUSTED'
         }
     })
 
 @app.route('/analyze', methods=['POST'])
-def analyze():
+def analyze_sms():
+    """Analyze SMS message with 100K trained model"""
     try:
         data = request.get_json()
-        text = data.get('text', '')
+        
+        if not data or 'text' not in data:
+            return jsonify({
+                'error': 'Missing required field: text'
+            }), 400
+        
+        text = data['text']
         phone = data.get('phone', '')
         url = data.get('url', '')
-        sender_id = data.get('sender_id', '')  # NEW: SMS Sender ID
+        sender_id = data.get('sender_id', '')
         
-        if not text and not phone and not url:
-            return jsonify({'error': 'Provide at least one of: text, phone, url'}), 400
-        
-        # Use the simple analyzer with SMS sender ID support
-        result = analyze_message_simple(text, phone, url, sender_id)
+        # Analyze with 100K trained model
+        result = analyze_message_simple(
+            text=text,
+            phone=phone,
+            url=url,
+            sender_id=sender_id
+        )
         
         return jsonify(result)
         
     except Exception as e:
-        print(f"Analysis error: {e}")
         return jsonify({
-            'error': 'Analysis failed',
-            'details': str(e)
+            'error': f'Analysis failed: {str(e)}',
+            'classification': 'Error',
+            'confidence_score': '0%',
+            'risk_level': 'Unknown',
+            'recommended_action': 'System error occurred'
         }), 500
 
 if __name__ == '__main__':
-    print("🚀 Starting UPI Scam Checker Backend v2.1.0")
-    print("✅ Features: ML Model + Rule-Based + Gemini 2-Step Verification + SMS Sender ID Analysis")
-    print("📱 SMS Categories: s=Service, g=Government, p=Promotional, t=Transactional/OTP")
+    print("🚀 Starting 100K SMS Scam Detection Backend")
+    print("✅ 100K trained model loaded")
+    print("✅ SMS Sender ID analysis active")
+    print("✅ Gemini API integration ready")
     print("🌐 CORS enabled for frontend integration")
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False)
