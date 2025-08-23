@@ -1,7 +1,7 @@
-// UPI Scam Checker - Version 2.0.0
-// Last Updated: 2025-01-27 15:30 UTC
-// Security Update: Immediate Hard-coded Blocking System
-// This version cannot be bypassed by ML manipulation
+// UPI Scam Checker - Version 3.0.0
+// Last Updated: 2025-01-27 17:00 UTC
+// Advanced Update: 100K AI Model + SMS Sender ID + Gemini AI
+// This version uses the most advanced SMS scam detection system
 
 'use client'
 

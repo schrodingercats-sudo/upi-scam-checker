@@ -1,4 +1,4 @@
-UPI Scam Checker - Version 2.0.0
+UPI Scam Checker - Version 3.0.0
 ====================================
 
 Build Date: 2025-01-27 15:30 UTC

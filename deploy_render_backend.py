@@ -63,7 +63,7 @@ def create_deployment_info():
     """Create deployment info file"""
     info = {
         "deployment_date": "2025-01-27",
-        "version": "2.0.0",
+        "version": "3.0.0",
         "features": [
             "ML Model v3",
             "Rule-Based Analysis", 
