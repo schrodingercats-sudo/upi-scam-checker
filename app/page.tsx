@@ -3,32 +3,9 @@
 import { useState } from 'react'
 import ScamAnalyzer from '../components/ScamAnalyzer'
 import LatestScams from '../components/LatestScams'
-import PhoneTracker from '../components/PhoneTracker'
-import ComplaintGenerator from '../components/ComplaintGenerator'
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'sms' | 'url' | 'call' | 'track'>('sms')
-  const [result, setResult] = useState<any>(null)
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
-
-  const handleAnalyze = async (input: string, type: 'sms' | 'url' | 'call' | 'track') => {
-    setIsAnalyzing(true)
-    try {
-      if (type === 'sms') {
-        const response = await fetch('/api/analyze-sms', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: input })
-        })
-        const data = await response.json()
-        setResult(data)
-      }
-    } catch (error) {
-      setResult({ error: 'Analysis failed' })
-    } finally {
-      setIsAnalyzing(false)
-    }
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -78,10 +55,9 @@ export default function Home() {
             <ScamAnalyzer
               activeTab={activeTab}
               onTabChange={setActiveTab}
-              onAnalyze={handleAnalyze}
-              isAnalyzing={isAnalyzing}
+              onAnalyze={() => {}}
+              isAnalyzing={false}
             />
-            {result && <ComplaintGenerator result={result} />}
           </div>
 
           {/* Right Column: Latest Scam Patterns */}
