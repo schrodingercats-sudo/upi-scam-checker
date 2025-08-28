@@ -1,7 +1,36 @@
 {
-  "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "outputDirectory": ".next"
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "functions": {
+    "app/api/analyze-ml/route.ts": {
+      "maxDuration": 30
+    },
+    "app/api/analyze-sms/route.ts": {
+      "maxDuration": 30
+    },
+    "app/api/analyze-gemini/route.ts": {
+      "maxDuration": 30
+    },
+    "app/api/analyze-deepseek/route.ts": {
+      "maxDuration": 30
+    }
+  }
 }
