@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { spawn } from 'child_process';
 import path from 'path';
+import fs from 'fs';
 
 export async function POST(request: NextRequest) {
   try {
@@ -60,7 +61,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function analyzeWithAdvancedML(transaction: any) {
+async function analyzeWithAdvancedML(transaction: Record<string, unknown>) {
   return new Promise((resolve, reject) => {
     try {
       // Path to the Python script
@@ -164,7 +165,6 @@ except Exception as e:
 `;
 
       // Write the script to file
-      const fs = require('fs');
       fs.writeFileSync(pythonScript, scriptContent);
 
       // Run Python script
@@ -271,26 +271,21 @@ async function performBasicMLAnalysis(text: string) {
   riskScore = Math.min(riskScore, 1.0);
 
   // Better risk classification
-  let label, riskLevel, confidence;
+  let riskLevel: string, confidence: number;
   
   if (riskScore >= 0.8) {
-    label = 'Scam';
     riskLevel = 'Critical';
     confidence = 0.9;
   } else if (riskScore >= 0.6) {
-    label = 'Scam';
     riskLevel = 'High';
     confidence = 0.8;
   } else if (riskScore >= 0.4) {
-    label = 'Suspicious';
     riskLevel = 'Medium';
     confidence = 0.7;
   } else if (riskScore >= 0.2) {
-    label = 'Suspicious';
     riskLevel = 'Low';
     confidence = 0.6;
   } else {
-    label = 'Safe';
     riskLevel = 'Low';
     confidence = 0.5;
   }

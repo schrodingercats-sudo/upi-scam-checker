@@ -37,7 +37,7 @@ export default function ComplaintGenerator({ result }: ComplaintGeneratorProps) 
         // Fallback to local generation
         setComplaint(generateComplaintText())
       }
-    } catch (error) {
+    } catch {
       // Fallback to local generation
       setComplaint(generateComplaintText())
     } finally {

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-export async function POST(req: Request) {
+export async function POST() {
   try {
     const result = {
       label: 'Suspicious',
@@ -10,7 +10,7 @@ export async function POST(req: Request) {
       riskLevel: 'Medium',
     } as const
     return NextResponse.json(result)
-  } catch (e) {
+  } catch {
     return NextResponse.json({ error: 'Unable to analyze audio' }, { status: 500 })
   }
 }

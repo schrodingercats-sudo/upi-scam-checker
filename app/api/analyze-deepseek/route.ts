@@ -97,7 +97,7 @@ Provide a structured, professional analysis that can be used for final verificat
                 };
                 break; // Don't retry for daily limits
               }
-            } catch (e) {
+            } catch {
               // If we can't parse the error, treat it as a regular rate limit
               lastError = { status: 429, message: 'Rate limited, will retry' };
               continue; // Try again

@@ -10,6 +10,9 @@ type AnalysisResult = {
   redFlags?: string[];
   advice?: string;
   riskLevel?: "Low" | "Medium" | "High";
+  number?: string;
+  spamScore?: number;
+  notes?: string;
   mlAnalysis?: {
     success: boolean;
     model: string;
@@ -27,7 +30,7 @@ type AnalysisResult = {
   };
   deepseekAnalysis?: string;
   geminiAnalysis?: string;
-  finalAnalysis?: any;
+  finalAnalysis?: Record<string, unknown>;
   analysisSteps?: {
     advancedML: string;
     deepseekReasoning: string;
@@ -118,7 +121,7 @@ function ScamNewsFeed(): React.ReactElement {
         } else {
           setGeminiStatus('offline');
         }
-      } catch (error) {
+      } catch {
         setGeminiStatus('offline');
       }
     };
@@ -767,7 +770,7 @@ function ResultView({ result, meta }: { result: AnalysisResult; meta?: ResultMet
 function SmsForm(): React.ReactElement {
   const [text, setText] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const [result, setResult] = React.useState<any>(null);
+  const [result, setResult] = React.useState<AnalysisResult | null>(null);
   const [analysisStep, setAnalysisStep] = React.useState<'idle' | 'processing' | 'complete'>('idle');
   return (
     <div className="flex flex-col gap-3">
@@ -858,7 +861,7 @@ function SmsForm(): React.ReactElement {
 function UrlForm(): React.ReactElement {
   const [url, setUrl] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const [result, setResult] = React.useState<any>(null);
+  const [result, setResult] = React.useState<AnalysisResult | null>(null);
   const [analysisStep, setAnalysisStep] = React.useState<'idle' | 'processing' | 'complete'>('idle');
   return (
     <div className="flex flex-col gap-3">
@@ -892,7 +895,7 @@ function UrlForm(): React.ReactElement {
               const data = await res.json();
               setResult(data);
               setAnalysisStep('complete');
-            } catch (error) {
+            } catch {
               setAnalysisStep('idle');
             } finally {
               setLoading(false);
@@ -910,9 +913,8 @@ function UrlForm(): React.ReactElement {
 }
 
 function CallForm(): React.ReactElement {
-  const [file, setFile] = React.useState<File | null>(null);
   const [loading, setLoading] = React.useState(false);
-  const [result, setResult] = React.useState<any>(null);
+  const [result, setResult] = React.useState<AnalysisResult | null>(null);
   const [analysisStep, setAnalysisStep] = React.useState<'idle' | 'processing' | 'complete'>('idle');
   return (
     <div className="flex flex-col gap-3">
@@ -920,7 +922,6 @@ function CallForm(): React.ReactElement {
       <input
         type="file"
         accept="audio/*"
-        onChange={(e) => setFile(e.target.files?.[0] || null)}
         className="w-full rounded-xl border border-white/10 bg-white/5 p-2 text-sm text-white outline-none file:mr-3 file:rounded-lg file:border-0 file:bg-white file:px-3 file:py-2 file:text-xs file:font-medium file:text-indigo-700 hover:file:bg-indigo-50"
       />
       
@@ -941,7 +942,7 @@ function CallForm(): React.ReactElement {
               const data = await res.json();
               setResult(data);
               setAnalysisStep('complete');
-            } catch (error) {
+            } catch {
               setAnalysisStep('idle');
             } finally {
               setLoading(false);
@@ -961,7 +962,7 @@ function CallForm(): React.ReactElement {
 function TrackForm(): React.ReactElement {
   const [num, setNum] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const [result, setResult] = React.useState<any>(null);
+  const [result, setResult] = React.useState<AnalysisResult | null>(null);
   const [analysisStep, setAnalysisStep] = React.useState<'idle' | 'processing' | 'complete'>('idle');
   return (
     <div className="flex flex-col gap-3">
@@ -991,7 +992,7 @@ function TrackForm(): React.ReactElement {
               const data = await res.json();
               setResult(data);
               setAnalysisStep('complete');
-            } catch (error) {
+            } catch {
               setAnalysisStep('idle');
             } finally {
               setLoading(false);

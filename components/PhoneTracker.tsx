@@ -1,9 +1,26 @@
 "use client"
 import { useState } from 'react'
 
+interface PhoneSummary {
+  reports?: number;
+  scam_reports?: number;
+  suspicious_reports?: number;
+  safe_reports?: number;
+  last_seen?: string;
+  external?: {
+    provider?: string;
+    name?: string;
+    carrier?: string;
+    country?: string;
+    location?: string;
+    spamScore?: number;
+  };
+  samples?: string[];
+}
+
 export default function PhoneTracker() {
   const [phone, setPhone] = useState('')
-  const [summary, setSummary] = useState<any>(null)
+  const [summary, setSummary] = useState<PhoneSummary | null>(null)
   const [loading, setLoading] = useState(false)
   const [complaint, setComplaint] = useState('')
 

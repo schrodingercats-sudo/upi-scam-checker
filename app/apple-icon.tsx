@@ -21,6 +21,7 @@ export default function Icon() {
       >
         <img
           src="https://storage.googleapis.com/cosmic-project-image-assets/images/c14a2256-a303-4bac-a5fb-bb9e62cd4f1a/favicon.png"
+          alt="UPI Guard Icon"
           style={{
             width: '100%',
             height: '100%',

@@ -122,23 +122,14 @@ export default function Hero(): React.ReactElement {
 
 function VideoCard(): React.ReactElement {
   const videoRef = React.useRef<HTMLVideoElement | null>(null);
-  const [isPaused, setIsPaused] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
-    const onPlay = () => setIsPaused(false);
-    const onPause = () => setIsPaused(true);
     const onError = () => setError("Video unavailable. Place ad.mp4 in public/.");
-    v.addEventListener("play", onPlay);
-    v.addEventListener("pause", onPause);
     v.addEventListener("error", onError);
-    // Do not autoplay with sound; show controls instead
-    setIsPaused(v.paused);
     return () => {
-      v.removeEventListener("play", onPlay);
-      v.removeEventListener("pause", onPause);
       v.removeEventListener("error", onError);
     };
   }, []);

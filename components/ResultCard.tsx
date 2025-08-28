@@ -1,6 +1,6 @@
 'use client'
 
-import { Shield, AlertTriangle, CheckCircle, XCircle, Copy, Download } from 'lucide-react'
+import { Shield, AlertTriangle, CheckCircle, XCircle, Copy } from 'lucide-react'
 
 interface ResultCardProps {
   result: {
@@ -16,36 +16,6 @@ interface ResultCardProps {
 }
 
 export default function ResultCard({ result }: ResultCardProps) {
-  const getRiskColor = (risk: string) => {
-    switch (risk?.toLowerCase()) {
-      case 'safe':
-      case 'low':
-        return 'text-green-600 bg-green-100'
-      case 'medium':
-        return 'text-yellow-600 bg-yellow-100'
-      case 'high':
-      case 'scam':
-        return 'text-red-600 bg-red-100'
-      default:
-        return 'text-gray-600 bg-gray-100'
-    }
-  }
-
-  const getRiskIcon = (risk: string) => {
-    switch (risk?.toLowerCase()) {
-      case 'safe':
-      case 'low':
-        return <CheckCircle className="w-6 h-6 text-green-600" />
-      case 'medium':
-        return <AlertTriangle className="w-6 h-6 text-yellow-600" />
-      case 'high':
-      case 'scam':
-        return <XCircle className="w-6 h-6 text-red-600" />
-      default:
-        return <Shield className="w-6 h-6 text-gray-600" />
-    }
-  }
-
   const getConfidenceColor = (confidence: number) => {
     if (confidence >= 0.8) return 'text-green-600'
     if (confidence >= 0.6) return 'text-yellow-600'
@@ -55,33 +25,6 @@ export default function ResultCard({ result }: ResultCardProps) {
   const copyToClipboard = () => {
     const text = `Analysis Result: ${result.classification || result.is_scam ? 'Scam' : 'Safe'} - Confidence: ${result.confidence_score || result.confidence} - Risk Level: ${result.risk_level}`
     navigator.clipboard.writeText(text)
-  }
-
-  const downloadReport = () => {
-    const report = `
-UPI Scam Checker Analysis Report
-================================
-
-Classification: ${result.classification || (result.is_scam ? 'Scam' : 'Safe')}
-Confidence Score: ${result.confidence_score || result.confidence}
-Risk Level: ${result.risk_level}
-
-Red Flags:
-${result.red_flags?.map(flag => `- ${flag}`).join('\n') || 'None detected'}
-
-Recommendations:
-${result.recommendations?.map(rec => `- ${rec}`).join('\n') || 'No specific recommendations'}
-
-Generated on: ${new Date().toLocaleString()}
-    `.trim()
-
-    const blob = new Blob([report], { type: 'text/plain' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'scam-analysis-report.txt'
-    a.click()
-    URL.revokeObjectURL(url)
   }
 
   const handleReportScam = () => {

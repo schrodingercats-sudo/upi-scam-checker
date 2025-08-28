@@ -5,22 +5,34 @@ import { MessageSquare, Link, Phone, Upload, Loader2 } from 'lucide-react'
 import PhoneTracker from '@/components/PhoneTracker'
 import { motion } from 'framer-motion'
 
+interface AnalysisResult {
+  error?: string;
+  classification?: string;
+  confidence_score?: string;
+  risk_level?: string;
+  recommended_action?: string;
+  sender_analysis?: {
+    category: string;
+    category_code: string;
+    trust_score: number;
+  };
+  red_flags?: string[];
+}
+
 interface ScamAnalyzerProps {
   activeTab: 'sms' | 'url' | 'call' | 'track'
   onTabChange: (tab: 'sms' | 'url' | 'call' | 'track') => void
-  onAnalyze: (input: string, type: 'sms' | 'url' | 'call' | 'track') => void
   isAnalyzing: boolean
 }
 
 export default function ScamAnalyzer({ 
   activeTab, 
   onTabChange, 
-  onAnalyze, 
   isAnalyzing 
 }: ScamAnalyzerProps) {
   const [input, setInput] = useState('')
   const [audioFile, setAudioFile] = useState<File | null>(null)
-  const [result, setResult] = useState<any>(null)
+  const [result, setResult] = useState<AnalysisResult | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,7 +45,7 @@ export default function ScamAnalyzer({
         const response = await fetch('/api/analyze-call', { method: 'POST', body: form })
         const res = await response.json()
         setResult(res)
-      } catch (error) {
+      } catch {
         setResult({ error: 'Audio analysis failed' })
       }
       return
@@ -48,7 +60,7 @@ export default function ScamAnalyzer({
         })
         const data = await response.json()
         setResult(data)
-      } catch (error) {
+      } catch {
         setResult({ error: 'Analysis failed' })
       }
     }

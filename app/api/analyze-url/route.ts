@@ -29,7 +29,7 @@ export async function POST(req: Request) {
     } as const;
 
     return NextResponse.json(result);
-  } catch (e) {
+  } catch {
     return NextResponse.json({ error: "Unable to analyze URL" }, { status: 500 });
   }
 }

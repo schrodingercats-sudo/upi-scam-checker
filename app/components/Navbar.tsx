@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 const navLinks: { label: string; href: string }[] = [
   { label: "Features", href: "#features" },
@@ -65,7 +66,7 @@ export default function Navbar(): React.ReactElement {
           }
         >
           <div className="flex h-16 items-center justify-between px-4">
-            <a href="/" className="group inline-flex items-center gap-2">
+            <Link href="/" className="group inline-flex items-center gap-2">
               <span
                 className={
                   "flex h-9 w-9 items-center justify-center rounded-full " +
@@ -82,7 +83,7 @@ export default function Navbar(): React.ReactElement {
               >
                 UPI Guard
               </span>
-            </a>
+            </Link>
 
             <div className="hidden items-center gap-6 md:flex">
               {navLinks.map((l) => (
