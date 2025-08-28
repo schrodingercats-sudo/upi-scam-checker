@@ -1,64 +1,178 @@
-# Large dataset files that exceed Vercel limits
-ultimate_scam_dataset.json
-ultimate_scam_dataset.csv
-enhanced_training_data.json
-feature_names*.json
-dataset_info*.json
-dataset_statistics.json
-ultimate_dataset_stats.json
-collected_sms_data.json
-phone_registry.json
-upi_scam_dataset_350k.csv
-upi_fake_scams_10000.csv
-upi_fake_scams_500.csv
-all_stages_combined.csv
-god_dataset.csv
-hacker_dataset.csv
-pro_dataset.csv
-intimate_dataset.csv
-hard_dataset.csv
-medium_dataset.csv
-easy_dataset.csv
-ml_training_data.csv
-enhanced_training_data.csv
-upi_sms_dataset.csv
-upi_sms_whatsapp_dataset_seed.csv
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Large binary files
-_pywrap_tensorflow_common.dll
-libclang.dll
-next-swc.win32-x64-msvc.node
+# Next.js
+.next/
+out/
+build/
+dist/
 
-# Python and ML files (not needed for web deployment)
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# next.js build output
+.next
+
+# nuxt.js build output
+.nuxt
+
+# vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# Python files
 *.py
 *.pyc
 __pycache__/
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ML models and datasets
 *.pkl
+*.joblib
 *.h5
-*.model
+*.hdf5
+*.csv
+*.json
+*.txt
+*.dat
+*.npy
+*.npz
 
-# Training and model files
-engine/
-ml_integration.py
-ml_scam_detector.py
-ultimate_scam_detector.py
-*.bat
+# Large files
+*.zip
+*.tar.gz
+*.rar
+*.7z
 
-# Logs and temporary files
-logs/
-temp_*
-test_*
-train_*
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
 
-# Development files
-requirements*.txt
-setup_ml_system.py
-simple_*.py
-working_*.py
-web_scraper.py
-enhanced_scraper.py
+# Test files
+test_*.py
+test_*.js
+test_*.ts
+*_test.py
+*_test.js
+*_test.ts
+
+# Debug files
+debug_*.py
+debug_*.js
+debug_*.ts
+
+# Specific test files
+test_enhanced_model.py
+test_enhanced_model_v2.py
+test_real_dataset.py
+test_enhanced_analyzer.py
+test_fast2sms_message.py
+test_direct.py
+test_api.js
+test_enhanced_features.js
+test_api_simple.js
+test_kyc_message.js
+deploy_to_render.py
 debug_amount.py
 t_blocking.py
 
 # Exclude SecureUPI folder (causes build errors)
 SecureUPI/
+
+# Large dataset files (only exclude specific large files)
+ultimate_scam_dataset.json
+enhanced_training_data.json
+sms_dataset_100k.csv
+upi_fake_scams_*.csv
+upi_sms_dataset*.csv
+all_stages_combined.csv
+god_dataset.csv
+hacker_dataset.csv
+hard_dataset.csv
+intimate_dataset.csv
+medium_dataset.csv
+pro_dataset.csv
+easy_dataset.csv
+
+# ML models (keep the smaller ones)
+sms_scam_model_v3.pkl
+sms_scam_scaler_v3.pkl

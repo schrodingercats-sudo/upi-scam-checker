@@ -1,221 +1,219 @@
 'use client'
 
 import { useState } from 'react'
-import { FileText, Copy, Download, Mail, Phone, Shield } from 'lucide-react'
-import { motion } from 'framer-motion'
-import toast from 'react-hot-toast'
+import { FileText, Copy, Download, AlertTriangle, Shield, User, Calendar, MapPin } from 'lucide-react'
 
 interface ComplaintGeneratorProps {
-  result: any
+  result: {
+    classification?: string
+    is_scam?: boolean
+    red_flags?: string[]
+    recommendations?: string[]
+    confidence?: number
+    risk_level?: string
+  }
 }
 
 export default function ComplaintGenerator({ result }: ComplaintGeneratorProps) {
-  const [userDetails, setUserDetails] = useState({
-    name: '',
-    phone: '',
-    bank: '',
-    email: ''
-  })
-  const [showForm, setShowForm] = useState(false)
+  const [complaint, setComplaint] = useState('')
+  const [isGenerating, setIsGenerating] = useState(false)
 
-  const generateComplaint = () => {
-    if (!userDetails.name || !userDetails.phone) {
-      toast.error('Please fill in your name and phone number')
-      return
+  const generateComplaint = async () => {
+    if (!result) return
+    
+    setIsGenerating(true)
+    
+    try {
+      const response = await fetch('/api/generate-complaint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ result })
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        setComplaint(data.complaint)
+      } else {
+        // Fallback to local generation
+        setComplaint(generateComplaintText())
+      }
+    } catch (error) {
+      // Fallback to local generation
+      setComplaint(generateComplaintText())
+    } finally {
+      setIsGenerating(false)
     }
-    setShowForm(true)
   }
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text)
-    toast.success('Complaint copied to clipboard!')
+  const generateComplaintText = () => {
+    const scamType = result.is_scam ? 'SMS Scam' : 'Suspicious Message'
+    const riskLevel = result.risk_level || 'Medium'
+    const redFlags = result.red_flags?.join(', ') || 'Suspicious content detected'
+    
+    return `CYBERCRIME COMPLAINT
+
+Date: ${new Date().toLocaleDateString()}
+Time: ${new Date().toLocaleTimeString()}
+Complaint Type: ${scamType}
+Risk Level: ${riskLevel}
+
+DETAILS:
+The complainant has received a suspicious message that has been analyzed by the UPI Scam Checker AI system and classified as potentially fraudulent.
+
+ANALYSIS RESULTS:
+- Classification: ${result.classification || (result.is_scam ? 'Scam' : 'Safe')}
+- Confidence Level: ${result.confidence || 0}
+- Risk Assessment: ${riskLevel}
+- Red Flags Identified: ${redFlags}
+
+RECOMMENDATIONS:
+${result.recommendations?.map(rec => `- ${rec}`).join('\n') || '- Exercise caution with this message\n- Do not share personal information\n- Report to authorities if necessary'}
+
+COMPLAINANT STATEMENT:
+I hereby lodge this complaint regarding the suspicious message received. The message has been analyzed by AI-powered scam detection systems and identified as potentially fraudulent. I request appropriate action to be taken against the perpetrators and to prevent similar incidents in the future.
+
+I am willing to provide additional information or evidence if required for investigation purposes.
+
+Signature: _________________
+Date: _____________________
+
+Contact Information:
+Name: [Your Name]
+Phone: [Your Phone Number]
+Email: [Your Email]
+Address: [Your Address]
+
+This complaint is filed under the Information Technology Act, 2000 and relevant cybercrime laws.`
+  }
+
+  const copyToClipboard = () => {
+    if (complaint) {
+      navigator.clipboard.writeText(complaint)
+    }
   }
 
   const downloadComplaint = () => {
-    const complaint = generateComplaintText()
+    if (!complaint) return
+    
     const blob = new Blob([complaint], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
     a.download = 'cybercrime-complaint.txt'
-    document.body.appendChild(a)
     a.click()
-    document.body.removeChild(a)
     URL.revokeObjectURL(url)
-    
-    toast.success('Complaint downloaded!')
   }
 
-  const generateComplaintText = () => {
-    const date = new Date().toLocaleDateString('en-IN')
-    
-    return `
-CYBER CRIME COMPLAINT
-=====================
-
-Date: ${date}
-Complaint ID: ${Date.now()}
-
-COMPLAINANT DETAILS:
-Name: ${userDetails.name}
-Phone: ${userDetails.phone}
-Email: ${userDetails.email || 'Not provided'}
-Bank: ${userDetails.bank || 'Not specified'}
-
-INCIDENT DETAILS:
-Type: Digital Scam / UPI Fraud
-Risk Level: ${result?.risk_level || 'Unknown'}
-Analysis Result: ${result?.classification || 'Unknown'}
-Confidence: ${result?.confidence_score || 'Unknown'}
-
-RED FLAGS DETECTED:
-${result?.red_flags?.map((flag: string) => `• ${flag}`).join('\n') || '• Multiple suspicious patterns detected'}
-
-AI ANALYSIS SUMMARY:
-${result?.recommended_action || 'AI analysis indicated potential scam activity'}
-
-COMPLAINT:
-I, ${userDetails.name}, hereby lodge a complaint regarding a potential digital scam that was detected by AI analysis. The content analyzed showed multiple red flags indicating a high risk of fraud.
-
-The analysis revealed:
-- Risk Classification: ${result?.classification || 'Unknown'}
-- Confidence Level: ${result?.confidence_score || 'Unknown'}
-- Multiple suspicious patterns and keywords
-
-I request immediate investigation and action to prevent potential victims from falling prey to this scam.
-
-CONTACT INFORMATION:
-Phone: ${userDetails.phone}
-Email: ${userDetails.email || 'Not provided'}
-
-I am available for any additional information or clarification required for this investigation.
-
-Yours faithfully,
-${userDetails.name}
-${userDetails.phone}
-
----
-Generated by UPI Scam Checker v3.0.0
-Report to: cybercrime.gov.in
-`
-  }
+  if (!result) return null
 
   return (
-    <div className="card">
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">
-          📝 Cyber Crime Complaint Generator
-        </h3>
-        <p className="text-gray-600">
-          Generate a formal complaint for cyber crime reporting based on your analysis results.
-        </p>
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      {/* Header */}
+      <div className="flex items-center space-x-3 mb-4">
+        <FileText className="w-6 h-6 text-red-600" />
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900">Generate Complaint</h3>
+          <p className="text-sm text-gray-600">Create a formal cybercrime complaint based on analysis results</p>
+        </div>
       </div>
 
-      {!showForm ? (
-        <div className="space-y-4">
-          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h4 className="font-semibold text-blue-800 mb-2">📊 Analysis Summary</h4>
-            <div className="text-sm text-blue-700 space-y-1">
-              <p><strong>Classification:</strong> {result?.classification || 'Unknown'}</p>
-              <p><strong>Risk Level:</strong> {result?.risk_level || 'Unknown'}</p>
-              <p><strong>Confidence:</strong> {result?.confidence_score || 'Unknown'}</p>
-            </div>
-          </div>
-
-          <button
-            onClick={generateComplaint}
-            className="w-full bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center space-x-2"
-          >
-            <FileText className="h-5 w-5" />
-            <span>Generate Complaint</span>
-          </button>
-        </div>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-4"
+      {/* Generate Button */}
+      <div className="mb-4">
+        <button
+          onClick={generateComplaint}
+          disabled={isGenerating}
+          className="w-full bg-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
         >
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-              Full Name *
-            </label>
-            <input
-              type="text"
-              id="name"
-              value={userDetails.name}
-              onChange={(e) => setUserDetails({...userDetails, name: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              required
-            />
-          </div>
+          {isGenerating ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              <span>Generating Complaint...</span>
+            </>
+          ) : (
+            <>
+              <FileText className="w-5 h-5" />
+              <span>Generate Cybercrime Complaint</span>
+            </>
+          )}
+        </button>
+      </div>
 
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-              Phone Number *
-            </label>
-            <input
-              type="tel"
-              id="phone"
-              value={userDetails.phone}
-              onChange={(e) => setUserDetails({...userDetails, phone: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={userDetails.email}
-              onChange={(e) => setUserDetails({...userDetails, email: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="bank" className="block text-sm font-medium text-gray-700 mb-2">
-              Bank Name (if applicable)
-            </label>
-            <input
-              type="text"
-              id="bank"
-              value={userDetails.bank}
-              onChange={(e) => setUserDetails({...userDetails, bank: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-
+      {/* Complaint Preview */}
+      {complaint && (
+        <div className="space-y-4">
+          {/* Action Buttons */}
           <div className="flex space-x-3">
             <button
-              onClick={() => copyToClipboard(generateComplaintText())}
-              className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
+              onClick={copyToClipboard}
+              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center space-x-2 text-sm"
             >
-              <Copy className="h-4 w-4" />
-              <span>Copy</span>
+              <Copy className="w-4 h-4" />
+              <span>Copy Complaint</span>
             </button>
             <button
               onClick={downloadComplaint}
-              className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors flex items-center justify-center space-x-2"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 text-sm"
             >
-              <Download className="h-4 w-4" />
-              <span>Download</span>
+              <Download className="w-4 h-4" />
+              <span>Download Complaint</span>
             </button>
           </div>
 
-          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <h4 className="font-semibold text-yellow-800 mb-2">📞 Report to:</h4>
-            <ul className="text-sm text-yellow-700 space-y-1">
-              <li>• Cyber Crime Portal: <a href="https://cybercrime.gov.in" target="_blank" rel="noopener noreferrer" className="underline">cybercrime.gov.in</a></li>
-              <li>• Helpline: 1930</li>
-              <li>• RBI Helpline: 1800-425-3800</li>
-            </ul>
+          {/* Complaint Content */}
+          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+            <div className="flex items-center space-x-2 mb-3">
+              <Shield className="w-5 h-5 text-blue-600" />
+              <h4 className="font-semibold text-gray-900">Generated Complaint</h4>
+            </div>
+            
+            <div className="bg-white rounded-lg p-4 border border-gray-200">
+              <pre className="whitespace-pre-wrap text-sm text-gray-800 font-mono leading-relaxed">
+                {complaint}
+              </pre>
+            </div>
           </div>
-        </motion.div>
+
+          {/* Instructions */}
+          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+            <div className="flex items-center space-x-2 mb-3">
+              <AlertTriangle className="w-5 h-5 text-blue-600" />
+              <h4 className="font-semibold text-blue-900">Next Steps</h4>
+            </div>
+            
+            <div className="space-y-2 text-sm text-blue-800">
+              <div>• Review the generated complaint and customize it with your personal details</div>
+              <div>• Print the complaint and sign it manually</div>
+              <div>• Submit to your local cybercrime police station or online portal</div>
+              <div>• Keep a copy for your records</div>
+            </div>
+          </div>
+
+          {/* Contact Information */}
+          <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+            <div className="flex items-center space-x-2 mb-3">
+              <User className="w-5 h-5 text-green-600" />
+              <h4 className="font-semibold text-green-900">Important Contacts</h4>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="bg-white border border-green-200 rounded-lg p-3">
+                <div className="flex items-center space-x-2 mb-1">
+                  <MapPin className="w-4 h-4 text-green-600" />
+                  <span className="font-medium text-green-800 text-sm">Cybercrime Portal</span>
+                </div>
+                <p className="text-green-700 text-xs">https://cybercrime.gov.in</p>
+              </div>
+              
+              <div className="bg-white border border-green-200 rounded-lg p-3">
+                <div className="flex items-center space-x-2 mb-1">
+                  <Calendar className="w-4 h-4 text-green-600" />
+                  <span className="font-medium text-green-800 text-sm">Helpline</span>
+                </div>
+                <p className="text-green-700 text-xs">1930 (24/7 Support)</p>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

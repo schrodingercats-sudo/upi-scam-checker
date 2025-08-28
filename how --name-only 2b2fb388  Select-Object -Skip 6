@@ -1,0 +1,27 @@
+[33mcommit 2b2fb388a59c031258f9b8ea34d4daae5c8fe7ae[m
+Author: schrodingercats-sudo <pratham.solanki30@gmail.com>
+Date:   Wed Aug 20 10:08:19 2025 +0530
+
+    Initial commit: UPI Scam Checker
+
+.gitignore
+DEPLOYMENT.md
+PROJECT_SUMMARY.md
+README.md
+app/demo/page.tsx
+app/globals.css
+app/layout.tsx
+app/page.tsx
+components/ComplaintGenerator.tsx
+components/LatestScams.tsx
+components/ResultCard.tsx
+components/ScamAnalyzer.tsx
+context.md
+next.config.js
+package.json
+pnpm-lock.yaml
+postcss.config.js
+start.bat
+tailwind.config.js
+tsconfig.json
+vercel.json
