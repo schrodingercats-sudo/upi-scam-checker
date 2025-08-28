@@ -107,8 +107,9 @@ venv.bak/
 *.h5
 *.hdf5
 *.csv
-*.json
-*.txt
+# do NOT ignore all .json globally (keeps package.json, vercel.json, etc.)
+# *.json
+# *.txt
 *.dat
 *.npy
 *.npz
