@@ -116,3 +116,5 @@ hell*
 *.ps1
 !deploy.bat
 !deploy.sh
+!setup_deployment.bat
+!setup_deployment.sh
