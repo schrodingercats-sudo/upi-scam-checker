@@ -1,15 +1,38 @@
 {
-  "deployment_date": "2025-01-27",
+  "deployment_date": "2025-08-29",
   "version": "3.0.0",
+  "service_name": "upi-scam-checker-backend",
+  "github_repo": "https://github.com/schrodingercats-sudo/upi-scam-checker.git",
+  "render_config": {
+    "runtime": "Python 3",
+    "python_version": "3.11.9",
+    "root_directory": "render_backend",
+    "build_command": "pip install -r requirements.txt",
+    "start_command": "gunicorn app:app",
+    "port": 5000,
+    "environment": "production"
+  },
+  "environment_variables": [
+    "GOOGLE_GEMINI_API_KEY",
+    "OPENROUTER_API_KEY",
+    "FLASK_ENV=production"
+  ],
   "features": [
-    "ML Model v3",
+    "ML Model v3 (100K SMS trained)",
     "Rule-Based Analysis",
-    "Gemini 2-Step Verification",
-    "Fast2SMS Whitelist"
+    "Gemini AI Integration",
+    "DeepSeek AI Fallback",
+    "SMS Sender ID Analysis",
+    "Fast2SMS Whitelist",
+    "Multi-layered Detection"
+  ],
+  "api_endpoints": [
+    "/health - Health check",
+    "/analyze - SMS analysis with ML model"
   ],
   "files_included": [
     "app.py",
-    "requirements_simple.txt",
+    "requirements.txt",
     "runtime.txt",
     "gunicorn.conf.py",
     "engine/simple_analyzer.py",
