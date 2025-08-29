@@ -78,3 +78,41 @@ coverage.xml
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# Large datasets and training files
+*.csv
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!vercel.json
+!feature_names_v3.json
+!feature_names_100k.json
+!manifest.json
+!phone_registry.json
+!DEPLOYMENT_INFO.json
+sms_dataset_*.csv
+ultimate_scam_dataset.json
+*.local.*.json
+
+# Training and test files
+train_*.py
+test_*.py
+!test_*.js
+!test_*.ts
+
+# Generated models
+*.sav
+*.model
+*.weights
+
+# Backup files
+*_backup/
+SecureUPI_backup/
+
+# Deployment scripts backup
+hell*
+*.bat
+*.ps1
+!deploy.bat
+!deploy.sh

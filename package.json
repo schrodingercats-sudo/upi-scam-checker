@@ -1,6 +1,7 @@
 {
-  "name": "default_template",
-  "version": "0.1.0",
+  "name": "upi-scam-checker",
+  "version": "1.0.0",
+  "description": "AI-powered UPI scam detection system for Indian users",
   "private": true,
   "scripts": {
     "dev": "next dev",
