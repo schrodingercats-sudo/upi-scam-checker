@@ -79,8 +79,7 @@ export default function AIAgentSupport() {
         if (selectedAgent === 'voicegenie' && data.details?.message) {
           setStatus(`VoiceGenie Error: ${data.details.message}. Please check your VoiceGenie account setup.`);
         } else if (selectedAgent === 'voicegenie' && data.error?.includes('VoiceGenie API not properly configured')) {
-          setStatus('VoiceGenie API not properly configured.');
-          setMessage('Please check your .env file and add your actual VoiceGenie credentials. Refer to VOICEGENIE_SETUP.md for detailed instructions.');
+          setStatus('VoiceGenie API not properly configured. Please check your .env file and add your actual VoiceGenie credentials. Refer to VOICEGENIE_SETUP.md for detailed instructions.');
         } else {
           setStatus(data.error || 'Failed to initiate call');
         }
