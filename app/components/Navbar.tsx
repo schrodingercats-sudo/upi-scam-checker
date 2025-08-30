@@ -9,6 +9,7 @@ const navLinks: { label: string; href: string }[] = [
   { label: "Features", href: "#features" },
   { label: "How it works", href: "#how" },
   { label: "API", href: "#api" },
+  { label: "Support", href: "/support" },
 ];
 
 export default function Navbar(): React.ReactElement {
@@ -87,18 +88,33 @@ export default function Navbar(): React.ReactElement {
 
             <div className="hidden items-center gap-6 md:flex">
               {navLinks.map((l) => (
-                <a
-                  key={l.href}
-                  href={l.href}
-                  className={
-                    "text-sm transition-colors " +
-                    (onLight
-                      ? "text-white/80 hover:text-white"
-                      : "text-slate-600 hover:text-slate-900")
-                  }
-                >
-                  {l.label}
-                </a>
+                l.href.startsWith('/') ? (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    className={
+                      "text-sm transition-colors " +
+                      (onLight
+                        ? "text-white/80 hover:text-white"
+                        : "text-slate-600 hover:text-slate-900")
+                    }
+                  >
+                    {l.label}
+                  </Link>
+                ) : (
+                  <a
+                    key={l.href}
+                    href={l.href}
+                    className={
+                      "text-sm transition-colors " +
+                      (onLight
+                        ? "text-white/80 hover:text-white"
+                        : "text-slate-600 hover:text-slate-900")
+                    }
+                  >
+                    {l.label}
+                  </a>
+                )
               ))}
               <a
                 href="#"
@@ -148,19 +164,35 @@ export default function Navbar(): React.ReactElement {
             >
               <div className="flex flex-col gap-2 p-4">
                 {navLinks.map((l) => (
-                  <a
-                    key={l.href}
-                    href={l.href}
-                    onClick={() => setOpen(false)}
-                    className={
-                      "rounded-lg px-3 py-3 text-sm transition-colors " +
-                      (onLight
-                        ? "text-white/90 hover:text-white hover:bg-white/10"
-                        : "text-slate-700 hover:text-slate-900 hover:bg-slate-50")
-                    }
-                  >
-                    {l.label}
-                  </a>
+                  l.href.startsWith('/') ? (
+                    <Link
+                      key={l.href}
+                      href={l.href}
+                      onClick={() => setOpen(false)}
+                      className={
+                        "rounded-lg px-3 py-3 text-sm transition-colors " +
+                        (onLight
+                          ? "text-white/90 hover:text-white hover:bg-white/10"
+                          : "text-slate-700 hover:text-slate-900 hover:bg-slate-50")
+                      }
+                    >
+                      {l.label}
+                    </Link>
+                  ) : (
+                    <a
+                      key={l.href}
+                      href={l.href}
+                      onClick={() => setOpen(false)}
+                      className={
+                        "rounded-lg px-3 py-3 text-sm transition-colors " +
+                        (onLight
+                          ? "text-white/90 hover:text-white hover:bg-white/10"
+                          : "text-slate-700 hover:text-slate-900 hover:bg-slate-50")
+                      }
+                    >
+                      {l.label}
+                    </a>
+                  )
                 ))}
                 <a
                   href="#"
