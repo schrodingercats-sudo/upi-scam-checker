@@ -15,6 +15,9 @@ const primaryFont = Geist({
 export const metadata: Metadata = {
   title: "UPI Guard – Detect Fake UPI SMS & Suspicious Links",
   description: "Privacy-first protection from scam UPI messages and dangerous links. Android & iOS.",
+  verification: {
+    google: "XP0mGWyODsnQa6t1yb5IUZhZGrZbM6kalFSW70YFoPA",
+  },
 };
 
 export default function RootLayout({
