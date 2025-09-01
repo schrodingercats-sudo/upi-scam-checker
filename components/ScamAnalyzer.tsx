@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { MessageSquare, Link, Phone, Upload, Loader2 } from 'lucide-react'
 import PhoneTracker from '@/components/PhoneTracker'
+import ResultCard from '@/components/ResultCard'
 import { motion } from 'framer-motion'
 
 interface AnalysisResult {
@@ -235,13 +236,8 @@ export default function ScamAnalyzer({
               </div>
             </div>
           ) : (
-            // This is where the ResultCard would be rendered
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Analysis Results</h3>
-              <pre className="bg-gray-50 p-4 rounded-md text-sm overflow-x-auto">
-                {JSON.stringify(result, null, 2)}
-              </pre>
-            </div>
+            // Use the ResultCard component which has the feedback functionality
+            <ResultCard result={result} />
           )}
         </div>
       )}
