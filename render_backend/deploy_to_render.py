@@ -1,64 +1,112 @@
 #!/usr/bin/env python3
 """
-Deployment script for Render Python backend
+Deployment Configuration for Render
+This script helps set up the Render deployment
 """
 
+import json
 import os
-import shutil
-import subprocess
 
-def setup_render_backend():
-    """Set up the Render backend directory"""
-    print("🚀 Setting up Render Python backend...")
+def create_render_config():
+    """Create Render deployment configuration"""
     
-    # Create necessary directories
-    os.makedirs('render_backend', exist_ok=True)
+    # Render.json configuration
+    render_config = {
+        "name": "upi-scam-checker-backend",
+        "type": "web",
+        "buildCommand": "pip install -r requirements.txt",
+        "startCommand": "python app.py",
+        "envVars": [
+            {
+                "key": "GOOGLE_GEMINI_API_KEY",
+                "sync": False
+            },
+            {
+                "key": "RETRAIN_KEY",
+                "sync": False
+            },
+            {
+                "key": "PORT",
+                "value": "5000"
+            }
+        ],
+        "healthCheckPath": "/health",
+        "autoDeploy": True
+    }
     
-    # Copy engine files to render_backend
-    engine_files = [
-        'engine/analyzer.py',
-        'engine/entities.py', 
-        'engine/rules.py',
-        'engine/config.py',
-        'engine/phone_registry.py',
-        'utils/preprocess.py'
-    ]
+    # Write to render.json
+    with open('render.json', 'w') as f:
+        json.dump(render_config, f, indent=2)
     
-    for file_path in engine_files:
-        if os.path.exists(file_path):
-            # Create directory structure
-            dest_dir = os.path.join('render_backend', os.path.dirname(file_path))
-            os.makedirs(dest_dir, exist_ok=True)
-            
-            # Copy file
-            shutil.copy2(file_path, os.path.join('render_backend', file_path))
-            print(f"✅ Copied {file_path}")
-        else:
-            print(f"⚠️  Warning: {file_path} not found")
+    print("Render configuration created successfully!")
+    print("Configuration details:")
+    print(f"  Name: {render_config['name']}")
+    print(f"  Type: {render_config['type']}")
+    print(f"  Build Command: {render_config['buildCommand']}")
+    print(f"  Start Command: {render_config['startCommand']}")
+    print(f"  Health Check Path: {render_config['healthCheckPath']}")
+    print("\nEnvironment Variables to set in Render dashboard:")
+    for env_var in render_config['envVars']:
+        if not env_var.get('sync', True):
+            print(f"  - {env_var['key']}")
+
+def update_deployment_info():
+    """Update deployment information"""
     
-    # Copy ML model files
-    ml_files = [
-        'sms_scam_model_v3.pkl',
-        'sms_scam_scaler_v3.pkl', 
-        'feature_names_v3.json'
-    ]
+    deployment_info = {
+        "project_name": "UPI Scam Checker Backend",
+        "version": "3.0.0",
+        "deployment_platform": "Render",
+        "database": "SQLite (feedback.db)",
+        "features": [
+            "Real-time SMS analysis",
+            "User feedback collection",
+            "Model retraining with feedback",
+            "Persistent storage with SQLite",
+            "API endpoints for frontend integration"
+        ],
+        "api_endpoints": [
+            "/health - Health check",
+            "/analyze - SMS analysis",
+            "/feedback - Store user feedback",
+            "/stats - Get feedback statistics",
+            "/retrain - Retrain model (protected)"
+        ],
+        "environment_variables": [
+            "GOOGLE_GEMINI_API_KEY",
+            "RETRAIN_KEY",
+            "PORT=5000"
+        ],
+        "files_included": [
+            "app.py",
+            "requirements.txt",
+            "runtime.txt",
+            "gunicorn.conf.py",
+            "engine/simple_analyzer.py",
+            "engine/database.py",
+            "engine/retrain_model.py"
+        ]
+    }
     
-    for file_path in ml_files:
-        if os.path.exists(file_path):
-            shutil.copy2(file_path, os.path.join('render_backend', file_path))
-            print(f"✅ Copied {file_path}")
-        else:
-            print(f"⚠️  Warning: {file_path} not found")
+    with open('DEPLOYMENT_INFO.json', 'w') as f:
+        json.dump(deployment_info, f, indent=2)
     
-    print("\n🎯 Render backend setup complete!")
-    print("\n📋 Next steps:")
-    print("1. Go to render.com and create a new Web Service")
-    print("2. Connect your GitHub repository")
-    print("3. Set root directory to: render_backend")
-    print("4. Set build command to: pip install -r requirements.txt")
-    print("5. Set start command to: gunicorn app:app")
-    print("6. Deploy!")
-    print("\n🔗 Your backend will be available at: https://your-app-name.onrender.com")
+    print("Deployment information updated!")
 
 if __name__ == "__main__":
-    setup_render_backend()
+    try:
+        create_render_config()
+    except Exception as e:
+        print(f"Error creating render config: {e}")
+    
+    try:
+        update_deployment_info()
+    except Exception as e:
+        print(f"Error updating deployment info: {e}")
+    
+    print("\n✅ Render deployment setup completed!")
+    print("Next steps:")
+    print("1. Push changes to your GitHub repository")
+    print("2. Connect your repository to Render")
+    print("3. Set environment variables in Render dashboard")
+    print("4. Deploy your application")

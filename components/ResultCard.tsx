@@ -1,6 +1,7 @@
 'use client'
 
-import { Shield, AlertTriangle, CheckCircle, XCircle, Copy } from 'lucide-react'
+import { useState } from 'react';
+import { Shield, AlertTriangle, CheckCircle, XCircle, Copy, ThumbsUp, ThumbsDown } from 'lucide-react'
 
 interface ResultCardProps {
   result: {
@@ -12,10 +13,14 @@ interface ResultCardProps {
     is_scam?: boolean
     confidence?: number
     recommendations?: string[]
+    message_id?: number
   }
 }
 
 export default function ResultCard({ result }: ResultCardProps) {
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+  const [feedbackSending, setFeedbackSending] = useState(false);
+
   const getConfidenceColor = (confidence: number) => {
     if (confidence >= 0.8) return 'text-green-600'
     if (confidence >= 0.6) return 'text-yellow-600'
@@ -53,6 +58,37 @@ export default function ResultCard({ result }: ResultCardProps) {
     const existingReports = JSON.parse(localStorage.getItem('scamReports') || '[]')
     existingReports.push(scamReport)
     localStorage.setItem('scamReports', JSON.stringify(existingReports))
+  }
+
+  const handleFeedback = async (isReal: boolean) => {
+    if (!result.message_id || feedbackSubmitted) return;
+    
+    setFeedbackSending(true);
+    
+    try {
+      const response = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message_id: result.message_id,
+          is_real: isReal
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setFeedbackSubmitted(true);
+      } else {
+        console.error('Feedback submission failed:', data.error);
+      }
+    } catch (error) {
+      console.error('Feedback submission error:', error);
+    } finally {
+      setFeedbackSending(false);
+    }
   }
 
   if (!result) return null
@@ -128,6 +164,48 @@ export default function ResultCard({ result }: ResultCardProps) {
           </div>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <p className="text-sm text-blue-700">{result.recommended_action}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Feedback Collection Section */}
+      {result.message_id && !feedbackSubmitted && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+          <div className="flex items-center space-x-2 mb-3">
+            <Shield className="w-5 h-5 text-yellow-600" />
+            <h4 className="font-semibold text-gray-900">Help Improve Our Detection</h4>
+          </div>
+          <p className="text-sm text-gray-700 mb-3">
+            Was this analysis correct? Your feedback helps us improve scam detection for everyone.
+          </p>
+          <div className="flex space-x-3">
+            <button
+              onClick={() => handleFeedback(true)}
+              disabled={feedbackSending}
+              className="flex items-center space-x-1 px-3 py-2 bg-green-100 text-green-800 rounded-lg hover:bg-green-200 disabled:opacity-50"
+            >
+              <ThumbsUp className="w-4 h-4" />
+              <span>Real Message</span>
+            </button>
+            <button
+              onClick={() => handleFeedback(false)}
+              disabled={feedbackSending}
+              className="flex items-center space-x-1 px-3 py-2 bg-red-100 text-red-800 rounded-lg hover:bg-red-200 disabled:opacity-50"
+            >
+              <ThumbsDown className="w-4 h-4" />
+              <span>Fake/Scam</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {feedbackSubmitted && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+          <div className="flex items-center space-x-2">
+            <CheckCircle className="w-5 h-5 text-green-600" />
+            <p className="text-sm text-green-700">
+              Thank you for your feedback! This helps improve our scam detection system.
+            </p>
           </div>
         </div>
       )}

@@ -17,6 +17,7 @@ interface AnalysisResult {
     trust_score: number;
   };
   red_flags?: string[];
+  message_id?: number;
 }
 
 interface ScamAnalyzerProps {
@@ -53,10 +54,17 @@ export default function ScamAnalyzer({
     
     if (input.trim()) {
       try {
+        // Generate a simple session ID for tracking
+        const sessionId = Math.random().toString(36).substring(2, 15) + 
+                         Math.random().toString(36).substring(2, 15);
+        
         const response = await fetch('/api/analyze-sms', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: input })
+          body: JSON.stringify({ 
+            text: input,
+            session_id: sessionId
+          })
         })
         const data = await response.json()
         setResult(data)
@@ -200,7 +208,7 @@ export default function ScamAnalyzer({
                           Analyzing...
                         </>
                       ) : (
-                        `Analyze ${tab.label}`
+                        'Analyze Content'
                       )}
                     </button>
                   )}
@@ -211,73 +219,32 @@ export default function ScamAnalyzer({
         })}
       </div>
 
-      {/* Results Display */}
+      {/* Results */}
       {result && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 p-4 rounded-lg border"
-        >
+        <div className="mt-6">
           {result.error ? (
-            <div className="text-red-600">{result.error}</div>
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="flex items-center space-x-2">
+                <svg className="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+                <h3 className="text-lg font-medium text-red-800">Analysis Error</h3>
+              </div>
+              <div className="mt-2 text-red-700">
+                <p>{result.error}</p>
+              </div>
+            </div>
           ) : (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold">Classification:</span>
-                <span className={`px-2 py-1 rounded text-sm font-medium ${
-                  result.classification === 'Safe' ? 'bg-green-100 text-green-800' :
-                  result.classification === 'Suspicious' ? 'bg-yellow-100 text-yellow-800' :
-                  'bg-red-100 text-red-800'
-                }`}>
-                  {result.classification}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="font-semibold">Confidence:</span>
-                <span className="text-sm">{result.confidence_score}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="font-semibold">Risk Level:</span>
-                <span className="text-sm">{result.risk_level}</span>
-              </div>
-              <div>
-                <span className="font-semibold">Recommendation:</span>
-                <p className="text-sm mt-1">{result.recommended_action}</p>
-              </div>
-              {result.sender_analysis && (
-                <div>
-                  <span className="font-semibold">SMS Sender Analysis:</span>
-                  <p className="text-sm mt-1">
-                    {result.sender_analysis.category} ({result.sender_analysis.category_code}) - 
-                    Trust Score: {(result.sender_analysis.trust_score * 100).toFixed(1)}%
-                  </p>
-                </div>
-              )}
-              {result.red_flags && result.red_flags.length > 0 && (
-                <div>
-                  <span className="font-semibold">Red Flags:</span>
-                  <ul className="text-sm mt-1 list-disc list-inside">
-                    {result.red_flags.map((flag: string, index: number) => (
-                      <li key={index}>{flag}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+            // This is where the ResultCard would be rendered
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Analysis Results</h3>
+              <pre className="bg-gray-50 p-4 rounded-md text-sm overflow-x-auto">
+                {JSON.stringify(result, null, 2)}
+              </pre>
             </div>
           )}
-        </motion.div>
+        </div>
       )}
-
-      {/* Help Text */}
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-        <h4 className="font-medium text-blue-900 mb-2">💡 How it works:</h4>
-        <ul className="text-sm text-blue-800 space-y-1">
-          <li>• Our AI analyzes the content for suspicious patterns and keywords</li>
-          <li>• Get instant risk assessment with confidence scores</li>
-          <li>• Receive actionable advice and red flag warnings</li>
-          <li>• Generate complaint drafts for high-risk cases</li>
-        </ul>
-      </div>
     </div>
   )
 }
