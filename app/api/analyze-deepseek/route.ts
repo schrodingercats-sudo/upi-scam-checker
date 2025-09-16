@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimit } from "@/lib/rateLimiter";
 
 export async function POST(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResult = rateLimit(request);
+  if (rateLimitResult.exceeded) {
+    return rateLimitResult.response;
+  }
+
   try {
     const { text, mlResult } = await request.json();
 

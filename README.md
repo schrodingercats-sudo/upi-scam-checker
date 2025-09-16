@@ -13,6 +13,8 @@ An AI-powered digital scam detection tool designed specifically for Indian users
 - **Latest Scam Patterns**: Stay updated with the newest fraud techniques
 - **Privacy-First**: Client-side analysis with optional data sharing
 - **Bank-Grade Security**: Same algorithms used by major financial institutions
+- **Real-time Feedback System**: Continuous learning from user feedback
+- **Dual AI Agents**: Bilingual customer support (English/Hindi)
 
 ## 🧠 Advanced ML System (HEFDS)
 
@@ -44,6 +46,55 @@ python test_advanced_system.py
 ./setup_advanced_system.sh  # Linux/Mac
 setup_advanced_system.bat   # Windows
 ```
+
+## 🔄 Real-time Feedback System
+
+The UPI Scam Checker now includes a real-time feedback system that allows users to improve the accuracy of scam detection over time.
+
+### **How It Works:**
+1. **User Analysis**: Users analyze messages and receive scam detection results
+2. **Feedback Collection**: Users provide feedback on the accuracy of results (Yes/No/Uncertain)
+3. **Data Processing**: System processes feedback according to decision rules:
+   - **Yes**: Confirms prediction and adds to training data
+   - **No**: Flips prediction and adds to training data
+   - **Uncertain**: Stores for active learning
+4. **Model Retraining**: Periodic retraining with confirmed feedback data
+5. **Continuous Improvement**: Model accuracy improves over time with more feedback
+
+### **Benefits:**
+- **Improved Accuracy**: Model learns from real-world feedback
+- **Active Learning**: Handles uncertain cases for future improvement
+- **Community Driven**: Collective feedback improves detection for all users
+- **Privacy Respecting**: No personal data stored or shared
+
+### **Usage:**
+After analyzing a message, users can provide feedback by clicking one of three options:
+- **Yes** (👍): Confirm the analysis is correct
+- **No** (👎): Indicate the analysis is incorrect
+- **Uncertain** (❓): Indicate uncertainty about the result
+
+## 🤖 Dual AI Agents for Customer Support
+
+The UPI Guard platform features a dual AI agent system for customer support:
+
+### **Server-1: Bland AI**
+- **Text-based AI** with fast, intelligent responses
+- **Bilingual support** for English and Hindi
+- **Specialized expertise** in scam detection and UPI Guard services
+- **Quick response times** for immediate assistance
+
+### **Server-2: VoiceGenie**
+- **Voice-based AI** with natural conversations
+- **Multi-language support** with human-like interactions
+- **General knowledge** on various topics
+- **Personalized experience** with voice recognition
+
+### **Features:**
+- Immediate bilingual greeting ("Hello! Namaste!")
+- Comprehensive knowledge about UPI Guard services
+- Expertise in scam detection and cybersecurity
+- Natural conversation flow with follow-up questions
+- Automatic language detection (English/Hindi)
 
 ## 🚀 Quick Start
 
@@ -198,39 +249,3 @@ The application is fully responsive and optimized for:
 - **GDPR Compliant**: Follows data protection best practices
 
 ## 📊 Performance
-
-- **Lighthouse Score**: 95+ (Performance, Accessibility, Best Practices, SEO)
-- **Bundle Size**: Optimized with Next.js automatic optimization
-- **Loading Time**: < 2 seconds on average connection
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-- **Documentation**: [Project Wiki](link-to-wiki)
-- **Issues**: [GitHub Issues](link-to-issues)
-- **Email**: support@upichecker.com
-
-## 🙏 Acknowledgments
-
-- RBI for financial security guidelines
-- NPCI for UPI standards
-- CERT-In for cybersecurity advisories
-- Open source community for amazing tools
-
----
-
-**Built with ❤️ for digital safety in India**
-
-*This tool uses AI to analyze content but should not replace professional advice.*
-\n

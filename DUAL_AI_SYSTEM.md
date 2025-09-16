@@ -1,63 +1,29 @@
-# 🤖 Dual AI Agent System - UPI Guard
+# Dual AI Agent System
 
 ## Overview
-UPI Guard now features a sophisticated dual AI agent system that allows users to choose between two powerful AI assistants for customer support:
 
-- **Server-1: Bland AI** - Text-based AI support with advanced processing capabilities
-- **Server-2: VoiceGenie** - Voice-based AI support with natural conversation abilities
+The UPI Guard platform features a dual AI agent system for customer support, providing users with two distinct AI assistants:
+
+1. **Server-1: Bland AI** - Text-based AI with fast, intelligent responses in English and Hindi
+2. **Server-2: VoiceGenie** - Voice-based AI with natural conversations
 
 ## System Architecture
 
-### AI Agent Selection Flow
-1. **Agent Selection** - User chooses between Bland AI or VoiceGenie
-2. **Information Collection** - User provides name and phone number
-3. **Smart Routing** - System routes to the appropriate AI service
-4. **Call Initiation** - Selected AI agent calls the user
+### Components
 
-### Component Structure
-```
-UnifiedAIAgent.tsx
-├── Agent Selection Interface
-├── User Information Form
-├── Call Status Display
-└── Smart Routing Logic
+- **Unified AI Agent Component**: `app/components/UnifiedAIAgent.tsx`
+- **Bland AI API**: `/api/bland-ai` (Server-1)
+- **VoiceGenie API**: `/api/voicegenie` (Server-2)
 
-API Routes:
-├── /api/bland-ai (Server-1)
-└── /api/voicegenie (Server-2)
-```
+### Features Comparison
 
-## AI Agents Comparison
-
-### Server-1: Bland AI
-**Type**: Text-based AI Support
-**Strengths**:
-- Advanced text processing capabilities
-- Quick response times
-- Detailed explanations
-- 24/7 availability
-- Cost-effective solution
-
-**Best For**:
-- Technical support queries
-- Detailed explanations
-- Quick information retrieval
-- Users who prefer text-based interactions
-
-### Server-2: VoiceGenie
-**Type**: Voice-based AI Support
-**Strengths**:
-- Natural voice conversations
-- Human-like interactions
-- Multi-language support
-- Emotional intelligence
-- Personalized voice experience
-
-**Best For**:
-- Complex problem solving
-- Emotional support
-- Users who prefer voice interactions
-- Multi-language support needs
+| Feature | Bland AI (Server-1) | VoiceGenie (Server-2) |
+|---------|---------------------|-----------------------|
+| Communication Mode | Text-based | Voice-based |
+| Languages | English & Hindi | Multi-language |
+| Response Speed | Very Fast | Natural Pace |
+| Expertise | Scam Detection | General Knowledge |
+| Personalization | High | Very High |
 
 ## API Integration
 
@@ -73,8 +39,8 @@ POST /api/bland-ai
 
 **Configuration**:
 - API URL: `https://api.bland.ai/v1/calls`
-- Authentication: Bearer token
-- Features: Text processing, quick responses
+- Authentication: Bearer token or raw API key
+- Features: Bilingual support (English/Hindi), fast responses, scam detection expertise
 
 ### VoiceGenie API (`/api/voicegenie`)
 ```typescript
@@ -91,8 +57,9 @@ POST /api/voicegenie
 
 **Configuration**:
 - API URL: `https://core-saas.voicegenie.ai/api/v1/pushCallToCampaign`
-- Token: `2af458a64a0ddf1837c9699f5bcbff72`
-- Workspace ID: `68b2aafe725592f6d543b250`
+- Token: Configured via `VOICEGENIE_TOKEN` environment variable
+- Workspace ID: Configured via `VOICEGENIE_WORKSPACE_ID` environment variable
+- Campaign ID: Configured via `NEXT_PUBLIC_VOICEGENIE_CAMPAIGN_ID` environment variable
 
 ## User Experience Flow
 
@@ -152,7 +119,7 @@ if (formData.selectedAgent === 'bland') {
     method: 'POST',
     body: JSON.stringify({
       customerNumber: formData.userInfo.phoneNumber,
-      campaignId: 'voicegenie-support-campaign',
+      campaignId: process.env.NEXT_PUBLIC_VOICEGENIE_CAMPAIGN_ID || 'voicegenie-support-campaign',
       customerInformation: {
         first_name: formData.userInfo.name.split(' ')[0],
         last_name: formData.userInfo.name.split(' ').slice(1).join(' ')
@@ -169,18 +136,40 @@ For production deployment, set these environment variables:
 
 ```env
 # Bland AI Configuration
-BLAND_AI_API_URL=https://api.bland.ai/v1/calls
-BLAND_AI_API_KEY=your_bland_ai_api_key_here
+BLAND_API_URL=https://api.bland.ai/v1/calls
+BLAND_API_KEY=your_actual_bland_key
 
 # VoiceGenie Configuration
 VOICEGENIE_API_URL=https://core-saas.voicegenie.ai/api/v1/pushCallToCampaign
-VOICEGENIE_TOKEN=2af458a64a0ddf1837c9699f5bcbff72
-VOICEGENIE_WORKSPACE_ID=68b2aafe725592f6d543b250
+VOICEGENIE_TOKEN=your_actual_voicegenie_token
+VOICEGENIE_WORKSPACE_ID=your_actual_workspace_id
+NEXT_PUBLIC_VOICEGENIE_CAMPAIGN_ID=your_actual_campaign_id
 ```
 
 ### Campaign IDs
-- **Bland AI**: `bland-support-campaign`
-- **VoiceGenie**: `voicegenie-support-campaign`
+- **Bland AI**: `bland-support-campaign` (hardcoded)
+- **VoiceGenie**: Configured via `NEXT_PUBLIC_VOICEGENIE_CAMPAIGN_ID` environment variable
+
+**Important**: The VoiceGenie campaign ID must be a valid campaign that you create in your VoiceGenie dashboard. It cannot be a placeholder value.
+
+## Bland AI Features
+
+### Bilingual Support
+The Bland AI agent supports both English and Hindi languages with seamless switching capabilities.
+
+### Intelligent Task Description
+The agent is configured with a comprehensive task description that includes:
+- Immediate bilingual greeting
+- Expertise in UPI Guard services and scam detection
+- General knowledge on various topics
+- Natural conversation flow
+- Website information without asking for details
+
+### Voice Configuration
+- **Voice**: June (friendly and professional)
+- **Language**: en-IN (supports both English and Hindi)
+- **Max Duration**: 600 seconds (10 minutes)
+- **Recording**: Enabled for quality assurance
 
 ## Security & Privacy
 
@@ -224,10 +213,16 @@ VOICEGENIE_WORKSPACE_ID=68b2aafe725592f6d543b250
    - Check API service availability
    - Review error logs for specific issues
 
-3. **User Experience Problems**
-   - Test the complete flow
-   - Verify form validation
-   - Check responsive design on different devices
+3. **Language Issues**
+   - Ensure bilingual configuration is properly set
+   - Check task description includes language instructions
+   - Verify API language parameter
+
+4. **"Invalid campaignId or workspaceId" Error**
+   - This is the most common VoiceGenie error
+   - Ensure you've created an actual campaign in your VoiceGenie dashboard
+   - Use the real campaign ID, not the placeholder `voicegenie-support-campaign`
+   - Verify your campaign ID in the VoiceGenie dashboard
 
 ### Error Handling
 ```typescript
@@ -257,39 +252,3 @@ try {
 3. **Agent Performance Analytics** - Compare success rates and user satisfaction
 4. **Multi-language Support** - Enhanced language capabilities
 5. **Integration with CRM** - Sync customer data and interaction history
-
-### Technical Improvements
-1. **Webhook Integration** - Real-time call status updates
-2. **Call Recording** - Conversation analytics and quality monitoring
-3. **Sentiment Analysis** - Track user satisfaction and emotional state
-4. **Automated Follow-up** - Scheduled callback reminders
-5. **AI Agent Learning** - Improve responses based on interaction history
-
-## Support & Documentation
-
-### API Documentation
-- Bland AI: `/api/bland-ai` (GET request)
-- VoiceGenie: `/api/voicegenie` (GET request)
-
-### Component Documentation
-- Unified AI Agent: `app/components/UnifiedAIAgent.tsx`
-- Support Page: `app/support/page.tsx`
-
-### Testing
-- Test both AI agents individually
-- Verify complete user flow
-- Check error handling scenarios
-- Validate responsive design
-
-### Contact
-For technical support or questions about the dual AI system:
-- Email: support@upiguard.com
-- Documentation: This file and component files
-- Test Interface: `/support` page
-
----
-
-**Last Updated**: January 2025
-**Version**: 2.0.0
-**Status**: ✅ Active and Integrated
-**AI Agents**: Bland AI (Server-1) + VoiceGenie (Server-2)

@@ -53,7 +53,6 @@ def analyze_sms():
         text = data['text']
         phone = data.get('phone', '')
         url = data.get('url', '')
-        sender_id = data.get('sender_id', '')
         user_id = data.get('user_id', '')
         session_id = data.get('session_id', '')
         
@@ -61,8 +60,7 @@ def analyze_sms():
         result = analyze_message_simple(
             text=text,
             phone=phone,
-            url=url,
-            sender_id=sender_id
+            url=url
         )
         
         # Store message in database for feedback collection
@@ -93,31 +91,60 @@ def store_feedback():
     try:
         data = request.get_json()
         
-        if not data or 'message_id' not in data or 'is_real' not in data:
+        if not data or 'message_id' not in data or 'feedback' not in data:
             return jsonify({
-                'error': 'Missing required fields: message_id and is_real'
+                'error': 'Missing required fields: message_id and feedback'
             }), 400
         
         message_id = data['message_id']
-        is_real = data['is_real']  # True for real, False for fake
+        feedback = data['feedback']  # 'yes', 'no', or 'uncertain'
         
-        # Store feedback
-        success = db.store_feedback(message_id, is_real)
+        # Validate feedback value
+        if feedback not in ['yes', 'no', 'uncertain']:
+            return jsonify({
+                'error': 'Invalid feedback value. Must be "yes", "no", or "uncertain"'
+            }), 400
+        
+        # Store feedback in database
+        success = db.store_user_feedback(message_id, feedback)
         
         if success:
-            # Add to training data
-            # First, get the message text
+            # Get the original message and analysis result
             conn = sqlite3.connect(db.db_path)
             cursor = conn.cursor()
-            cursor.execute('SELECT message_text FROM messages WHERE id = ?', (message_id,))
+            cursor.execute('SELECT message_text, analysis_result FROM messages WHERE id = ?', (message_id,))
             result = cursor.fetchone()
             conn.close()
             
             if result:
                 message_text = result[0]
-                # For our labeling system: real messages are labeled as 0 (not scams), 
-                # fake messages are labeled as 1 (scams)
-                db.add_to_training_data(message_text, not is_real)
+                analysis_result = json.loads(result[1]) if result[1] else {}
+                
+                # Process feedback based on the response
+                if feedback == 'yes':
+                    # User confirms the prediction - store with final label
+                    predicted_label = analysis_result.get('classification', 'Unknown')
+                    is_scam = predicted_label in ['Scam', 'Suspicious']
+                    # Store in training data with the confirmed label
+                    db.add_to_training_data(message_text, is_scam)
+                elif feedback == 'no':
+                    # User disagrees with prediction - flip the label
+                    predicted_label = analysis_result.get('classification', 'Unknown')
+                    is_scam = predicted_label in ['Scam', 'Suspicious']
+                    # Store with flipped label
+                    db.add_to_training_data(message_text, not is_scam)
+                elif feedback == 'uncertain':
+                    # User is uncertain - store in hold data for active learning
+                    # Get the feedback ID for reference
+                    conn = sqlite3.connect(db.db_path)
+                    cursor = conn.cursor()
+                    cursor.execute('SELECT id FROM feedback WHERE message_id = ? ORDER BY id DESC LIMIT 1', (message_id,))
+                    feedback_result = cursor.fetchone()
+                    conn.close()
+                    
+                    if feedback_result:
+                        feedback_id = feedback_result[0]
+                        db.add_to_hold_data(message_text, analysis_result, feedback_id)
             
             return jsonify({
                 'success': True,
@@ -185,6 +212,39 @@ def retrain_model():
         return jsonify({
             'success': False,
             'error': f'Model retraining failed: {str(e)}'
+        }), 500
+
+@app.route('/process-hold-data', methods=['POST'])
+def process_hold_data():
+    """Process hold data for active learning"""
+    try:
+        # Check for authorization
+        auth_key = request.headers.get('X-RETRAIN-KEY')
+        if auth_key != os.getenv('RETRAIN_KEY', 'default-retrain-key'):
+            return jsonify({
+                'success': False,
+                'error': 'Unauthorized request'
+            }), 401
+        
+        # Process hold data
+        retrainer = ModelRetrainer()
+        success = retrainer.process_hold_data()
+        
+        if success:
+            return jsonify({
+                'success': True,
+                'message': 'Hold data processed successfully'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Hold data processing failed'
+            }), 500
+            
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': f'Hold data processing failed: {str(e)}'
         }), 500
 
 if __name__ == '__main__':

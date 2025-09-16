@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Bot, Phone, MessageCircle, Mic, User, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { formatPhoneNumberForVoiceGenie } from '@/utils/phoneFormatter';
 
 export default function AIAgentSupport() {
   const [step, setStep] = React.useState<'agent-selection' | 'user-info' | 'calling'>('agent-selection');
@@ -18,14 +19,7 @@ export default function AIAgentSupport() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!name.trim() || !phone.trim()) {
-      setStatus("Please fill in all required fields");
-      return;
-    }
-
     setLoading(true);
-    setStatus(null);
     setStep('calling');
 
     try {
@@ -52,8 +46,9 @@ export default function AIAgentSupport() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            customerNumber: phone.trim(),
-            campaignId: 'voicegenie-support-campaign',
+            customerNumber: formatPhoneNumberForVoiceGenie(phone.trim()),
+            // Use the campaign ID from environment variables if available, otherwise use default
+            campaignId: process.env.NEXT_PUBLIC_VOICEGENIE_CAMPAIGN_ID || 'voicegenie-support-campaign',
             customerInformation: {
               first_name: name.trim().split(' ')[0] || name.trim(),
               last_name: name.trim().split(' ').slice(1).join(' ') || ''
@@ -80,6 +75,8 @@ export default function AIAgentSupport() {
           setStatus(`VoiceGenie Error: ${data.details.message}. Please check your VoiceGenie account setup.`);
         } else if (selectedAgent === 'voicegenie' && data.error?.includes('VoiceGenie API not properly configured')) {
           setStatus('VoiceGenie API not properly configured. Please check your .env file and add your actual VoiceGenie credentials. Refer to VOICEGENIE_SETUP.md for detailed instructions.');
+        } else if (selectedAgent === 'voicegenie' && data.error?.includes('Invalid campaignId or workspaceId')) {
+          setStatus('VoiceGenie Error: Invalid campaignId or workspaceId. Please create a campaign in your VoiceGenie dashboard and update the campaign ID. Refer to VOICEGENIE_SETUP.md for instructions.');
         } else {
           setStatus(data.error || 'Failed to initiate call');
         }

@@ -9,7 +9,7 @@ import pandas as pd
 import joblib
 import json
 import sqlite3
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
@@ -25,7 +25,7 @@ class ModelRetrainer:
         """Extract features from text using the simple analyzer's feature extraction"""
         return self.simple_analyzer.extract_features(text)
     
-    def get_training_data(self) -> Tuple[np.ndarray, np.ndarray]:
+    def get_training_data(self) -> Tuple[Optional[np.ndarray], Optional[np.ndarray]]:
         """Get training data from database"""
         # Get feedback data from database
         training_data = db.get_training_data()
@@ -70,6 +70,14 @@ class ModelRetrainer:
                 return False
             
             print(f"Training data shape: {X.shape}, Labels shape: {y.shape}")
+            
+            # Check if we have enough data for both classes
+            unique_labels, counts = np.unique(y, return_counts=True)
+            print(f"Label distribution: {dict(zip(unique_labels, counts))}")
+            
+            if len(unique_labels) < 2:
+                print("Not enough data for both classes, skipping retraining")
+                return False
             
             # Split data for training and validation
             X_train, X_test, y_train, y_test = train_test_split(
@@ -124,6 +132,28 @@ class ModelRetrainer:
             
         except Exception as e:
             print(f"Error updating simple analyzer model: {e}")
+            return False
+    
+    def process_hold_data(self):
+        """Process hold data for active learning - this would be called periodically"""
+        try:
+            # Get hold data
+            hold_data = db.get_hold_data()
+            
+            print(f"Processing {len(hold_data)} uncertain samples for active learning")
+            
+            # For now, we'll just log them
+            # In a real implementation, you might want to:
+            # 1. Manually review these samples
+            # 2. Use a more sophisticated active learning strategy
+            # 3. Periodically re-evaluate with updated model
+            
+            for text, analysis_result, feedback_id in hold_data:
+                print(f"Hold sample: {text[:50]}...")
+                
+            return True
+        except Exception as e:
+            print(f"Error processing hold data: {e}")
             return False
 
 def main():

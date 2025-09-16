@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Phone, User, MessageCircle, Loader2, CheckCircle, AlertCircle, Bot, Mic } from 'lucide-react';
+import { formatPhoneNumberForVoiceGenie } from '@/utils/phoneFormatter';
 
 interface UserInformation {
   name: string;
@@ -42,73 +43,111 @@ export default function UnifiedAIAgent() {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.userInfo.name || !formData.userInfo.phoneNumber) {
-      setStatus('error');
-      setMessage('Please fill in all required fields');
-      return;
-    }
-
+  const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);
-    setStatus('idle');
-    setMessage('');
-    setStep('calling');
+    setError(null);
+    setSuccess(null);
 
     try {
-      let response;
-      
-      if (formData.selectedAgent === 'bland') {
-        // Call Bland AI API
-        response = await fetch('/api/bland-ai', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            customerNumber: formData.userInfo.phoneNumber,
-            customerName: formData.userInfo.name,
-            campaignId: 'bland-support-campaign' // You can make this configurable
-          }),
-        });
-      } else {
+      // First, try to detect UPI scam
+      const scamResult = await detectUpiScam(formData);
+
+      // If it's detected as a scam, initiate customer support call
+      if (scamResult.isScam) {
+        // Show scam detection result
+        setScamResult(scamResult);
+
         // Call VoiceGenie API
-        response = await fetch('/api/voicegenie', {
+        let response = await fetch('/api/voicegenie', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            customerNumber: formData.userInfo.phoneNumber,
-            campaignId: 'voicegenie-support-campaign', // You can make this configurable
+            customerNumber: formatPhoneNumberForVoiceGenie(formData.userInfo.phoneNumber),
+            campaignId: process.env.NEXT_PUBLIC_VOICEGENIE_CAMPAIGN_ID || 'voicegenie-support-campaign', // Use env var or fallback
             customerInformation: {
               first_name: formData.userInfo.name.split(' ')[0] || formData.userInfo.name,
               last_name: formData.userInfo.name.split(' ').slice(1).join(' ') || ''
             }
           }),
         });
-      }
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (response.ok) {
-        setStatus('success');
-        setMessage(`${formData.selectedAgent === 'bland' ? 'Bland AI' : 'VoiceGenie'} will call you shortly!`);
-        // Reset form after success
-        setTimeout(() => {
-          setFormData({
-            userInfo: { name: '', phoneNumber: '' },
-            selectedAgent: null
-          });
-          setStep('agent-selection');
-          setStatus('idle');
-          setMessage('');
-        }, 3000);
+        if (response.ok) {
+          setStatus('success');
+          setMessage(`${formData.selectedAgent === 'bland' ? 'Bland AI' : 'VoiceGenie'} will call you shortly!`);
+          // Reset form after success
+          setTimeout(() => {
+            setFormData({
+              userInfo: { name: '', phoneNumber: '' },
+              selectedAgent: null
+            });
+            setStep('agent-selection');
+            setStatus('idle');
+            setMessage('');
+          }, 3000);
+        } else {
+          setStatus('error');
+          setMessage(data.error || 'Failed to initiate call');
+          setStep('user-info');
+        }
       } else {
-        setStatus('error');
-        setMessage(data.error || 'Failed to initiate call');
-        setStep('user-info');
+        // If not a scam, proceed with the selected agent
+        let response;
+
+        if (formData.selectedAgent === 'bland') {
+          // Call Bland AI API
+          response = await fetch('/api/bland-ai', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              customerNumber: formData.userInfo.phoneNumber,
+              customerName: formData.userInfo.name,
+              campaignId: 'bland-support-campaign' // You can make this configurable
+            }),
+          });
+        } else {
+          // Call VoiceGenie API
+          response = await fetch('/api/voicegenie', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              customerNumber: formatPhoneNumberForVoiceGenie(formData.userInfo.phoneNumber),
+              campaignId: process.env.NEXT_PUBLIC_VOICEGENIE_CAMPAIGN_ID || 'voicegenie-support-campaign', // Use env var or fallback
+              customerInformation: {
+                first_name: formData.userInfo.name.split(' ')[0] || formData.userInfo.name,
+                last_name: formData.userInfo.name.split(' ').slice(1).join(' ') || ''
+              }
+            }),
+          });
+        }
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setStatus('success');
+          setMessage(`${formData.selectedAgent === 'bland' ? 'Bland AI' : 'VoiceGenie'} will call you shortly!`);
+          // Reset form after success
+          setTimeout(() => {
+            setFormData({
+              userInfo: { name: '', phoneNumber: '' },
+              selectedAgent: null
+            });
+            setStep('agent-selection');
+            setStatus('idle');
+            setMessage('');
+          }, 3000);
+        } else {
+          setStatus('error');
+          setMessage(data.error || 'Failed to initiate call');
+          setStep('user-info');
+        }
       }
     } catch (error) {
       setStatus('error');

@@ -33,6 +33,7 @@ Update your [.env](file:///c:/Users/prath/OneDrive/Desktop/projects/upi checker/
 VOICEGENIE_API_URL=https://core-saas.voicegenie.ai/api/v1/pushCallToCampaign
 VOICEGENIE_TOKEN=your_actual_voicegenie_token_here
 VOICEGENIE_WORKSPACE_ID=your_actual_workspace_id_here
+NEXT_PUBLIC_VOICEGENIE_CAMPAIGN_ID=your_actual_campaign_id_here
 ```
 
 Replace the placeholder values with your actual credentials.
@@ -58,13 +59,24 @@ This error occurs when:
 - Double-check your campaign ID in the VoiceGenie dashboard
 - Verify your workspace ID is correct
 - Ensure your API token has the necessary permissions
+- Make sure you've created an actual campaign and are using its real ID (not the placeholder)
 
 ### "VoiceGenie API not properly configured" Error
 This error occurs when the environment variables are not set or are using placeholder values.
 
 **Solution**:
-- Check that your [.env](file:///c:/Users/prath/OneDrive/Desktop/projects/upi checker/.env) file contains the VOICEGENIE_TOKEN and VOICEGENIE_WORKSPACE_ID variables
+- Check that your [.env](file:///c:/Users/prath/OneDrive/Desktop/projects/upi checker/.env) file contains the VOICEGENIE_TOKEN, VOICEGENIE_WORKSPACE_ID, and NEXT_PUBLIC_VOICEGENIE_CAMPAIGN_ID variables
 - Ensure the values are your actual credentials, not the placeholder values
+
+## Finding Your Campaign ID
+
+To find your campaign ID:
+
+1. Log in to your VoiceGenie dashboard
+2. Navigate to the "Campaigns" section
+3. Find the campaign you want to use (or create a new one)
+4. The campaign ID is usually displayed on the campaign details page
+5. It might look something like: `camp_1234567890abcdef` or similar
 
 ## Testing the Integration
 After configuring your credentials:
@@ -73,7 +85,7 @@ After configuring your credentials:
 2. Navigate to a page with VoiceGenie integration (e.g., /support)
 3. Fill in the form with:
    - A valid phone number
-   - A valid campaign ID from your VoiceGenie dashboard
+   - The campaign ID from your VoiceGenie dashboard
    - Optional customer information
 4. Submit the form and verify that the call is initiated
 

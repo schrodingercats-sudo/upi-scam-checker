@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Icon } from "@iconify/react";
+import { formatPhoneNumberForVoiceGenie } from '@/utils/phoneFormatter';
 
 export default function BlandSupport(): React.ReactElement {
   const [open, setOpen] = React.useState(false);
@@ -54,8 +55,8 @@ export default function BlandSupport(): React.ReactElement {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            customerNumber: phone.trim(),
-            campaignId: 'voicegenie-support-campaign',
+            customerNumber: formatPhoneNumberForVoiceGenie(phone.trim()),
+            campaignId: process.env.NEXT_PUBLIC_VOICEGENIE_CAMPAIGN_ID || 'voicegenie-support-campaign',
             customerInformation: {
               first_name: name.trim().split(' ')[0] || name.trim(),
               last_name: name.trim().split(' ').slice(1).join(' ') || ''

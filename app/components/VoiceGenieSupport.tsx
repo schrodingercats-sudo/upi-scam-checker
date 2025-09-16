@@ -10,14 +10,13 @@ interface CustomerInformation {
 
 interface VoiceGenieFormData {
   customerNumber: string;
-  campaignId: string;
+  // Remove campaignId from the form data since we'll use the environment variable
   customerInformation: CustomerInformation;
 }
 
 export default function VoiceGenieSupport() {
   const [formData, setFormData] = useState<VoiceGenieFormData>({
     customerNumber: '',
-    campaignId: '',
     customerInformation: {
       first_name: '',
       last_name: ''
@@ -34,7 +33,8 @@ export default function VoiceGenieSupport() {
       setFormData(prev => ({
         ...prev,
         [parent]: {
-          ...prev[parent as keyof VoiceGenieFormData],
+          // Fix the TypeScript error by properly typing the parent object
+          ...(prev[parent as keyof VoiceGenieFormData] as Partial<CustomerInformation>),
           [child]: value
         }
       }));
@@ -53,12 +53,19 @@ export default function VoiceGenieSupport() {
     setMessage('');
 
     try {
+      // Use the campaign ID from environment variables
+      const campaignId = process.env.NEXT_PUBLIC_VOICEGENIE_CAMPAIGN_ID || 'voicegenie-support-campaign';
+
       const response = await fetch('/api/voicegenie', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          customerNumber: formData.customerNumber,
+          campaignId: campaignId,
+          customerInformation: formData.customerInformation
+        }),
       });
 
       const data = await response.json();
@@ -69,7 +76,6 @@ export default function VoiceGenieSupport() {
         // Reset form
         setFormData({
           customerNumber: '',
-          campaignId: '',
           customerInformation: {
             first_name: '',
             last_name: ''
@@ -121,25 +127,6 @@ export default function VoiceGenieSupport() {
               onChange={(e) => handleInputChange('customerNumber', e.target.value)}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter customer phone number"
-              required
-            />
-          </div>
-        </div>
-
-        {/* Campaign ID */}
-        <div>
-          <label htmlFor="campaignId" className="block text-sm font-medium text-gray-700 mb-2">
-            Campaign ID *
-          </label>
-          <div className="relative">
-            <MessageCircle className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              id="campaignId"
-              value={formData.campaignId}
-              onChange={(e) => handleInputChange('campaignId', e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter VoiceGenie campaign ID"
               required
             />
           </div>
@@ -223,7 +210,6 @@ export default function VoiceGenieSupport() {
         <h3 className="font-medium text-gray-900 mb-2">How it works:</h3>
         <ul className="text-sm text-gray-600 space-y-1">
           <li>• Enter the customer's phone number</li>
-          <li>• Provide the VoiceGenie campaign ID</li>
           <li>• Optionally add customer information</li>
           <li>• VoiceGenie AI will automatically call the customer</li>
           <li>• The AI agent will handle the support conversation</li>

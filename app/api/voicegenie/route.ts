@@ -9,6 +9,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { customerNumber, customerInformation, campaignId } = body;
 
+    // Log the incoming request for debugging
+    console.log('VoiceGenie API Request:', { customerNumber, campaignId, customerInformation });
+
     // Validate required fields
     if (!customerNumber) {
       return NextResponse.json(
@@ -25,7 +28,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if VoiceGenie credentials are configured
-    if (VOICEGENIE_TOKEN === 'YOUR_ACTUAL_VOICEGENIE_TOKEN' || WORKSPACE_ID === 'YOUR_ACTUAL_WORKSPACE_ID') {
+    if (VOICEGENIE_TOKEN === 'YOUR_ACTUAL_VOICEGENIE_TOKEN' || WORKSPACE_ID === 'YOUR_ACTUAL_WORKSPACE_ID' || 
+        VOICEGENIE_TOKEN === 'your_actual_voicegenie_token_here' || WORKSPACE_ID === 'your_actual_workspace_id_here') {
       return NextResponse.json(
         { 
           error: 'VoiceGenie API not properly configured. Please check environment variables.',
@@ -35,7 +39,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Prepare the request payload
+    // Prepare the request payload in the exact format VoiceGenie expects
     const payload = {
       token: VOICEGENIE_TOKEN,
       workspaceId: WORKSPACE_ID,
@@ -46,6 +50,8 @@ export async function POST(request: NextRequest) {
         last_name: 'Support'
       }
     };
+
+    console.log('Sending payload to VoiceGenie:', JSON.stringify(payload, null, 2));
 
     // Make the API call to VoiceGenie
     const response = await fetch(VOICEGENIE_API_URL, {
@@ -58,10 +64,22 @@ export async function POST(request: NextRequest) {
 
     const data = await response.json();
 
+    console.log('VoiceGenie API Response:', response.status, data);
+
     if (!response.ok) {
       console.error('VoiceGenie API Error:', data);
       return NextResponse.json(
-        { error: 'Failed to initiate call', details: data },
+        { 
+          error: 'Failed to initiate call', 
+          details: data,
+          // Add helpful information for debugging
+          debug_info: {
+            campaign_id: campaignId,
+            workspace_id: WORKSPACE_ID,
+            api_url: VOICEGENIE_API_URL,
+            status_code: response.status
+          }
+        },
         { status: response.status }
       );
     }
@@ -75,7 +93,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('VoiceGenie API Error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }
@@ -92,6 +113,7 @@ export async function GET() {
       campaignId: 'string - VoiceGenie campaign ID',
       customerInformation: 'object - Optional customer details'
     },
-    setup_instructions: 'Set VOICEGENIE_TOKEN and VOICEGENIE_WORKSPACE_ID environment variables. Refer to VOICEGENIE_SETUP.md for detailed instructions.'
+    setup_instructions: 'Set VOICEGENIE_TOKEN and VOICEGENIE_WORKSPACE_ID environment variables. Refer to VOICEGENIE_SETUP.md for detailed instructions.',
+    note: 'The campaignId must be a valid campaign in your VoiceGenie account. Create a campaign in your VoiceGenie dashboard and use its actual ID.'
   });
 }

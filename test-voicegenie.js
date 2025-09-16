@@ -7,7 +7,7 @@ const testVoiceGenie = async () => {
       },
       body: JSON.stringify({
         customerNumber: '+1234567890',
-        campaignId: 'voicegenie-support-campaign',
+        campaignId: process.env.NEXT_PUBLIC_VOICEGENIE_CAMPAIGN_ID || 'voicegenie-support-campaign',
         customerInformation: {
           first_name: 'Test',
           last_name: 'User'

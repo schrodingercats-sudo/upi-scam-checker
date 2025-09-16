@@ -1,0 +1,34 @@
+{
+  "project_name": "UPI Scam Checker Backend",
+  "version": "3.0.0",
+  "deployment_platform": "Render",
+  "database": "SQLite (feedback.db)",
+  "features": [
+    "Real-time SMS analysis",
+    "User feedback collection",
+    "Model retraining with feedback",
+    "Persistent storage with SQLite",
+    "API endpoints for frontend integration"
+  ],
+  "api_endpoints": [
+    "/health - Health check",
+    "/analyze - SMS analysis",
+    "/feedback - Store user feedback",
+    "/stats - Get feedback statistics",
+    "/retrain - Retrain model (protected)"
+  ],
+  "environment_variables": [
+    "GOOGLE_GEMINI_API_KEY",
+    "RETRAIN_KEY",
+    "PORT=5000"
+  ],
+  "files_included": [
+    "app.py",
+    "requirements.txt",
+    "runtime.txt",
+    "gunicorn.conf.py",
+    "engine/simple_analyzer.py",
+    "engine/database.py",
+    "engine/retrain_model.py"
+  ]
+}

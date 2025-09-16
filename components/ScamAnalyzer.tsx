@@ -9,7 +9,7 @@ import { motion } from 'framer-motion'
 interface AnalysisResult {
   error?: string;
   classification?: string;
-  confidence_score?: string;
+  confidence_score?: number;
   risk_level?: string;
   recommended_action?: string;
   sender_analysis?: {
@@ -46,6 +46,10 @@ export default function ScamAnalyzer({
       try {
         const response = await fetch('/api/analyze-call', { method: 'POST', body: form })
         const res = await response.json()
+        // Ensure confidence_score is a number
+        if (res.confidence_score && typeof res.confidence_score === 'string') {
+          res.confidence_score = parseFloat(res.confidence_score)
+        }
         setResult(res)
       } catch {
         setResult({ error: 'Audio analysis failed' })
@@ -59,7 +63,10 @@ export default function ScamAnalyzer({
         const sessionId = Math.random().toString(36).substring(2, 15) + 
                          Math.random().toString(36).substring(2, 15);
         
-        const response = await fetch('/api/analyze-sms', {
+        // Use backend API directly to get message_id for feedback functionality
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+        
+        const response = await fetch(`${backendUrl}/analyze`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
@@ -68,6 +75,10 @@ export default function ScamAnalyzer({
           })
         })
         const data = await response.json()
+        // Ensure confidence_score is a number
+        if (data.confidence_score && typeof data.confidence_score === 'string') {
+          data.confidence_score = parseFloat(data.confidence_score)
+        }
         setResult(data)
       } catch {
         setResult({ error: 'Analysis failed' })

@@ -1,10 +1,11 @@
 'use client'
 
 import { useState } from 'react';
-import { Shield, AlertTriangle, CheckCircle, XCircle, Copy, ThumbsUp, ThumbsDown } from 'lucide-react'
+import { Shield, AlertTriangle, CheckCircle, XCircle, Copy, ThumbsUp, ThumbsDown, HelpCircle } from 'lucide-react'
 
 interface ResultCardProps {
   result: {
+    // Fields from Next.js API routes
     classification?: string
     confidence_score?: number
     risk_level?: string
@@ -14,12 +15,25 @@ interface ResultCardProps {
     confidence?: number
     recommendations?: string[]
     message_id?: number
+    // Fields from backend API
+    riskLevel?: string
+    redFlags?: string[]
+    recommendedAction?: string
+    messageId?: number
   }
 }
 
 export default function ResultCard({ result }: ResultCardProps) {
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [feedbackSending, setFeedbackSending] = useState(false);
+
+  // Handle both API response formats
+  const classification = result.classification || result.riskLevel || (result.is_scam ? 'Scam' : 'Safe');
+  const confidence = result.confidence_score || result.confidence || 0;
+  const riskLevel = result.risk_level || result.riskLevel || 'Unknown';
+  const redFlags = result.red_flags || result.redFlags || [];
+  const recommendedAction = result.recommended_action || result.recommendedAction || '';
+  const messageId = result.message_id || result.messageId;
 
   const getConfidenceColor = (confidence: number) => {
     if (confidence >= 0.8) return 'text-green-600'
@@ -60,8 +74,8 @@ export default function ResultCard({ result }: ResultCardProps) {
     localStorage.setItem('scamReports', JSON.stringify(existingReports))
   }
 
-  const handleFeedback = async (isReal: boolean) => {
-    if (!result.message_id || feedbackSubmitted) return;
+  const handleFeedback = async (feedback: 'yes' | 'no' | 'uncertain') => {
+    if (!messageId || feedbackSubmitted) return;
     
     setFeedbackSending(true);
     
@@ -72,8 +86,8 @@ export default function ResultCard({ result }: ResultCardProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message_id: result.message_id,
-          is_real: isReal
+          message_id: messageId,
+          feedback: feedback  // 'yes', 'no', or 'uncertain'
         })
       });
       
@@ -117,35 +131,35 @@ export default function ResultCard({ result }: ResultCardProps) {
       <div className="grid grid-cols-3 gap-4 mb-6">
         <div className="bg-gray-50 rounded-lg p-4">
           <div className="text-2xl font-bold text-gray-900 mb-1">
-            {result.classification || (result.is_scam ? 'Scam' : 'Safe')}
+            {classification}
           </div>
           <div className="text-sm text-gray-500">Risk Classification</div>
         </div>
 
         <div className="bg-gray-50 rounded-lg p-4">
-          <div className={`text-2xl font-bold mb-1 ${getConfidenceColor(result.confidence_score || result.confidence || 0)}`}>
-            {result.confidence_score || result.confidence || 0}
+          <div className={`text-2xl font-bold mb-1 ${getConfidenceColor(confidence)}`}>
+            {confidence}
           </div>
           <div className="text-sm text-gray-500">Confidence Score</div>
         </div>
 
         <div className="bg-gray-50 rounded-lg p-4">
           <div className="text-2xl font-bold text-green-600 mb-1">
-            {result.risk_level || 'Unknown'}
+            {riskLevel}
           </div>
           <div className="text-sm text-gray-500">Risk Level</div>
         </div>
       </div>
 
       {/* Red Flags Section */}
-      {result.red_flags && result.red_flags.length > 0 && (
+      {redFlags && redFlags.length > 0 && (
         <div className="bg-gray-50 rounded-lg p-4 mb-6">
           <div className="flex items-center space-x-2 mb-3">
             <AlertTriangle className="w-5 h-5 text-yellow-600" />
             <h4 className="font-semibold text-gray-900">Red Flags Detected</h4>
           </div>
           <div className="space-y-2">
-            {result.red_flags.map((flag, index) => (
+            {redFlags.map((flag, index) => (
               <div key={index} className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-center space-x-2">
                 <XCircle className="w-4 h-4 text-red-600" />
                 <span className="text-sm text-red-700">{flag}</span>
@@ -156,44 +170,52 @@ export default function ResultCard({ result }: ResultCardProps) {
       )}
 
       {/* Recommended Action Section */}
-      {result.recommended_action && (
+      {recommendedAction && (
         <div className="bg-gray-50 rounded-lg p-4 mb-6">
           <div className="flex items-center space-x-2 mb-3">
             <Shield className="w-5 h-5 text-blue-600" />
             <h4 className="font-semibold text-gray-900">Recommended Action</h4>
           </div>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-            <p className="text-sm text-blue-700">{result.recommended_action}</p>
+            <p className="text-sm text-blue-700">{recommendedAction}</p>
           </div>
         </div>
       )}
 
       {/* Feedback Collection Section */}
-      {result.message_id && !feedbackSubmitted && (
+      {messageId && !feedbackSubmitted && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
           <div className="flex items-center space-x-2 mb-3">
             <Shield className="w-5 h-5 text-yellow-600" />
-            <h4 className="font-semibold text-gray-900">Help Improve Our Detection</h4>
+            <h4 className="font-semibold text-gray-900">Is this analysis correct?</h4>
           </div>
           <p className="text-sm text-gray-700 mb-3">
-            Was this analysis correct? Your feedback helps us improve scam detection for everyone.
+            Your feedback helps us improve scam detection for everyone.
           </p>
           <div className="flex space-x-3">
             <button
-              onClick={() => handleFeedback(true)}
+              onClick={() => handleFeedback('yes')}
               disabled={feedbackSending}
               className="flex items-center space-x-1 px-3 py-2 bg-green-100 text-green-800 rounded-lg hover:bg-green-200 disabled:opacity-50"
             >
               <ThumbsUp className="w-4 h-4" />
-              <span>Real Message</span>
+              <span>Yes</span>
             </button>
             <button
-              onClick={() => handleFeedback(false)}
+              onClick={() => handleFeedback('no')}
               disabled={feedbackSending}
               className="flex items-center space-x-1 px-3 py-2 bg-red-100 text-red-800 rounded-lg hover:bg-red-200 disabled:opacity-50"
             >
               <ThumbsDown className="w-4 h-4" />
-              <span>Fake/Scam</span>
+              <span>No</span>
+            </button>
+            <button
+              onClick={() => handleFeedback('uncertain')}
+              disabled={feedbackSending}
+              className="flex items-center space-x-1 px-3 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 disabled:opacity-50"
+            >
+              <HelpCircle className="w-4 h-4" />
+              <span>Uncertain</span>
             </button>
           </div>
         </div>

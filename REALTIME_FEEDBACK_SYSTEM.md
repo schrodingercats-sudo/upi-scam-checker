@@ -1,111 +1,86 @@
-# Real-time Feedback System for UPI Scam Checker
+# Real-time Feedback System
 
-## Overview
+This document describes the implementation of the real-time feedback system for the UPI Scam Checker application.
 
-This document explains the implementation of a real-time feedback system for the UPI Scam Checker that allows users to provide feedback on analysis results, which is then used to improve the machine learning model.
+## Workflow
 
-## System Architecture
+### Input
+- User enters a text message (string)
 
-```
-┌─────────────┐    ┌──────────────┐    ┌──────────────┐
-│   Frontend  │────│   Feedback   │────│   Database   │
-│  (Next.js)  │    │    Proxy     │    │   (SQLite)   │
-└─────────────┘    └──────────────┘    └──────────────┘
-       │                   │                   │
-       ▼                   ▼                   ▼
-┌─────────────┐    ┌──────────────┐    ┌──────────────┐
-│   Backend   │────│   Training   │────│   Retrained  │
-│  (Flask)    │    │   Module     │    │    Model     │
-└─────────────┘    └──────────────┘    └──────────────┘
-```
+### Hybrid Analysis
+1. Run Rules Engine (regex for UPI IDs, suspicious payment words, scammy links)
+2. Run ML Model (current trained classifier)
+3. Combine → choose label (FAKE or REAL) and probability score
 
-## Components
+### Output to User
+- Display:
+  - Prediction (FAKE / REAL)
+  - Confidence (0–1)
+  - Ask: "Is this correct? (Yes / No / Uncertain)"
 
-### 1. Database (SQLite)
-- **File**: `render_backend/engine/database.py`
-- **Tables**:
-  - `messages`: Stores all analyzed messages
-  - `feedback`: Stores user feedback (real/fake)
-  - `training_data`: Verified training samples for retraining
+### Review Handling
+- If YES → store prediction as final_label in DB
+- If NO → flip label and store corrected final_label
+- If UNCERTAIN → store in DB with final_label=NULL for active learning later
 
-### 2. Frontend Integration
-- **File**: `components/ResultCard.tsx` - Added feedback collection UI
-- **File**: `components/ScamAnalyzer.tsx` - Modified to pass session IDs
-- **API Routes**:
-  - `/api/feedback` - Proxies feedback to backend
-  - `/api/config` - Returns backend configuration
+### Database Storage
+Insert into messages table:
+- body (the text)
+- predicted_label
+- predicted_confidence
+- reviewer_answer
+- final_label
 
-### 3. Backend API (Flask)
-- **File**: `render_backend/app.py`
-- **Endpoints**:
-  - `POST /analyze` - Analyze SMS and store in database
-  - `POST /feedback` - Store user feedback
-  - `GET /stats` - Get feedback statistics
-  - `POST /retrain` - Retrain model with feedback data (protected)
+### Real-time Learning
+When a final_label is confirmed (YES/NO), trigger incremental training:
+- Update the ML model with the new labeled sample (partial_fit)
+- Save model version
 
-### 4. Model Retraining
-- **File**: `render_backend/engine/retrain_model.py`
-- Retrains the ML model using user feedback
-- Updates the simple analyzer model with improved versions
+If uncertain → store separately in dataset_hold
 
-## How It Works
+### System Behavior
+- Always respond instantly to user input
+- Keep improving as more text + reviews come in
+- Uncertain samples are fed back later for retraining (active learning)
 
-1. **Message Analysis**:
-   - User submits a message for analysis
-   - Message is stored in the database with a unique ID
-   - Analysis results are returned to the frontend
+## Example Runtime Decision Table
 
-2. **Feedback Collection**:
-   - User sees analysis results with feedback buttons
-   - User clicks "Real Message" or "Fake/Scam"
-   - Feedback is sent to the backend and stored in the database
+| Prediction | User says | Final Label | Action |
+|------------|-----------|-------------|--------|
+| FAKE | YES | FAKE | Store in fake dataset + train |
+| FAKE | NO | REAL | Store in real dataset + train |
+| REAL | YES | REAL | Store in real dataset + train |
+| REAL | NO | FAKE | Store in fake dataset + train |
+| ANY | UNCERTAIN | NULL | Hold for later active learning |
 
-3. **Training Data Management**:
-   - Feedback is converted to training data
-   - Real messages are labeled as "not scam" (0)
-   - Fake messages are labeled as "scam" (1)
+## Implementation Details
 
-4. **Model Retraining**:
-   - Periodically triggered via `/retrain` endpoint
-   - Uses all feedback data to retrain the model
-   - Updates the active model used for analysis
+### Frontend (ResultCard.tsx)
+- Updated feedback UI to include three options: Yes, No, Uncertain
+- Sends feedback to backend API with message_id and feedback value
 
-## Deployment
+### Backend API (/feedback endpoint)
+- Receives feedback from frontend
+- Stores feedback in database
+- Processes feedback according to the decision table:
+  - YES: Confirms prediction and adds to training data
+  - NO: Flips prediction and adds to training data
+  - UNCERTAIN: Adds to hold data for active learning
 
-### Environment Variables
-Set these in your Render dashboard:
-- `GOOGLE_GEMINI_API_KEY` - For AI analysis features
-- `RETRAIN_KEY` - Secret key to protect retraining endpoint
-- `PORT` - Set to 5000 (default)
+### Database Schema
+- messages: Stores analyzed messages
+- feedback: Stores user feedback (Yes/No/Uncertain)
+- training_data: Confirmed labeled data for model retraining
+- hold_data: Uncertain samples for active learning
 
-### Render Deployment
-1. Connect your GitHub repository to Render
-2. Set the build command: `pip install -r requirements.txt`
-3. Set the start command: `python app.py`
-4. Configure environment variables
-5. Deploy!
-
-## API Endpoints
-
-### Frontend Endpoints
-- `POST /api/feedback` - Submit user feedback
-- `GET /api/config` - Get backend configuration
-
-### Backend Endpoints
-- `POST /analyze` - Analyze SMS message
-- `POST /feedback` - Store user feedback
-- `GET /stats` - Get feedback statistics
-- `POST /retrain` - Retrain model (requires RETRAIN_KEY header)
-
-## Security Considerations
-
-1. **Retraining Protection**: The `/retrain` endpoint requires a secret key in the `X-RETRAIN-KEY` header
-2. **CORS**: Properly configured to allow frontend communication
-3. **Data Privacy**: Only stores message text and analysis results, no personal information
+### Model Retraining
+- New endpoint /retrain to trigger model retraining with confirmed data
+- New endpoint /process-hold-data to handle uncertain samples
+- Uses RandomForestClassifier for retraining
+- Updates the simple analyzer model with retrained model
 
 ## Future Improvements
-
-1. **Automated Retraining**: Schedule regular model retraining
-2. **Advanced Feedback**: Allow users to provide detailed feedback
-3. **Model Versioning**: Keep track of model versions and performance
-4. **Analytics Dashboard**: Visualize feedback and model performance
+1. Implement automatic periodic retraining
+2. Add more sophisticated active learning strategies
+3. Implement model versioning and rollback capabilities
+4. Add metrics tracking for model performance over time
