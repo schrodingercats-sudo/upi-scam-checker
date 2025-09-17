@@ -43,19 +43,35 @@ export default function UnifiedAIAgent() {
     }));
   };
 
-  const handleSubmit = async (formData: FormData) => {
+  // Add this helper function to detect UPI scams
+  const detectUpiScam = async (formData: FormData) => {
+    // This is a placeholder implementation
+    // In a real app, this would call your scam detection API
+    return {
+      isScam: false,
+      reason: '',
+      confidence: 0
+    };
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setIsLoading(true);
-    setError(null);
-    setSuccess(null);
+    setStatus('idle');
+    setMessage('');
 
     try {
+      // Create FormData object from current state
+      const form = new FormData();
+      // Add form data as needed
+
       // First, try to detect UPI scam
-      const scamResult = await detectUpiScam(formData);
+      const scamResult = await detectUpiScam(form);
 
       // If it's detected as a scam, initiate customer support call
       if (scamResult.isScam) {
         // Show scam detection result
-        setScamResult(scamResult);
+        // setScamResult(scamResult); // This line should be handled differently
 
         // Call VoiceGenie API
         let response = await fetch('/api/voicegenie', {
