@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: upi-scam-checker-backend
+    runtime: python
+    rootDir: render_backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --config gunicorn.conf.py app:app
+    envVars:
+      - key: GOOGLE_GEMINI_API_KEY
+        sync: false
+      - key: RETRAIN_KEY
+        sync: false
+      - key: PORT
+        value: 10000
+    healthCheckPath: /health
+    autoDeploy: true
