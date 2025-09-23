@@ -10,8 +10,13 @@ import os
 import json
 import sqlite3
 from engine.simple_analyzer import analyze_message_simple
+from engine.basic_analyzer import analyze_message_basic
 from engine.database import db
 from engine.retrain_model import ModelRetrainer
+
+RETRAIN_KEY = os.getenv('RETRAIN_KEY')
+if not RETRAIN_KEY:
+    raise ValueError("A RETRAIN_KEY environment variable must be set.")
 
 app = Flask(__name__)
 CORS(app)
@@ -77,12 +82,14 @@ def analyze_sms():
         return jsonify(result)
         
     except Exception as e:
+        # In a real app, you'd use a logger here
+        print(f"ERROR in /analyze: {e}")
         return jsonify({
-            'error': f'Analysis failed: {str(e)}',
+            'error': 'An internal server error occurred during analysis.',
             'classification': 'Error',
             'confidence_score': '0%',
             'risk_level': 'Unknown',
-            'recommended_action': 'System error occurred'
+            'recommended_action': 'A system error occurred. Please try again later.'
         }), 500
 
 @app.route('/feedback', methods=['POST'])
@@ -157,9 +164,10 @@ def store_feedback():
             }), 500
             
     except Exception as e:
+        print(f"ERROR in /feedback: {e}")
         return jsonify({
             'success': False,
-            'error': f'Feedback storage failed: {str(e)}'
+            'error': 'An internal server error occurred while storing feedback.'
         }), 500
 
 @app.route('/stats', methods=['GET'])
@@ -174,17 +182,18 @@ def get_stats():
             'recent_messages': recent_messages
         })
     except Exception as e:
+        print(f"ERROR in /stats: {e}")
         return jsonify({
-            'error': f'Stats retrieval failed: {str(e)}'
+            'error': 'An internal server error occurred while retrieving stats.'
         }), 500
 
 @app.route('/retrain', methods=['POST'])
 def retrain_model():
     """Retrain the ML model with feedback data"""
     try:
-        # Check for retraining authorization (in production, use proper auth)
+        # Check for retraining authorization
         auth_key = request.headers.get('X-RETRAIN-KEY')
-        if auth_key != os.getenv('RETRAIN_KEY', 'default-retrain-key'):
+        if auth_key != RETRAIN_KEY:
             return jsonify({
                 'success': False,
                 'error': 'Unauthorized retraining request'
@@ -209,9 +218,10 @@ def retrain_model():
             }), 500
             
     except Exception as e:
+        print(f"ERROR in /retrain: {e}")
         return jsonify({
             'success': False,
-            'error': f'Model retraining failed: {str(e)}'
+            'error': 'An internal server error occurred during model retraining.'
         }), 500
 
 @app.route('/process-hold-data', methods=['POST'])
@@ -220,7 +230,7 @@ def process_hold_data():
     try:
         # Check for authorization
         auth_key = request.headers.get('X-RETRAIN-KEY')
-        if auth_key != os.getenv('RETRAIN_KEY', 'default-retrain-key'):
+        if auth_key != RETRAIN_KEY:
             return jsonify({
                 'success': False,
                 'error': 'Unauthorized request'
@@ -242,9 +252,33 @@ def process_hold_data():
             }), 500
             
     except Exception as e:
+        print(f"ERROR in /process-hold-data: {e}")
         return jsonify({
             'success': False,
-            'error': f'Hold data processing failed: {str(e)}'
+            'error': 'An internal server error occurred while processing hold data.'
+        }), 500
+
+@app.route('/analyze-basic', methods=['POST'])
+def analyze_sms_basic():
+    """Analyze SMS message with basic regex-based analysis"""
+    try:
+        data = request.get_json()
+
+        if not data or 'text' not in data:
+            return jsonify({
+                'error': 'Missing required field: text'
+            }), 400
+
+        text = data['text']
+
+        result = analyze_message_basic(text)
+
+        return jsonify(result)
+
+    except Exception as e:
+        print(f"ERROR in /analyze-basic: {e}")
+        return jsonify({
+            'error': 'An internal server error occurred during basic analysis.'
         }), 500
 
 if __name__ == '__main__':
