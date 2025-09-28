@@ -147,7 +147,7 @@ function VideoCard(): React.ReactElement {
           controlsList="nodownload noremoteplayback"
           disablePictureInPicture
           // allow sound by default
-          muted={false}
+          muted={true}
           loop
           playsInline
           preload="metadata"
