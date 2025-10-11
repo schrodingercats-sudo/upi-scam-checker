@@ -125,27 +125,48 @@ export async function POST(request: NextRequest) {
     // Priority 5: Use basic analysis from backend if all AI models fail
     else {
       try {
-        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
-        const basicResponse = await fetch(`${backendUrl}/analyze-basic`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text })
-        });
-        if (basicResponse.ok) {
-            const basicData = await basicResponse.json();
-            finalLabel = basicData.label;
-            finalConfidence = basicData.confidence;
-            finalRiskLevel = basicData.riskLevel;
-            finalRedFlags = basicData.redFlags;
-            finalAdvice = basicData.advice;
-            console.log('Using basic analysis from backend as final fallback');
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+        if (backendUrl) {
+          const basicResponse = await fetch(`${backendUrl}/analyze-basic`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ text }),
+              signal: AbortSignal.timeout(5000) // 5 second timeout
+          });
+          if (basicResponse.ok) {
+              const basicData = await basicResponse.json();
+              finalLabel = basicData.label;
+              finalConfidence = basicData.confidence;
+              finalRiskLevel = basicData.riskLevel;
+              finalRedFlags = basicData.redFlags;
+              finalAdvice = basicData.advice;
+              console.log('Using basic analysis from backend as final fallback');
+          } else {
+              console.log('Backend basic analysis failed, using local fallback');
+              const basicAnalysis = await performBasicAnalysis(text);
+              finalLabel = basicAnalysis.label;
+              finalConfidence = basicAnalysis.confidence;
+              finalRiskLevel = basicAnalysis.riskLevel;
+              finalRedFlags = basicAnalysis.redFlags;
+              finalAdvice = basicAnalysis.advice;
+          }
         } else {
-            console.log('Basic analysis fallback failed, providing generic error.');
-            finalAdvice = 'Could not analyze message. All analysis systems are currently unavailable.';
+          console.log('Backend URL not configured, using local basic analysis');
+          const basicAnalysis = await performBasicAnalysis(text);
+          finalLabel = basicAnalysis.label;
+          finalConfidence = basicAnalysis.confidence;
+          finalRiskLevel = basicAnalysis.riskLevel;
+          finalRedFlags = basicAnalysis.redFlags;
+          finalAdvice = basicAnalysis.advice;
         }
       } catch (error) {
-        console.error('Error calling basic analysis fallback:', error);
-        finalAdvice = 'Could not analyze message. An error occurred while contacting analysis systems.';
+        console.error('Error calling backend basic analysis, using local fallback:', error);
+        const basicAnalysis = await performBasicAnalysis(text);
+        finalLabel = basicAnalysis.label;
+        finalConfidence = basicAnalysis.confidence;
+        finalRiskLevel = basicAnalysis.riskLevel;
+        finalRedFlags = basicAnalysis.redFlags;
+        finalAdvice = basicAnalysis.advice;
       }
     }
 
@@ -184,4 +205,116 @@ export async function POST(request: NextRequest) {
     console.error('Advanced analysis pipeline error:', error);
     return NextResponse.json({ error: "Analysis failed" }, { status: 500 });
   }
+}
+
+// Basic ML analysis function for fallback
+async function performBasicAnalysis(text: string) {
+  const lower = text.toLowerCase();
+
+  // Enhanced security pattern detection with better weights
+  const securityPatterns = {
+    urgency: { regex: /kyc|verify|deadline|expiry|block|suspend|immediate|urgent|quick|before|soon/i, weight: 0.3 },
+    phishing: { regex: /link|otp|pin|password|login|account|bank|upi|payment|click|update/i, weight: 0.25 },
+    socialEngineering: { regex: /free|offer|reward|winner|claim|limited|exclusive/i, weight: 0.2 },
+    impersonation: { regex: /sbi|hdfc|icici|axis|kotak|pnb|bank|gov|official|rbi|npci/i, weight: 0.3 },
+    suspiciousLinks: { regex: /http|www|\.com|\.in|\.co|bit\.ly|tinyurl|\.tk|\.ml/i, weight: 0.25 }
+  };
+
+  let riskScore = 0;
+  const redFlags: string[] = [];
+
+  // Calculate risk based on patterns with better weighting
+  Object.entries(securityPatterns).forEach(([pattern, config]) => {
+    if (config.regex.test(text)) {
+      riskScore += config.weight;
+      redFlags.push(`${pattern.charAt(0).toUpperCase() + pattern.slice(1)} indicators detected`);
+    }
+  });
+
+  // High-risk KYC scam detection
+  if (lower.includes('kyc') && (lower.includes('expiry') || lower.includes('deadline') || lower.includes('verify'))) {
+    riskScore += 0.4; // High weight for KYC scams
+    redFlags.push('KYC expiry scam detected - High-risk pattern');
+  }
+
+  // Urgency pressure detection
+  if (lower.includes('deadline') || lower.includes('urgent') || lower.includes('immediate') || lower.includes('soon')) {
+    riskScore += 0.25;
+    redFlags.push('Urgency pressure detected - Common scam tactic');
+  }
+
+  // Financial transaction indicators
+  if (text.includes('₹') || text.includes('Rs') || text.includes('rupee') || text.includes('rs.')) {
+    riskScore += 0.2;
+    redFlags.push('Financial transaction mentioned');
+  }
+
+  // OTP/PIN requests
+  if (lower.includes('otp') || lower.includes('pin') || lower.includes('verification code')) {
+    riskScore += 0.3;
+    redFlags.push('OTP/PIN request detected - Never share these');
+  }
+
+  // Suspicious formatting (all caps, excessive punctuation)
+  const capsRatio = (text.match(/[A-Z]/g) || []).length / text.length;
+  if (capsRatio > 0.3) {
+    riskScore += 0.15;
+    redFlags.push('Excessive capitalization detected - Scam indicator');
+  }
+
+  if (text.includes('!!!') || text.includes('??') || text.includes('...')) {
+    riskScore += 0.1;
+    redFlags.push('Suspicious punctuation patterns detected');
+  }
+
+  // Normalize risk score
+  riskScore = Math.min(riskScore, 1.0);
+
+  // Better risk classification
+  let label, riskLevel, confidence;
+
+  if (riskScore >= 0.8) {
+    label = 'Scam';
+    riskLevel = 'Critical';
+    confidence = 0.9;
+  } else if (riskScore >= 0.6) {
+    label = 'Scam';
+    riskLevel = 'High';
+    confidence = 0.8;
+  } else if (riskScore >= 0.4) {
+    label = 'Suspicious';
+    riskLevel = 'Medium';
+    confidence = 0.7;
+  } else if (riskScore >= 0.2) {
+    label = 'Suspicious';
+    riskLevel = 'Low';
+    confidence = 0.6;
+  } else {
+    label = 'Safe';
+    riskLevel = 'Low';
+    confidence = 0.5;
+  }
+
+  // Better explanations based on risk level
+  let advice;
+
+  if (riskScore >= 0.8) {
+    advice = "🚨 CRITICAL RISK: This message contains multiple scam indicators. Do NOT click any links, share personal information, or make payments. This appears to be a fraudulent attempt.";
+  } else if (riskScore >= 0.6) {
+    advice = "⚠️ HIGH RISK: Multiple suspicious indicators detected. Do not click links, share OTP, or make payments. Verify with official sources before proceeding.";
+  } else if (riskScore >= 0.4) {
+    advice = "⚠️ MEDIUM RISK: Several suspicious patterns detected. Exercise caution and verify with official sources before taking any action.";
+  } else if (riskScore >= 0.2) {
+    advice = "⚠️ LOW RISK: Minor suspicious indicators detected. Verify with official sources before proceeding.";
+  } else {
+    advice = "✅ Appears safe, but always verify with official sources before taking any action.";
+  }
+
+  return {
+    label,
+    confidence: parseFloat(confidence.toFixed(2)),
+    redFlags,
+    advice,
+    riskLevel
+  };
 }
