@@ -80,7 +80,7 @@ In Render Dashboard → Environment:
 
 ```env
 PYTHON_VERSION=3.9.16
-GOOGLE_GEMINI_API_KEY=AIzaSyBt4xrmnXm34-uRw5QtWdbQpvcOfIYoc40
+GOOGLE_GEMINI_API_KEY=your api key 
 PORT=10000
 ```
 
