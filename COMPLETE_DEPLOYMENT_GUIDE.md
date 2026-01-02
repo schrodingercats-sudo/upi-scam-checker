@@ -34,9 +34,9 @@ Install Command: npm install
 In Vercel Dashboard → Settings → Environment Variables:
 
 ```env
-GOOGLE_GEMINI_API_KEY=AIzaSyBt4xrmnXm34-uRw5QtWdbQpvcOfIYoc40
-OPENROUTER_API_KEY=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
-GOOGLE_SAFE_BROWSING_API_KEY=AIzaSyB56S_GzgYvi0n7_auyjgXdLXzN6buiT_w
+GOOGLE_GEMINI_API_KEY=your api key
+OPENROUTER_API_KEY=your api key
+GOOGLE_SAFE_BROWSING_API_KEY=your api key
 NODE_ENV=production
 ```
 
