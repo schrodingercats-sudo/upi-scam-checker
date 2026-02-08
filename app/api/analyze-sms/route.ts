@@ -122,15 +122,52 @@ export async function POST(request: NextRequest) {
       finalAdvice = deepseekAnalysis;
       console.log('Using DeepSeek analysis as fallback');
     }
-    // Priority 5: Use basic ML analysis if all AI models fail
+    // Priority 5: Use basic analysis from backend if all AI models fail
     else {
-      const basicAnalysis = await performBasicAnalysis(text);
-      finalLabel = basicAnalysis.label;
-      finalConfidence = basicAnalysis.confidence;
-      finalRiskLevel = basicAnalysis.riskLevel;
-      finalRedFlags = basicAnalysis.redFlags;
-      finalAdvice = basicAnalysis.advice;
-      console.log('Using basic ML analysis as final fallback');
+      try {
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+        if (backendUrl) {
+          const basicResponse = await fetch(`${backendUrl}/analyze-basic`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ text }),
+              signal: AbortSignal.timeout(5000) // 5 second timeout
+          });
+          if (basicResponse.ok) {
+              const basicData = await basicResponse.json();
+              finalLabel = basicData.label;
+              finalConfidence = basicData.confidence;
+              finalRiskLevel = basicData.riskLevel;
+              finalRedFlags = basicData.redFlags;
+              finalAdvice = basicData.advice;
+              console.log('Using basic analysis from backend as final fallback');
+          } else {
+              console.log('Backend basic analysis failed, using local fallback');
+              const basicAnalysis = await performBasicAnalysis(text);
+              finalLabel = basicAnalysis.label;
+              finalConfidence = basicAnalysis.confidence;
+              finalRiskLevel = basicAnalysis.riskLevel;
+              finalRedFlags = basicAnalysis.redFlags;
+              finalAdvice = basicAnalysis.advice;
+          }
+        } else {
+          console.log('Backend URL not configured, using local basic analysis');
+          const basicAnalysis = await performBasicAnalysis(text);
+          finalLabel = basicAnalysis.label;
+          finalConfidence = basicAnalysis.confidence;
+          finalRiskLevel = basicAnalysis.riskLevel;
+          finalRedFlags = basicAnalysis.redFlags;
+          finalAdvice = basicAnalysis.advice;
+        }
+      } catch (error) {
+        console.error('Error calling backend basic analysis, using local fallback:', error);
+        const basicAnalysis = await performBasicAnalysis(text);
+        finalLabel = basicAnalysis.label;
+        finalConfidence = basicAnalysis.confidence;
+        finalRiskLevel = basicAnalysis.riskLevel;
+        finalRedFlags = basicAnalysis.redFlags;
+        finalAdvice = basicAnalysis.advice;
+      }
     }
 
     // Prepare final result with smart fallback
@@ -173,7 +210,7 @@ export async function POST(request: NextRequest) {
 // Basic ML analysis function for fallback
 async function performBasicAnalysis(text: string) {
   const lower = text.toLowerCase();
-  
+
   // Enhanced security pattern detection with better weights
   const securityPatterns = {
     urgency: { regex: /kyc|verify|deadline|expiry|block|suspend|immediate|urgent|quick|before|soon/i, weight: 0.3 },
@@ -235,7 +272,7 @@ async function performBasicAnalysis(text: string) {
 
   // Better risk classification
   let label, riskLevel, confidence;
-  
+
   if (riskScore >= 0.8) {
     label = 'Scam';
     riskLevel = 'Critical';
@@ -260,7 +297,7 @@ async function performBasicAnalysis(text: string) {
 
   // Better explanations based on risk level
   let advice;
-  
+
   if (riskScore >= 0.8) {
     advice = "🚨 CRITICAL RISK: This message contains multiple scam indicators. Do NOT click any links, share personal information, or make payments. This appears to be a fraudulent attempt.";
   } else if (riskScore >= 0.6) {
